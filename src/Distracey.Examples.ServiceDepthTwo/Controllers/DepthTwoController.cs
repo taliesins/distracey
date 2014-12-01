@@ -3,7 +3,7 @@ using System.Web.Http;
 
 namespace Distracey.Examples.ServiceDepthTwo.Controllers
 {
-    public class ValuesController : ApiController
+    public class DepthTwoController : ApiController
     {
         // GET api/values
         public IEnumerable<string> Get()
