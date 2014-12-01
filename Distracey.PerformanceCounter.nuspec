@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Distracey.PerformanceCounter</id>
-    <version>3.0.2.0</version>
+    <version>1.0.0.0</version>
     <authors>Taliesin Sisson</authors>
     <owners></owners>
     <title>Distracey Performance Counters</title>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/taliesins/distracey</projectUrl>
-    <iconUrl></iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/taliesins/distracey/master/distracey.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Add performance counter APM metrics for Web Api controllers.</description>
     <summary>Add performance counter APM metrics for Web Api controllers.</summary>
@@ -16,6 +16,6 @@
     <tags>webapi apm performance counters</tags>
   </metadata>
   <files>
-    <file src="bin\Release\Distracey.Logary.dll" target="lib/net45" />
+    <file src="bin\4.5\Distracey.Logary.dll" target="lib/net45" />
   </files>
 </package>

@@ -13,14 +13,14 @@ namespace Distracey.Tests
         public void GetHttpClientsToMonitor()
         {
             var methods = PerformanceCounterApmRuntime.FindAllApmContextUsage(typeof(ValuesController).Assembly).ToList();
-            Assert.AreEqual(0, methods.Count());
+            Assert.AreEqual(3, methods.Count());
         }
 
         [Test]
         public void GetControllersToMonitor()
         {
             var methods = PerformanceCounterApmRuntime.FindAllHttpActionDescriptors(typeof(ValuesController).Assembly).ToList();
-            Assert.AreEqual(5, methods.Count());
+            Assert.AreEqual(9, methods.Count());
         }
 
         [Test]

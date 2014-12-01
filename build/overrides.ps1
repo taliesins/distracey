@@ -10,9 +10,6 @@
 
 properties {
     Write-Output "Loading override settings"
-    $solution.name = "Talifun-Web"
+    $solution.name = "Distracey"
     $solution.file = "$($base.dir)\$($solution.name).sln"
-    $talifunweb = "Talifun.Crusher.dll"
-    $talifunwebAssemblies = @("Talifun.FileWatcher.dll","AjaxMin.dll", "dotless.ClientOnly.dll", "EcmaScript.NET.dll", "Yahoo.Yui.Compressor.dll")
-    $ilmerge.targets["$talifunweb"] = $talifunwebAssemblies
 }

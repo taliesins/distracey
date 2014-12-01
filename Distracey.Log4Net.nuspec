@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Distracey.Log4Net</id>
-    <version>3.0.2.0</version>
+    <version>1.0.0.0</version>
     <authors>Taliesin Sisson</authors>
     <owners></owners>
     <title>Distracey LogNet</title>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/taliesins/distracey</projectUrl>
-    <iconUrl></iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/taliesins/distracey/master/distracey.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Add Log4Net APM metrics for Web Api controllers. 
       Create a Log4Net GELF target. Then configure Logstash GELF endpoint with an output filter to Elastic Search. Browse data with Kibana.
@@ -18,6 +18,6 @@
     <tags>webapi apm log4net</tags>
   </metadata>
   <files>
-    <file src="bin\Release\Distracey.Log4Net.dll" target="lib/net45" />
+    <file src="bin\4.5\Distracey.Log4Net.dll" target="lib/net45" />
   </files>
 </package>
