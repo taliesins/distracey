@@ -28,7 +28,15 @@ When running micro-services architecture it is really important to monitor and l
 * Logary (https://github.com/logary/logary)
 ** Soon Logary Zipkin target will be complete and then you can view distributed tracing and metrics for Web Api controllers via ZipKin.
 * Log4Net (https://github.com/apache/log4net)
-** Add Log4Net GELF target (https://github.com/jjchiw/gelf4net) and log to logstash configured for elastic search. Then use kibana for a great experince.
+** Add Log4Net GELF target (https://github.com/jjchiw/gelf4net) and log to logstash configured with an output to elastic search. Then use kibana for a great dashboard experince.
+
+# How to install
+
+Pull in nuget package for the target you want to use. You can use all the targets if you want to.
+
+* Distracey.PerformanceCounters
+* Distracey.Logary
+* Distracey.Log4Net
 
 # Acknowledgments
 
