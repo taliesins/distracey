@@ -30,16 +30,55 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApmContextTests.cs" />
+    <Compile Include="ApmHttpClientDelegatingHandlerBaseTests.cs" />
+    <Compile Include="ApmWebApiFilterAttributeBaseTests.cs" />
+    <Compile Include="PerformanceCounterApmRuntimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Mocks\TestApmHttpClientDelegatingHandler.cs" />
+    <Compile Include="Mocks\TestApmWebApiFilterAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Distracey.Log4Net\Distracey.Log4Net.csproj">
+      <Project>{f9923139-b970-4104-a58a-0b9af7d0c4f2}</Project>
+      <Name>Distracey.Log4Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Logary\Distracey.Logary.csproj">
+      <Project>{5d34b8e2-102f-407a-9e87-4ced11bff3c1}</Project>
+      <Name>Distracey.Logary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.PerformanceCounter\Distracey.PerformanceCounter.csproj">
+      <Project>{e0c5c855-4b11-4132-a9ad-b0e183a454dc}</Project>
+      <Name>Distracey.PerformanceCounter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey\Distracey.csproj">
+      <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
+      <Name>Distracey</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

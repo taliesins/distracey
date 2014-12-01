@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.PerformanceCounte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Tests", "src\Distracey.Tests\Distracey.Tests.csproj", "{042B98D7-CFA4-47CD-BEAB-E68FCEBCD44B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0F484B34-334F-4287-A7DA-1A7615A0DC58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{9491B846-0EEB-47E8-8165-D82D56155373}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{042B98D7-CFA4-47CD-BEAB-E68FCEBCD44B} = {0F484B34-334F-4287-A7DA-1A7615A0DC58}
 	EndGlobalSection
 EndGlobal
