@@ -1,35 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Http;
+using Distracey.Examples.ServiceDepthOne.Clients;
 
 namespace Distracey.Examples.ServiceDepthOne.Controllers
 {
     public class DepthOneController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        private readonly ServiceDepthTwoClient _serviceDepthTwoClient;
+
+        public DepthOneController()
+            : this(new ServiceDepthTwoClient(new Uri(ConfigurationManager.AppSettings["ServiceDepthTwoBaseUrl"])))
         {
-            return new string[] { "value1", "value2" };
+            
         }
 
-        // GET api/values/5
-        public string Get(int id)
+        public DepthOneController(ServiceDepthTwoClient serviceDepthTwoClient)
         {
-            return "value";
+            _serviceDepthTwoClient = serviceDepthTwoClient;
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        public IEnumerable<string> GetDepthOne(int id)
         {
+            Request.ApmContext()["id"] = id.ToString();
+
+            return new[] { "one" };
         }
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        public IEnumerable<string> GetDepthTwo(int id)
         {
+            Request.ApmContext()["id"] = id.ToString();
+
+            var depth = _serviceDepthTwoClient.GetDepthTwo(id);
+            depth.Add("one");
+            return depth;
         }
 
-        // DELETE api/values/5
-        public void Delete(int id)
+        public IEnumerable<string> GetDepthThree(int id)
         {
+            Request.ApmContext()["id"] = id.ToString();
+
+            var depth = _serviceDepthTwoClient.GetDepthThree(id);
+            depth.Add("one");
+            return depth;
         }
     }
 }

@@ -1,35 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Http;
+using Distracey.Examples.ServiceDepthTwo.Clients;
 
 namespace Distracey.Examples.ServiceDepthTwo.Controllers
 {
     public class DepthTwoController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        private readonly ServiceDepthThreeClient _serviceDepthThreeClient;
+
+        public DepthTwoController()
+            : this(new ServiceDepthThreeClient(new Uri(ConfigurationManager.AppSettings["ServiceDepthThreeBaseUrl"])))
         {
-            return new string[] { "value1", "value2" };
+            
         }
 
-        // GET api/values/5
-        public string Get(int id)
+        public DepthTwoController(ServiceDepthThreeClient serviceDepthThreeClient)
         {
-            return "value";
+            _serviceDepthThreeClient = serviceDepthThreeClient;
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        public IEnumerable<string> GetDepthTwo(int id)
         {
+            Request.ApmContext()["id"] = id.ToString();
+
+            return new[] { "two" };
         }
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        public IEnumerable<string> GetDepthThree(int id)
         {
-        }
+            Request.ApmContext()["id"] = id.ToString();
 
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
+            var depth = _serviceDepthThreeClient.GetDepthThree(id);
+            depth.Add("two");
+            return depth;
         }
     }
 }
