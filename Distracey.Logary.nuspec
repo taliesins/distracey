@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Distracey.Logary</id>
+    <version>3.0.2.0</version>
+    <authors>Taliesin Sisson</authors>
+    <owners></owners>
+    <title>Distracey Logary</title>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/taliesins/distracey</projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Add Logary APM metrics for Web Api controllers. 
+      Create a Logary GELF target. Then configure Logstash GELF endpoint with an output filter to Elastic Search. Browse data with Kibana.
+      Create a Logary Zipkin target. Then configure ZipKin. Browse distributed traces with ZipKin.
+    </description>
+    <summary>Add Logary APM metrics for Web Api controllers.</summary>
+    <language>en-GB</language>
+    <tags>webapi apm logary</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\Distracey.Logary.dll" target="lib/net45" />
+  </files>
+</package>

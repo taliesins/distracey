@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Distracey</id>
+    <version>3.0.2.0</version>
+    <authors>Taliesin Sisson</authors>
+    <owners></owners>
+    <title>Distracey</title>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/taliesins/distracey</projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Add APM metrics for Web Api controllers.
+    </description>
+    <summary>Add APM metrics for Web Api controllers.</summary>
+    <language>en-GB</language>
+    <tags>webapi apm</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\Distracey.dll" target="lib/net45" />
+  </files>
+</package>
