@@ -63,6 +63,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Examples.ServiceDepthOne\Distracey.Examples.ServiceDepthOne.csproj">
+      <Project>{643ad846-9541-4756-affd-735902018157}</Project>
+      <Name>Distracey.Examples.ServiceDepthOne</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Examples.ServiceDepthThree\Distracey.Examples.ServiceDepthThree.csproj">
+      <Project>{1413de20-2749-4a13-8837-874c236788c4}</Project>
+      <Name>Distracey.Examples.ServiceDepthThree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Examples.ServiceDepthTwo\Distracey.Examples.ServiceDepthTwo.csproj">
+      <Project>{cbf8a4c5-ec4e-4826-8041-4ab91bb54c3e}</Project>
+      <Name>Distracey.Examples.ServiceDepthTwo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Examples.Website\Distracey.Examples.Website.csproj">
+      <Project>{ea3a1ca5-52d2-4547-b0e5-95d943da48ed}</Project>
+      <Name>Distracey.Examples.Website</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey.Log4Net\Distracey.Log4Net.csproj">
       <Project>{f9923139-b970-4104-a58a-0b9af7d0c4f2}</Project>
       <Name>Distracey.Log4Net</Name>
