@@ -14,8 +14,11 @@
     <summary>Add performance counter APM metrics for Web Api controllers.</summary>
     <language>en-GB</language>
     <tags>webapi apm performance counters</tags>
+    <dependencies>
+      <dependency id="Distracey" version="1.0.0.0" />
+    </dependencies>      
   </metadata>
   <files>
-    <file src="bin\4.5\Distracey.Logary.dll" target="lib/net45" />
+    <file src="bin\4.5\Distracey.PerformanceCounter.dll" target="lib/net45" />
   </files>
 </package>

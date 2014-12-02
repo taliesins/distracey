@@ -16,6 +16,10 @@
     <summary>Add APM metrics for Web Api controllers.</summary>
     <language>en-GB</language>
     <tags>webapi apm</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.2" />
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.2" />
+    </dependencies>    
   </metadata>
   <files>
     <file src="bin\4.5\Distracey.dll" target="lib/net45" />

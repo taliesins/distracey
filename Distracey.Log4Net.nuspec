@@ -16,6 +16,10 @@
     <summary>Add Log4Net APM metrics for Web Api controllers.</summary>
     <language>en-GB</language>
     <tags>webapi apm log4net</tags>
+    <dependencies>
+      <dependency id="Distracey" version="1.0.0.0" />
+      <dependency id="log4net" version="2.0.3" />
+    </dependencies> 
   </metadata>
   <files>
     <file src="bin\4.5\Distracey.Log4Net.dll" target="lib/net45" />
