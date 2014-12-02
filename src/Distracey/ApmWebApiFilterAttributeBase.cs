@@ -179,11 +179,11 @@ namespace Distracey
             }
         }
 
-        public void StopResponseTime(HttpResponseMessage response)
+        public void StopResponseTime(HttpActionExecutedContext actionExecutedContext)
         {
             object responseTimeObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
                 out responseTimeObject))
             {
                 var stopWatch = (Stopwatch)responseTimeObject;
@@ -284,12 +284,12 @@ namespace Distracey
             startAction(apmWebApiStartInformation);
         }
 
-        public void LogStopOfRequest(HttpResponseMessage response, Exception exception, Action<ApmWebApiFinishInformation> finishAction)
+        public void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<ApmWebApiFinishInformation> finishAction)
         {
             var applicationName = string.Empty;
             object applicationNameObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ApplicationNamePropertyKey, out applicationNameObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey, out applicationNameObject))
             {
                 applicationName = (string)applicationNameObject;
             }
@@ -297,7 +297,7 @@ namespace Distracey
             var eventName = string.Empty;
             object eventNameObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.EventNamePropertyKey, out eventNameObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.EventNamePropertyKey, out eventNameObject))
             {
                 eventName = (string)eventNameObject;
             }
@@ -305,7 +305,7 @@ namespace Distracey
             var methodIdentifier = string.Empty;
             object methodIdentifierObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey, out methodIdentifierObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey, out methodIdentifierObject))
             {
                 methodIdentifier = (string)methodIdentifierObject;
             }
@@ -313,7 +313,7 @@ namespace Distracey
             var traceId = string.Empty;
             object traceIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdObject))
             {
                 traceId = (string)traceIdObject;
             }
@@ -321,7 +321,7 @@ namespace Distracey
             var spanId = string.Empty;
             object spanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdObject))
             {
                 spanId = (string)spanIdObject;
             }
@@ -329,7 +329,7 @@ namespace Distracey
             var parentSpanId = string.Empty;
             object parentSpanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdObject))
             {
                 parentSpanId = (string)parentSpanIdObject;
             }
@@ -337,7 +337,7 @@ namespace Distracey
             string sampled = null;
             object sampledObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledObject))
             {
                 sampled = (string)sampledObject;
             }
@@ -345,7 +345,7 @@ namespace Distracey
             string flags = null;
             object flagsObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.FlagsHeaderKey, out flagsObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.FlagsHeaderKey, out flagsObject))
             {
                 flags = (string)flagsObject;
             }
@@ -353,7 +353,7 @@ namespace Distracey
             object responseTimeObject;
 
             var responseTime = 0L;
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
+            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
             {
                 responseTime = ((Stopwatch)responseTimeObject).ElapsedMilliseconds;
             }
@@ -368,9 +368,10 @@ namespace Distracey
                 Sampled = sampled,
                 SpanId = spanId,
                 TraceId = traceId,
-                Response = response,
+                Request = actionExecutedContext.Request,
+                Response = actionExecutedContext.Response,
                 ResponseTime = responseTime,
-                Exception = exception
+                Exception = actionExecutedContext.Exception
             };
 
             finishAction(apmWebApiFinishInformation);
@@ -395,13 +396,18 @@ namespace Distracey
                 SetTracingResponseHeaders(actionExecutedContext);
             }
             base.OnActionExecuted(actionExecutedContext);
-            StopResponseTime(actionExecutedContext.Response);
-            LogStopOfRequest(actionExecutedContext.Response, actionExecutedContext.Exception, _finishAction);
+            StopResponseTime(actionExecutedContext);
+            LogStopOfRequest(actionExecutedContext, _finishAction);
         }
 
         public static void SetTracingResponseHeaders(HttpActionExecutedContext actionContext)
         {
-            if (!actionContext.Response.Headers.Contains(Constants.TraceIdHeaderKey))
+            if (actionContext.Response == null)
+            {
+                return;
+            }
+
+            if (actionContext.Response != null && !actionContext.Response.Headers.Contains(Constants.TraceIdHeaderKey))
             {
                 var traceId = string.Empty;
                 object traceIdObject;
@@ -414,7 +420,7 @@ namespace Distracey
                 actionContext.Response.Headers.Add(Constants.TraceIdHeaderKey, traceId);
             }
 
-            if (!actionContext.Response.Headers.Contains(Constants.SpanIdHeaderKey))
+            if (actionContext.Response != null && !actionContext.Response.Headers.Contains(Constants.SpanIdHeaderKey))
             {
                 var spanId = string.Empty;
                 object spanIdObject;
@@ -427,7 +433,7 @@ namespace Distracey
                 actionContext.Response.Headers.Add(Constants.SpanIdHeaderKey, spanId);
             }
 
-            if (!actionContext.Response.Headers.Contains(Constants.ParentSpanIdHeaderKey))
+            if (actionContext.Response != null && !actionContext.Response.Headers.Contains(Constants.ParentSpanIdHeaderKey))
             {
                 var parentSpanId = string.Empty;
                 object parentSpanIdObject;
@@ -440,7 +446,7 @@ namespace Distracey
                 actionContext.Response.Headers.Add(Constants.ParentSpanIdHeaderKey, parentSpanId);
             }
 
-            if (!actionContext.Response.Headers.Contains(Constants.SampledHeaderKey))
+            if (actionContext.Response != null && !actionContext.Response.Headers.Contains(Constants.SampledHeaderKey))
             {
                 string sampled = null;
                 object sampledObject;
@@ -453,7 +459,7 @@ namespace Distracey
                 actionContext.Response.Headers.Add(Constants.SampledHeaderKey, sampled);
             }
 
-            if (!actionContext.Response.Headers.Contains(Constants.SampledHeaderKey))
+            if (actionContext.Response != null && !actionContext.Response.Headers.Contains(Constants.SampledHeaderKey))
             {
                 string flags = null;
                 object flagsObject;

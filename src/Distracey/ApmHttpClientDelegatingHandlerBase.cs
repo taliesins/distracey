@@ -518,7 +518,7 @@ namespace Distracey
             startAction(apmHttpClientStartInformation);
         }
 
-        public void LogStopOfRequest(HttpResponseMessage response, Action<ApmHttpClientFinishInformation> finishAction)
+        public void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<ApmHttpClientFinishInformation> finishAction)
         {
             var applicationName = string.Empty;
             object applicationNameObject;
@@ -660,6 +660,7 @@ namespace Distracey
                 ApplicationName = applicationName,
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
+                Request = request,
                 Response = response,
                 ResponseTime = responseTime,
                 ClientName = clientName,
@@ -693,7 +694,7 @@ namespace Distracey
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             StopResponseTime(response);
-            LogStopOfRequest(response, _finishAction);
+            LogStopOfRequest(request, response, _finishAction);
             return response;
         }
 

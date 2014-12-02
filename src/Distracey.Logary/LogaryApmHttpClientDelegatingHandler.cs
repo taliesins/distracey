@@ -50,7 +50,7 @@ namespace Distracey.Logary
         {
             object apmContextObject;
             if (
-                !apmWebApiFinishInformation.Response.RequestMessage.Properties.TryGetValue(
+                !apmWebApiFinishInformation.Request.Properties.TryGetValue(
                     Constants.ApmContextPropertyKey, out apmContextObject))
             {
                 throw new Exception("Add delegating handler filter for Log4NetApmHttpClientDelegatingHandler");

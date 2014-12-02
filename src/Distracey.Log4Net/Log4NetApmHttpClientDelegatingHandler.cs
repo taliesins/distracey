@@ -59,7 +59,7 @@ namespace Distracey.Log4Net
         public static void Finish(ApmHttpClientFinishInformation apmWebApiFinishInformation)
         {
             object apmContextObject;
-            if (!apmWebApiFinishInformation.Response.RequestMessage.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
             {
                 throw new Exception("Add delegating handler filter for Log4NetApmHttpClientDelegatingHandler");
             }

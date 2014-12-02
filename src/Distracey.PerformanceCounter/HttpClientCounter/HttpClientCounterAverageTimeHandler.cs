@@ -47,7 +47,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
         {
             object counterProperty;
 
-            if (apmHttpClientFinishInformation.Response.RequestMessage.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
+            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.IncrementBy(apmHttpClientFinishInformation.ResponseTime);
@@ -55,7 +55,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             object baseCounterProperty;
 
-            if (apmHttpClientFinishInformation.Response.RequestMessage.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var baseCounter = (System.Diagnostics.PerformanceCounter)baseCounterProperty;
                 baseCounter.Increment();

@@ -69,7 +69,7 @@ namespace Distracey.Log4Net
         public static void Finish(ApmWebApiFinishInformation apmWebApiFinishInformation)
         {
             object apmContextObject;
-            if (!apmWebApiFinishInformation.Response.RequestMessage.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
             {
                 throw new Exception("Add global filter for ApmWebApiFilterAttributeBase");
             }

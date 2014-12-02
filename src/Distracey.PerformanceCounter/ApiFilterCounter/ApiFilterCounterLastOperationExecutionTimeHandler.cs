@@ -35,7 +35,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
         {
             object counterProperty;
 
-            if (apmWebApiFinishInformation.Response.RequestMessage.Properties.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
+            if (apmWebApiFinishInformation.Request.Properties.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.RawValue = apmWebApiFinishInformation.ResponseTime;

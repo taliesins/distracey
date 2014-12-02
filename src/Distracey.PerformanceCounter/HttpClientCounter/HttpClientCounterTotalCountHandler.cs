@@ -35,7 +35,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
         {
             object counterProperty;
 
-            if (apmHttpClientFinishInformation.Response.RequestMessage.Properties.TryGetValue(TotalCountCounter, out counterProperty))
+            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(TotalCountCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.Increment();

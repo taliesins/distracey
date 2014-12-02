@@ -7,6 +7,7 @@ namespace Distracey
         public string ApplicationName { get; set; }
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
+        public HttpRequestMessage Request { get; set; }
         public HttpResponseMessage Response { get; set; }
         public long ResponseTime { get; set; }
 
