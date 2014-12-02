@@ -43,11 +43,11 @@ namespace Distracey
             {
                 if (!apmContext.ContainsKey(Constants.ApplicationNamePropertyKey))
                 {
-                    request.Properties.Add(Constants.ApplicationNamePropertyKey, applicationName);
+                    request.Properties[Constants.ApplicationNamePropertyKey] = applicationName;
                 }
                 else
                 {
-                    request.Properties.Add(Constants.ApplicationNamePropertyKey, apmContext[Constants.ApplicationNamePropertyKey]);
+                    request.Properties[Constants.ApplicationNamePropertyKey] = apmContext[Constants.ApplicationNamePropertyKey];
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Distracey
             }
             else
             {
-                request.Properties.Add(Constants.EventNamePropertyKey, apmContext[Constants.EventNamePropertyKey]);
+                request.Properties[Constants.EventNamePropertyKey] = apmContext[Constants.EventNamePropertyKey];
             }
         }
 
@@ -82,7 +82,7 @@ namespace Distracey
             }
             else
             {
-                request.Properties.Add(Constants.MethodIdentifierPropertyKey, apmContext[Constants.MethodIdentifierPropertyKey]);
+                request.Properties[Constants.MethodIdentifierPropertyKey] = apmContext[Constants.MethodIdentifierPropertyKey];
             }
         }
 
@@ -102,7 +102,7 @@ namespace Distracey
             else
             {
                 clientName = apmContext[Constants.ClientNamePropertyKey];
-                request.Properties.Add(Constants.ClientNamePropertyKey, clientName);
+                request.Properties[Constants.ClientNamePropertyKey] = clientName;
             }
 
             object incomingTraceIdProperty;
@@ -682,7 +682,7 @@ namespace Distracey
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            request.Properties.Add(Constants.ApmContextPropertyKey, _apmContext);
+            request.Properties[Constants.ApmContextPropertyKey] = _apmContext;
 
             AddApplicationName(request, _apmContext, _applicationName);
             AddEventName(request, _apmContext);
@@ -740,7 +740,7 @@ namespace Distracey
                 if (request.Headers.TryGetValues(Constants.TraceIdHeaderKey, out traceIds))
                 {
                     traceId = traceIds.First();
-                    request.Properties.Add(Constants.TraceIdHeaderKey, traceId);
+                    request.Properties[Constants.TraceIdHeaderKey] = traceId;
                 }
             }
 
@@ -767,7 +767,7 @@ namespace Distracey
                 if (request.Headers.TryGetValues(Constants.SpanIdHeaderKey, out spanIds))
                 {
                     spanId = spanIds.First();
-                    request.Properties.Add(Constants.SpanIdHeaderKey, spanId);
+                    request.Properties[Constants.SpanIdHeaderKey] = spanId;
                 }
             }
 
@@ -794,7 +794,7 @@ namespace Distracey
                 if (request.Headers.TryGetValues(Constants.ParentSpanIdHeaderKey, out parentSpanIds))
                 {
                     parentSpanId = parentSpanIds.First();
-                    request.Properties.Add(Constants.ParentSpanIdHeaderKey, parentSpanId);
+                    request.Properties[Constants.ParentSpanIdHeaderKey] = parentSpanId;
                 }
             }
 
@@ -821,7 +821,7 @@ namespace Distracey
                 if (request.Headers.TryGetValues(Constants.SampledHeaderKey, out sampledItems))
                 {
                     sampled = sampledItems.First();
-                    request.Properties.Add(Constants.SampledHeaderKey, sampled);
+                    request.Properties[Constants.SampledHeaderKey] = sampled;
                 }
             }
 
@@ -848,7 +848,7 @@ namespace Distracey
                 if (request.Headers.TryGetValues(Constants.FlagsHeaderKey, out flagItems))
                 {
                     flags = flagItems.First();
-                    request.Properties.Add(Constants.FlagsHeaderKey, flags);
+                    request.Properties[Constants.FlagsHeaderKey] = flags;
                 }
             }
 

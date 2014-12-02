@@ -48,7 +48,7 @@ namespace Distracey
             }
             else
             {
-                request.Properties.Add(Constants.ApplicationNamePropertyKey, applicationName);
+                request.Properties[Constants.ApplicationNamePropertyKey] = applicationName;
             }
         }
 
@@ -76,7 +76,7 @@ namespace Distracey
 
                 eventName = GetEventName(methodType, actionName, controllerName);
 
-                actionContext.Request.Properties.Add(Constants.EventNamePropertyKey, eventName);
+                actionContext.Request.Properties[Constants.EventNamePropertyKey] = eventName;
             }
         }
 
@@ -106,7 +106,7 @@ namespace Distracey
 
                 methodIdentifier = GetMethodIdentifier(methodType, controllerName, actionName, arguments);
 
-                actionContext.Request.Properties.Add(Constants.MethodIdentifierPropertyKey, methodIdentifier);
+                actionContext.Request.Properties[Constants.MethodIdentifierPropertyKey] = methodIdentifier;
             }
         }
 
@@ -175,7 +175,7 @@ namespace Distracey
             }
             else
             {
-                request.Properties.Add(Constants.ResponseTimePropertyKey, Stopwatch.StartNew());
+                request.Properties[Constants.ResponseTimePropertyKey] = Stopwatch.StartNew();
             }
         }
 

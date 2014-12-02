@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Distracey.Log4Net</id>
-    <version>1.0.4.0</version>
+    <version>1.0.6.0</version>
     <authors>Taliesin Sisson</authors>
     <owners></owners>
     <title>Distracey LogNet</title>
