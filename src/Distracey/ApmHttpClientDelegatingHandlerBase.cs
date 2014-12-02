@@ -354,11 +354,11 @@ namespace Distracey
             }
         }
 
-        public void StopResponseTime(HttpResponseMessage response)
+        public void StopResponseTime(HttpRequestMessage request)
         {
             object responseTimeObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
+            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
             {
                 var stopWatch = (Stopwatch)responseTimeObject;
                 if (stopWatch.IsRunning)
@@ -523,7 +523,7 @@ namespace Distracey
             var applicationName = string.Empty;
             object applicationNameObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
+            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
                 out applicationNameObject))
             {
                 applicationName = (string)applicationNameObject;
@@ -532,7 +532,7 @@ namespace Distracey
             var eventName = string.Empty;
             object eventNameObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.EventNamePropertyKey,
+            if (request.Properties.TryGetValue(Constants.EventNamePropertyKey,
                 out eventNameObject))
             {
                 eventName = (string)eventNameObject;
@@ -541,7 +541,7 @@ namespace Distracey
             var methodIdentifier = string.Empty;
             object methodIdentifierObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey,
+            if (request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey,
                 out methodIdentifierObject))
             {
                 methodIdentifier = (string)methodIdentifierObject;
@@ -550,7 +550,7 @@ namespace Distracey
             object responseTimeObject;
 
             var responseTime = 0L;
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
+            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
                 out responseTimeObject))
             {
                 responseTime = ((Stopwatch)responseTimeObject).ElapsedMilliseconds;
@@ -559,7 +559,7 @@ namespace Distracey
             var clientName = string.Empty;
             object clientNameObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ClientNamePropertyKey,
+            if (request.Properties.TryGetValue(Constants.ClientNamePropertyKey,
                 out clientNameObject))
             {
                 clientName = (string)clientNameObject;
@@ -568,7 +568,7 @@ namespace Distracey
             var incomingTraceId = string.Empty;
             object incomingTraceIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingTraceIdPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingTraceIdPropertyKey,
                 out incomingTraceIdObject))
             {
                 incomingTraceId = (string)incomingTraceIdObject;
@@ -577,7 +577,7 @@ namespace Distracey
             var incomingSpanId = string.Empty;
             object incomingSpanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingSpanIdPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingSpanIdPropertyKey,
                 out incomingSpanIdObject))
             {
                 incomingSpanId = (string)incomingSpanIdObject;
@@ -586,7 +586,7 @@ namespace Distracey
             var incomingParentSpanId = string.Empty;
             object incomingParentSpanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingParentSpanIdPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingParentSpanIdPropertyKey,
                 out incomingParentSpanIdObject))
             {
                 incomingParentSpanId = (string)incomingParentSpanIdObject;
@@ -595,7 +595,7 @@ namespace Distracey
             var incomingFlags = string.Empty;
             object incomingFlagsObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingFlagsPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingFlagsPropertyKey,
                 out incomingFlagsObject))
             {
                 incomingFlags = (string)incomingFlagsObject;
@@ -604,7 +604,7 @@ namespace Distracey
             var incomingSampled = string.Empty;
             object incomingSampledObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
                 out incomingSampledObject))
             {
                 incomingSampled = (string)incomingSampledObject;
@@ -613,7 +613,7 @@ namespace Distracey
             var traceId = string.Empty;
             object traceIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.TraceIdHeaderKey,
+            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey,
                 out traceIdObject))
             {
                 traceId = (string)traceIdObject;
@@ -622,7 +622,7 @@ namespace Distracey
             var spanId = string.Empty;
             object spanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.SpanIdHeaderKey,
+            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey,
                 out spanIdObject))
             {
                 spanId = (string)spanIdObject;
@@ -631,7 +631,7 @@ namespace Distracey
             var parentSpanId = string.Empty;
             object parentSpanIdObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey,
+            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey,
                 out parentSpanIdObject))
             {
                 parentSpanId = (string)parentSpanIdObject;
@@ -640,7 +640,7 @@ namespace Distracey
             var flags = string.Empty;
             object flagsObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.FlagsHeaderKey,
+            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey,
                 out flagsObject))
             {
                 flags = (string)flagsObject;
@@ -649,7 +649,7 @@ namespace Distracey
             var sampled = string.Empty;
             object sampledObject;
 
-            if (response.RequestMessage.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
+            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
                 out sampledObject))
             {
                 sampled = (string)sampledObject;
@@ -693,7 +693,7 @@ namespace Distracey
 
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            StopResponseTime(response);
+            StopResponseTime(request);
             LogStopOfRequest(request, response, _finishAction);
             return response;
         }

@@ -412,7 +412,7 @@ namespace Distracey
                 var traceId = string.Empty;
                 object traceIdObject;
 
-                if (actionContext.Response.RequestMessage.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdObject))
+                if (actionContext.Request.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdObject))
                 {
                     traceId = (string)traceIdObject;
                 }
@@ -425,7 +425,7 @@ namespace Distracey
                 var spanId = string.Empty;
                 object spanIdObject;
 
-                if (actionContext.Response.RequestMessage.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdObject))
+                if (actionContext.Request.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdObject))
                 {
                     spanId = (string)spanIdObject;
                 }
@@ -438,7 +438,7 @@ namespace Distracey
                 var parentSpanId = string.Empty;
                 object parentSpanIdObject;
 
-                if (actionContext.Response.RequestMessage.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdObject))
+                if (actionContext.Request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdObject))
                 {
                     parentSpanId = (string)parentSpanIdObject;
                 }
@@ -451,7 +451,7 @@ namespace Distracey
                 string sampled = null;
                 object sampledObject;
 
-                if (actionContext.Response.RequestMessage.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledObject))
+                if (actionContext.Request.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledObject))
                 {
                     sampled = (string)sampledObject;
                 }
@@ -464,7 +464,7 @@ namespace Distracey
                 string flags = null;
                 object flagsObject;
 
-                if (actionContext.Response.RequestMessage.Properties.TryGetValue(Constants.SampledHeaderKey, out flagsObject))
+                if (actionContext.Request.Properties.TryGetValue(Constants.SampledHeaderKey, out flagsObject))
                 {
                     flags = (string)flagsObject;
                 }

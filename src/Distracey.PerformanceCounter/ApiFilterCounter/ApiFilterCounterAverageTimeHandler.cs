@@ -56,7 +56,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             object baseCounterProperty;
 
-            if (apmWebApiFinishInformation.Response.RequestMessage.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (apmWebApiFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var baseCounter = (System.Diagnostics.PerformanceCounter)baseCounterProperty;
                 baseCounter.Increment();
