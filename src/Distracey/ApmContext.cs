@@ -28,6 +28,10 @@ namespace Distracey
                 {
                     currentApmHttpClientDelegatingHandler.InnerHandler = apmHttpClientDelegatingHandler;
                 }
+                else
+                {
+                    currentApmHttpClientDelegatingHandler.InnerHandler = new HttpClientHandler();
+                }
                 apmHttpClientDelegatingHandler = currentApmHttpClientDelegatingHandler;
             }
 

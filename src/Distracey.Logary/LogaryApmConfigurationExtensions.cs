@@ -8,6 +8,8 @@ namespace Distracey.Logary
     {
         public static void AddLogaryApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders, Logger log)
         {
+            ApmContext.ApmHttpClientDelegatingHandlerFactories.Add(new LogaryApmHttpClientDelegatingHandlerFactory());
+
             LogaryApmApiFilterAttribute.ApplicationName = applicationName;
             LogaryApmApiFilterAttribute.Log = log;
             LogaryApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;

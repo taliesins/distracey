@@ -8,6 +8,8 @@ namespace Distracey.Log4Net
     {
         public static void AddLog4NetApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders, ILog log)
         {
+            ApmContext.ApmHttpClientDelegatingHandlerFactories.Add(new Log4NetApmHttpClientDelegatingHandlerFactory());
+
             Log4NetApmApiFilterAttribute.ApplicationName = applicationName;
             Log4NetApmApiFilterAttribute.Log = log;
             Log4NetApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;

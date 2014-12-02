@@ -21,18 +21,18 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthThree", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthThree/GetDepthThree/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception(string.Format("GetDepthThree - {0} {1} {2}", url, response.StatusCode,
-                        response.Content.ReadAsStringAsync().Result));
+                        response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
                 var results =
                     Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(
-                        response.Content.ReadAsStringAsync().Result);
+                        response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -46,18 +46,18 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthThreeException", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthThree/GetDepthThreeException/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception(string.Format("GetDepthThreeException - {0} {1} {2}", url, response.StatusCode,
-                        response.Content.ReadAsStringAsync().Result));
+                        response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
                 var results =
                     Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(
-                        response.Content.ReadAsStringAsync().Result);
+                        response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }

@@ -39,6 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -144,10 +148,21 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Log4Net\Distracey.Log4Net.csproj">
+      <Project>{f9923139-b970-4104-a58a-0b9af7d0c4f2}</Project>
+      <Name>Distracey.Log4Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.PerformanceCounter\Distracey.PerformanceCounter.csproj">
+      <Project>{e0c5c855-4b11-4132-a9ad-b0e183a454dc}</Project>
+      <Name>Distracey.PerformanceCounter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey\Distracey.csproj">
       <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
       <Name>Distracey</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log4net.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

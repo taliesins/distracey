@@ -1,6 +1,10 @@
-﻿using System.Web.Http;
+﻿using System.Reflection;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Distracey.Log4Net;
+using Distracey.PerformanceCounter;
+using log4net;
 
 namespace Distracey.Examples.ServiceDepthOne
 {
@@ -16,6 +20,18 @@ namespace Distracey.Examples.ServiceDepthOne
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            GlobalConfiguration.Configure(ApplicationStart);
+        }
+
+        public static void ApplicationStart(HttpConfiguration httpConfiguration)
+        {
+            GlobalContext.Properties["assemblyVersion"] = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            var applicationName = typeof(WebApiApplication).Assembly.GetName().Name;
+            var logger = log4net.LogManager.GetLogger("WebApiApmLogger");
+            const bool addResponseHeaders = false;
+            httpConfiguration.AddLog4NetApm(applicationName, addResponseHeaders, logger);
+            //httpConfiguration.AddPerformanceCountersApm(applicationName, addResponseHeaders);
         }
     }
 }

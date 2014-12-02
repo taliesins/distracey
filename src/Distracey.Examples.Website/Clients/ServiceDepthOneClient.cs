@@ -21,15 +21,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthOne", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthOne/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthOne - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthOne - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -43,15 +43,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthTwo", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthTwo/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthTwo - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthTwo - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -65,15 +65,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthThree", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthThree/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthThree - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthThree - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -88,15 +88,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthOneException", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthOneException/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthOneException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthOneException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -110,15 +110,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthTwoException", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthTwoException/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthTwoException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthTwoException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }
@@ -132,15 +132,15 @@ namespace Distracey.Examples.Website.Clients
             using (var client = new HttpClient(context.GetDelegatingHandler()))
             {
                 client.BaseAddress = _baseUrl;
-                var url = string.Format("{0}/GetDepthThreeException", id);
-                var response = client.GetAsync(url).Result;
+                var url = string.Format("api/DepthOne/GetDepthThreeException/{0}", id);
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception(string.Format("GetDepthThreeException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().Result));
+                    throw new Exception(string.Format("GetDepthThreeException - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().Result);
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }

@@ -678,7 +678,8 @@ namespace Distracey
             finishAction(apmHttpClientFinishInformation);
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             request.Properties.Add(Constants.ApmContextPropertyKey, _apmContext);
 
@@ -689,14 +690,11 @@ namespace Distracey
             LogStartOfRequest(request, _startAction);
             StartResponseTime(request);
 
-            return base.SendAsync(request, cancellationToken)
-                .Then(response =>
-                {
-                    StopResponseTime(response);
-                    LogStopOfRequest(response, _finishAction);
-                    return response;
+            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                }, cancellationToken);
+            StopResponseTime(response);
+            LogStopOfRequest(response, _finishAction);
+            return response;
         }
 
         public static string GetMethodIdentifier(MethodBase methodInfo)

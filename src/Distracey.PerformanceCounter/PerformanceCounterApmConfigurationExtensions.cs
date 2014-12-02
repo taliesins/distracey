@@ -6,6 +6,8 @@ namespace Distracey.PerformanceCounter
     {
         public static void AddPerformanceCountersApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders)
         {
+            ApmContext.ApmHttpClientDelegatingHandlerFactories.Add(new PerformanceCounterApmHttpClientDelegatingHandlerFactory());
+
             PerformanceCounterApmApiFilterAttribute.ApplicationName = applicationName;
             PerformanceCounterApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;
             PerformanceCounterApmHttpClientDelegatingHandler.ApplicationName = applicationName;
