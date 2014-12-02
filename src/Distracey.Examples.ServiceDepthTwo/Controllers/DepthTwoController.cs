@@ -36,5 +36,21 @@ namespace Distracey.Examples.ServiceDepthTwo.Controllers
             depth.Add("two");
             return depth;
         }
+
+        public IEnumerable<string> GetDepthTwoException(int id)
+        {
+            Request.ApmContext()["id"] = id.ToString();
+
+            throw new Exception("two exception");
+        }
+
+        public IEnumerable<string> GetDepthThreeException(int id)
+        {
+            Request.ApmContext()["id"] = id.ToString();
+
+            var depth = _serviceDepthThreeClient.GetDepthThreeException(id);
+            depth.Add("two");
+            return depth;
+        }
     }
 }

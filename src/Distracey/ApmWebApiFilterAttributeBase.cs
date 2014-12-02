@@ -115,7 +115,7 @@ namespace Distracey
             IEnumerable<string> traceIdHeaders = null;
             if (!request.Headers.TryGetValues(Constants.TraceIdHeaderKey, out traceIdHeaders))
             {
-                var traceId = ShortGuid.NewGuid();
+                var traceId = ShortGuid.NewGuid().Value;
 
                 request.Properties[Constants.TraceIdHeaderKey] = traceId;
                 request.Properties[Constants.SpanIdHeaderKey] = traceId;
@@ -128,7 +128,7 @@ namespace Distracey
                 IEnumerable<string> spanIdHeaders = null;
                 if (!request.Headers.TryGetValues(Constants.SpanIdHeaderKey, out spanIdHeaders))
                 {
-                    var traceId = ShortGuid.NewGuid();
+                    var traceId = ShortGuid.NewGuid().Value;
                     request.Properties[Constants.SpanIdHeaderKey] = traceId;
                 }
                 else

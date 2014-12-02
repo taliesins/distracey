@@ -37,5 +37,30 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
                 return results;
             }
         }
+
+        public List<string> GetDepthThreeException(int id)
+        {
+            var context = ApmContext.GetContext();
+            context["id"] = id.ToString();
+
+            using (var client = new HttpClient(context.GetDelegatingHandler()))
+            {
+                client.BaseAddress = _baseUrl;
+                var url = string.Format("{0}/GetDepthThreeException", id);
+                var response = client.GetAsync(url).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(string.Format("GetDepthThreeException - {0} {1} {2}", url, response.StatusCode,
+                        response.Content.ReadAsStringAsync().Result));
+                }
+
+                var results =
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(
+                        response.Content.ReadAsStringAsync().Result);
+
+                return results;
+            }
+        }
     }
 }

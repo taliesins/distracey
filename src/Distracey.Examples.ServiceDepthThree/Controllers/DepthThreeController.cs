@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Http;
 
 namespace Distracey.Examples.ServiceDepthThree.Controllers
@@ -10,6 +11,13 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
             Request.ApmContext()["id"] = id.ToString();
 
             return new[] { "three" };
+        }
+
+        public IEnumerable<string> GetDepthThreeException(int id)
+        {
+            Request.ApmContext()["id"] = id.ToString();
+
+            throw new Exception("three exception");
         }
     }
 }

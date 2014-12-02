@@ -108,18 +108,18 @@ namespace Distracey
 
             if (string.IsNullOrEmpty(traceId))
             {
-                traceId = string.Format("{0}={1}", clientName, ShortGuid.NewGuid());
+                traceId = string.Format("{0}={1}", clientName, ShortGuid.NewGuid().Value);
                 spanId = traceId;
             }
             else
             {
                 if (string.IsNullOrEmpty(spanId))
                 {
-                    spanId = string.Format("{0};{1}={2}", traceId, clientName, ShortGuid.NewGuid());
+                    spanId = string.Format("{0};{1}={2}", traceId, clientName, ShortGuid.NewGuid().Value);
                 }
                 else
                 {
-                    spanId = string.Format("{0};{1}={2}", spanId, clientName, ShortGuid.NewGuid());
+                    spanId = string.Format("{0};{1}={2}", spanId, clientName, ShortGuid.NewGuid().Value);
                 }
             }
 
