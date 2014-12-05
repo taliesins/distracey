@@ -18,8 +18,8 @@ namespace Distracey
         private readonly string _applicationName;
         private readonly Action<ApmHttpClientStartInformation> _startAction;
         private readonly Action<ApmHttpClientFinishInformation> _finishAction;
-        private readonly ApmIncomingRequestDecorator _apmIncomingRequestDecorator = new ApmIncomingRequestDecorator();
-        private readonly ApmIncomingRequestParser _apmIncomingRequestParser = new ApmIncomingRequestParser();
+        private readonly ApmHttpClientRequestDecorator _apmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
+        private readonly ApmRequestParser _apmRequestParser = new ApmRequestParser();
 
         public ApmHttpClientDelegatingHandlerBase(IApmContext apmContext, string applicationName, Action<ApmHttpClientStartInformation> startAction, Action<ApmHttpClientFinishInformation> finishAction)
         {
@@ -31,131 +31,22 @@ namespace Distracey
 
         public void LogStartOfRequest(HttpRequestMessage request, Action<ApmHttpClientStartInformation> startAction)
         {
-            var applicationName = string.Empty;
-            object applicationNameObject;
+            var applicationName = _apmRequestParser.GetApplicationName(request);
+            var eventName = _apmRequestParser.GetEventName(request);
+            var methodIdentifier = _apmRequestParser.GetMethodIdentifier(request);
+            var clientName = _apmRequestParser.GetClientName(request);
 
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
-                out applicationNameObject))
-            {
-                applicationName = (string)applicationNameObject;
-            }
+            var incomingTraceId = _apmRequestParser.GetIncomingTraceId(request);
+            var incomingSpanId = _apmRequestParser.GetIncomingSpanId(request);
+            var incomingParentSpanId = _apmRequestParser.GetIncomingParentSpanId(request);
+            var incomingFlags = _apmRequestParser.GetIncomingFlags(request);
+            var incomingSampled = _apmRequestParser.GetIncomingSampled(request);
 
-            var eventName = string.Empty;
-            object eventNameObject;
-
-            if (request.Properties.TryGetValue(Constants.EventNamePropertyKey,
-                out eventNameObject))
-            {
-                eventName = (string)eventNameObject;
-            }
-
-            var methodIdentifier = string.Empty;
-            object methodIdentifierObject;
-
-            if (request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey,
-                out methodIdentifierObject))
-            {
-                methodIdentifier = (string)methodIdentifierObject;
-            }
-
-            var clientName = string.Empty;
-            object clientNameObject;
-
-            if (request.Properties.TryGetValue(Constants.ClientNamePropertyKey,
-                out clientNameObject))
-            {
-                clientName = (string)clientNameObject;
-            }
-
-            var incomingTraceId = string.Empty;
-            object incomingTraceIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingTraceIdPropertyKey,
-                out incomingTraceIdObject))
-            {
-                incomingTraceId = (string) incomingTraceIdObject;
-            }
-
-            var incomingSpanId = string.Empty;
-            object incomingSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSpanIdPropertyKey,
-                out incomingSpanIdObject))
-            {
-                incomingSpanId = (string)incomingSpanIdObject;
-            }
-
-            var incomingParentSpanId = string.Empty;
-            object incomingParentSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingParentSpanIdPropertyKey,
-                out incomingParentSpanIdObject))
-            {
-                incomingParentSpanId = (string)incomingParentSpanIdObject;
-            }
-
-            var incomingFlags = string.Empty;
-            object incomingFlagsObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingFlagsPropertyKey,
-                out incomingFlagsObject))
-            {
-                incomingFlags = (string)incomingFlagsObject;
-            }
-
-            var incomingSampled = string.Empty;
-            object incomingSampledObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
-                out incomingSampledObject))
-            {
-                incomingSampled = (string)incomingSampledObject;
-            }
-
-            var traceId = string.Empty;
-            object traceIdObject;
-
-            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey,
-                out traceIdObject))
-            {
-                traceId = (string)traceIdObject;
-            }
-
-            var spanId = string.Empty;
-            object spanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey,
-                out spanIdObject))
-            {
-                spanId = (string)spanIdObject;
-            }
-
-            var parentSpanId = string.Empty;
-            object parentSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey,
-                out parentSpanIdObject))
-            {
-                parentSpanId = (string)parentSpanIdObject;
-            }
-
-            var flags = string.Empty;
-            object flagsObject;
-
-            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey,
-                out flagsObject))
-            {
-                flags = (string)flagsObject;
-            }
-
-            var sampled = string.Empty;
-            object sampledObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
-                out sampledObject))
-            {
-                sampled = (string)sampledObject;
-            }
+            var traceId = _apmRequestParser.GetTraceId(request);
+            var spanId = _apmRequestParser.GetSpanId(request);
+            var parentSpanId = _apmRequestParser.GetParentSpanId(request);
+            var flags = _apmRequestParser.GetFlags(request);
+            var sampled = _apmRequestParser.GetSampled(request);
 
             var apmHttpClientStartInformation = new ApmHttpClientStartInformation
             {
@@ -179,26 +70,25 @@ namespace Distracey
             startAction(apmHttpClientStartInformation);
         }
 
-
-
         public void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<ApmHttpClientFinishInformation> finishAction)
         {
-            var applicationName = _apmIncomingRequestParser.GetApplicationName(request);
-            var eventName = _apmIncomingRequestParser.GetEventName(request);
-            var methodIdentifier = _apmIncomingRequestParser.GetMethodIdentifier(request);
-            var responseTime = _apmIncomingRequestParser.GetResponseTime(request);
-            var clientName = _apmIncomingRequestParser.GetClientName(request);
-            var incomingTraceId = _apmIncomingRequestParser.GetIncomingTraceId(request);
-            var incomingSpanId = _apmIncomingRequestParser.GetIncomingSpanId(request);
-            var incomingParentSpanId = _apmIncomingRequestParser.GetIncomingParentSpanId(request);
-            var incomingFlags = _apmIncomingRequestParser.GetIncomingFlags(request);
-            var incomingSampled = _apmIncomingRequestParser.GetIncomingSampled(request);
+            var applicationName = _apmRequestParser.GetApplicationName(request);
+            var eventName = _apmRequestParser.GetEventName(request);
+            var methodIdentifier = _apmRequestParser.GetMethodIdentifier(request);
+            var responseTime = _apmRequestParser.GetResponseTime(request);
+            var clientName = _apmRequestParser.GetClientName(request);
 
-            var traceId = _apmIncomingRequestParser.GetTraceId(request);
-            var spanId = _apmIncomingRequestParser.GetSpanId(request);
-            var parentSpanId = _apmIncomingRequestParser.GetParentSpanId(request);
-            var flags = _apmIncomingRequestParser.GetFlags(request);
-            var sampled = _apmIncomingRequestParser.GetSampled(request);
+            var incomingTraceId = _apmRequestParser.GetIncomingTraceId(request);
+            var incomingSpanId = _apmRequestParser.GetIncomingSpanId(request);
+            var incomingParentSpanId = _apmRequestParser.GetIncomingParentSpanId(request);
+            var incomingFlags = _apmRequestParser.GetIncomingFlags(request);
+            var incomingSampled = _apmRequestParser.GetIncomingSampled(request);
+
+            var traceId = _apmRequestParser.GetTraceId(request);
+            var spanId = _apmRequestParser.GetSpanId(request);
+            var parentSpanId = _apmRequestParser.GetParentSpanId(request);
+            var flags = _apmRequestParser.GetFlags(request);
+            var sampled = _apmRequestParser.GetSampled(request);
 
             var apmHttpClientFinishInformation = new ApmHttpClientFinishInformation
             {
@@ -229,28 +119,28 @@ namespace Distracey
         {
             request.Properties[Constants.ApmContextPropertyKey] = _apmContext;
 
-            _apmIncomingRequestDecorator.AddApplicationName(request, _apmContext, _applicationName);
-            _apmIncomingRequestDecorator.AddEventName(request, _apmContext);
-            _apmIncomingRequestDecorator.AddMethodIdentifier(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddApplicationName(request, _apmContext, _applicationName);
+            _apmHttpClientRequestDecorator.AddEventName(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddMethodIdentifier(request, _apmContext);
 
-            _apmIncomingRequestDecorator.AddClientName(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddClientName(request, _apmContext);
 
-            _apmIncomingRequestDecorator.AddIncomingTraceId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddIncomingSpanId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddIncomingParentSpanId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddIncomingSampled(request, _apmContext);
-            _apmIncomingRequestDecorator.AddIncomingFlags(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddIncomingTraceId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddIncomingSpanId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddIncomingParentSpanId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddIncomingSampled(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddIncomingFlags(request, _apmContext);
 
-            _apmIncomingRequestDecorator.AddTraceId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddSpanId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddParentSpanId(request, _apmContext);
-            _apmIncomingRequestDecorator.AddSampled(request, _apmContext);
-            _apmIncomingRequestDecorator.AddFlags(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddTraceId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddSpanId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddParentSpanId(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddSampled(request, _apmContext);
+            _apmHttpClientRequestDecorator.AddFlags(request, _apmContext);
 
-            _apmIncomingRequestDecorator.StartResponseTime(request);
+            _apmHttpClientRequestDecorator.StartResponseTime(request);
             LogStartOfRequest(request, _startAction);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            _apmIncomingRequestDecorator.StopResponseTime(request);
+            _apmHttpClientRequestDecorator.StopResponseTime(request);
             LogStopOfRequest(request, response, _finishAction);
 
             return response;

@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Distracey
 {
-    public class ApmIncomingRequestParser
+    public class ApmRequestParser
     {
         public string GetApplicationName(HttpRequestMessage request)
         {

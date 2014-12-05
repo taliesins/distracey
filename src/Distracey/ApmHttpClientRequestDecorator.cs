@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Distracey
 {
-    public class ApmIncomingRequestDecorator
+    public class ApmHttpClientRequestDecorator
     {
         public void StartResponseTime(HttpRequestMessage request)
         {
@@ -77,6 +77,12 @@ namespace Distracey
                 request.Properties[Constants.EventNamePropertyKey] = apmContext[Constants.EventNamePropertyKey];
             }
         }
+
+
+
+        
+
+
 
         public void AddMethodIdentifier(HttpRequestMessage request, IApmContext apmContext)
         {

@@ -74,10 +74,12 @@
     <Compile Include="ApmHttpClientDelegatingHandlerBase.cs" />
     <Compile Include="ApmHttpClientFinishInformation.cs" />
     <Compile Include="ApmHttpClientStartInformation.cs" />
-    <Compile Include="ApmIncomingRequestDecorator.cs" />
-    <Compile Include="ApmIncomingRequestParser.cs" />
+    <Compile Include="ApmHttpClientRequestDecorator.cs" />
+    <Compile Include="ApmRequestParser.cs" />
+    <Compile Include="ApmOutgoingResponseDecorator.cs" />
     <Compile Include="ApmWebApiFilterAttributeBase.cs" />
     <Compile Include="ApmWebApiFinishInformation.cs" />
+    <Compile Include="ApmWebApiRequestDecorator.cs" />
     <Compile Include="ApmWebApiStartInformation.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="IApmContext.cs" />

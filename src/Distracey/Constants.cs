@@ -24,7 +24,7 @@
         public const string TraceIdHeaderKey = "X-B3-TraceId";
         public const string SpanIdHeaderKey = "X-B3-SpanId";
         public const string ParentSpanIdHeaderKey = "X-B3-ParentSpanId";
-        public const string SampledHeaderKey = "X-B3-ParentSpanId";
+        public const string SampledHeaderKey = "X-B3-Sampled";
         public const string FlagsHeaderKey = "X-B3-Flags";
     }
 }
