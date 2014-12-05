@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -19,6 +18,8 @@ namespace Distracey
         private readonly string _applicationName;
         private readonly Action<ApmHttpClientStartInformation> _startAction;
         private readonly Action<ApmHttpClientFinishInformation> _finishAction;
+        private readonly ApmIncomingRequestDecorator _apmIncomingRequestDecorator = new ApmIncomingRequestDecorator();
+        private readonly ApmIncomingRequestParser _apmIncomingRequestParser = new ApmIncomingRequestParser();
 
         public ApmHttpClientDelegatingHandlerBase(IApmContext apmContext, string applicationName, Action<ApmHttpClientStartInformation> startAction, Action<ApmHttpClientFinishInformation> finishAction)
         {
@@ -26,346 +27,6 @@ namespace Distracey
             _applicationName = applicationName;
             _startAction = startAction;
             _finishAction = finishAction;
-        }
-
-        public void AddApplicationName(HttpRequestMessage request, IApmContext apmContext, string applicationName)
-        {
-            object applicationNameProperty;
-
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey, out applicationNameProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.ApplicationNamePropertyKey))
-                {
-                    apmContext[Constants.ApplicationNamePropertyKey] = (string) applicationNameProperty;
-                }
-            }
-            else
-            {
-                if (!apmContext.ContainsKey(Constants.ApplicationNamePropertyKey))
-                {
-                    request.Properties[Constants.ApplicationNamePropertyKey] = applicationName;
-                }
-                else
-                {
-                    request.Properties[Constants.ApplicationNamePropertyKey] = apmContext[Constants.ApplicationNamePropertyKey];
-                }
-            }
-        }
-
-        public void AddEventName(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object eventNameProperty;
-
-            if (request.Properties.TryGetValue(Constants.EventNamePropertyKey, out eventNameProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
-                {
-                    apmContext[Constants.EventNamePropertyKey] = (string)eventNameProperty;
-                }
-            }
-            else
-            {
-                request.Properties[Constants.EventNamePropertyKey] = apmContext[Constants.EventNamePropertyKey];
-            }
-        }
-
-        public void AddMethodIdentifier(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object methodIdentifierProperty;
-
-            if (request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey, out methodIdentifierProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
-                {
-                    apmContext[Constants.MethodIdentifierPropertyKey] = (string)methodIdentifierProperty;
-                }
-            }
-            else
-            {
-                request.Properties[Constants.MethodIdentifierPropertyKey] = apmContext[Constants.MethodIdentifierPropertyKey];
-            }
-        }
-
-        public void AddTracing(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object clientNameProperty;
-            var clientName = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.ClientNamePropertyKey, out clientNameProperty))
-            {
-                clientName = (string)clientNameProperty;
-                if (!apmContext.ContainsKey(Constants.ClientNamePropertyKey))
-                {
-                    apmContext[Constants.ClientNamePropertyKey] = clientName;
-                }
-            }
-            else
-            {
-                clientName = apmContext[Constants.ClientNamePropertyKey];
-                request.Properties[Constants.ClientNamePropertyKey] = clientName;
-            }
-
-            object incomingTraceIdProperty;
-            var incomingTraceId=string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.IncomingTraceIdPropertyKey, out incomingTraceIdProperty))
-            {
-                incomingTraceId = (string)incomingTraceIdProperty;
-                apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey))
-                {
-                    incomingTraceId = apmContext[Constants.IncomingTraceIdPropertyKey];
-                    request.Properties[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-                }
-                else
-                {
-                    incomingTraceId = string.Empty;
-                    apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-                    request.Properties[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-                }
-            }
-
-            object incomingSpanIdProperty;
-            var incomingSpanId = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSpanIdPropertyKey, out incomingSpanIdProperty))
-            {
-                incomingSpanId = (string)incomingSpanIdProperty;
-                apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey))
-                {
-                    incomingSpanId = apmContext[Constants.IncomingSpanIdPropertyKey];
-                    request.Properties[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-                }
-                else
-                {
-                    incomingSpanId = string.Empty;
-                    apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-                    request.Properties[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-                }
-            }
-
-            object incomingParentSpanIdProperty;
-            var incomingParentSpanId = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.IncomingParentSpanIdPropertyKey, out incomingParentSpanIdProperty))
-            {
-                incomingParentSpanId = (string)incomingParentSpanIdProperty;
-                apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.IncomingParentSpanIdPropertyKey))
-                {
-                    incomingParentSpanId = apmContext[Constants.IncomingParentSpanIdPropertyKey];
-                    request.Properties[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-                }
-                else
-                {
-                    incomingParentSpanId = string.Empty;
-                    apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-                    request.Properties[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-                }
-            }
-
-            object incomingSampledProperty;
-            var incomingSampled = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey, out incomingSampledProperty))
-            {
-                incomingSampled = (string)incomingSampledProperty;
-                apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.IncomingSampledPropertyKey))
-                {
-                    incomingSampled = apmContext[Constants.IncomingSampledPropertyKey];
-                    request.Properties[Constants.IncomingSampledPropertyKey] = incomingSampled;
-                }
-                else
-                {
-                    incomingSampled = string.Empty;
-                    apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
-                    request.Properties[Constants.IncomingSampledPropertyKey] = incomingSampled;
-                }
-            }
-
-            object incomingFlagsProperty;
-            var incomingFlags = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.IncomingFlagsPropertyKey, out incomingFlagsProperty))
-            {
-                incomingFlags = (string)incomingFlagsProperty;
-                apmContext[Constants.IncomingSampledPropertyKey] = incomingFlags;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.IncomingSampledPropertyKey))
-                {
-                    incomingFlags = apmContext[Constants.IncomingSampledPropertyKey];
-                    request.Properties[Constants.IncomingSampledPropertyKey] = incomingFlags;
-                }
-                else
-                {
-                    incomingFlags = string.Empty;
-                    apmContext[Constants.IncomingSampledPropertyKey] = incomingFlags;
-                    request.Properties[Constants.IncomingSampledPropertyKey] = incomingFlags;
-                }
-            }
-
-            object traceIdProperty;
-            var traceId = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdProperty))
-            {
-                traceId = (string)traceIdProperty;
-                apmContext[Constants.TraceIdHeaderKey] = traceId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.TraceIdHeaderKey))
-                {
-                    traceId = apmContext[Constants.TraceIdHeaderKey];
-                    request.Properties[Constants.TraceIdHeaderKey] = traceId;
-                }
-                else
-                {
-                    traceId = string.Empty;
-                    apmContext[Constants.TraceIdHeaderKey] = traceId;
-                    request.Properties[Constants.TraceIdHeaderKey] = traceId;
-                }
-            }
-
-            object spanIdProperty;
-            var spanId = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdProperty))
-            {
-                spanId = (string)spanIdProperty;
-                apmContext[Constants.SpanIdHeaderKey] = spanId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.SpanIdHeaderKey))
-                {
-                    spanId = apmContext[Constants.SpanIdHeaderKey];
-                    request.Properties[Constants.SpanIdHeaderKey] = spanId;
-                }
-                else
-                {
-                    spanId = string.Empty;
-                    apmContext[Constants.SpanIdHeaderKey] = spanId;
-                    request.Properties[Constants.SpanIdHeaderKey] = spanId;
-                }
-            }
-
-            object parentSpanIdProperty;
-            var parentSpanId = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdProperty))
-            {
-                parentSpanId = (string)parentSpanIdProperty;
-                apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.ParentSpanIdHeaderKey))
-                {
-                    parentSpanId = apmContext[Constants.ParentSpanIdHeaderKey];
-                    request.Properties[Constants.ParentSpanIdHeaderKey] = parentSpanId;
-                }
-                else
-                {
-                    parentSpanId = string.Empty;
-                    apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
-                    request.Properties[Constants.ParentSpanIdHeaderKey] = parentSpanId;
-                }
-            }
-
-            object sampledProperty;
-            var sampled = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledProperty))
-            {
-                sampled = (string)sampledProperty;
-                apmContext[Constants.SampledHeaderKey] = sampled;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.SampledHeaderKey))
-                {
-                    sampled = apmContext[Constants.SampledHeaderKey];
-                    request.Properties[Constants.SampledHeaderKey] = sampled;
-                }
-                else
-                {
-                    sampled = string.Empty;
-                    apmContext[Constants.SampledHeaderKey] = sampled;
-                    request.Properties[Constants.SampledHeaderKey] = sampled;
-                }
-            }
-
-            object flagsProperty;
-            var flags = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey, out flagsProperty))
-            {
-                flags = (string)flagsProperty;
-                apmContext[Constants.FlagsHeaderKey] = flags;
-            }
-            else
-            {
-                if (apmContext.ContainsKey(Constants.FlagsHeaderKey))
-                {
-                    flags = apmContext[Constants.FlagsHeaderKey];
-                    request.Properties[Constants.FlagsHeaderKey] = flags;
-                }
-                else
-                {
-                    flags = string.Empty;
-                    apmContext[Constants.FlagsHeaderKey] = flags;
-                    request.Properties[Constants.FlagsHeaderKey] = flags;
-                }
-            }
-        }
-
-        public void StartResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch) responseTimeObject;
-                if (!stopWatch.IsRunning)
-                {
-                    stopWatch.Start();
-                }
-            }
-            else
-            {
-                request.Properties.Add(Constants.ResponseTimePropertyKey, Stopwatch.StartNew());
-            }
-        }
-
-        public void StopResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch)responseTimeObject;
-                if (stopWatch.IsRunning)
-                {
-                    stopWatch.Stop();
-                }
-            }
         }
 
         public void LogStartOfRequest(HttpRequestMessage request, Action<ApmHttpClientStartInformation> startAction)
@@ -518,142 +179,26 @@ namespace Distracey
             startAction(apmHttpClientStartInformation);
         }
 
+
+
         public void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<ApmHttpClientFinishInformation> finishAction)
         {
-            var applicationName = string.Empty;
-            object applicationNameObject;
+            var applicationName = _apmIncomingRequestParser.GetApplicationName(request);
+            var eventName = _apmIncomingRequestParser.GetEventName(request);
+            var methodIdentifier = _apmIncomingRequestParser.GetMethodIdentifier(request);
+            var responseTime = _apmIncomingRequestParser.GetResponseTime(request);
+            var clientName = _apmIncomingRequestParser.GetClientName(request);
+            var incomingTraceId = _apmIncomingRequestParser.GetIncomingTraceId(request);
+            var incomingSpanId = _apmIncomingRequestParser.GetIncomingSpanId(request);
+            var incomingParentSpanId = _apmIncomingRequestParser.GetIncomingParentSpanId(request);
+            var incomingFlags = _apmIncomingRequestParser.GetIncomingFlags(request);
+            var incomingSampled = _apmIncomingRequestParser.GetIncomingSampled(request);
 
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
-                out applicationNameObject))
-            {
-                applicationName = (string)applicationNameObject;
-            }
-
-            var eventName = string.Empty;
-            object eventNameObject;
-
-            if (request.Properties.TryGetValue(Constants.EventNamePropertyKey,
-                out eventNameObject))
-            {
-                eventName = (string)eventNameObject;
-            }
-
-            var methodIdentifier = string.Empty;
-            object methodIdentifierObject;
-
-            if (request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey,
-                out methodIdentifierObject))
-            {
-                methodIdentifier = (string)methodIdentifierObject;
-            }
-
-            object responseTimeObject;
-
-            var responseTime = 0L;
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
-                out responseTimeObject))
-            {
-                responseTime = ((Stopwatch)responseTimeObject).ElapsedMilliseconds;
-            }
-
-            var clientName = string.Empty;
-            object clientNameObject;
-
-            if (request.Properties.TryGetValue(Constants.ClientNamePropertyKey,
-                out clientNameObject))
-            {
-                clientName = (string)clientNameObject;
-            }
-
-            var incomingTraceId = string.Empty;
-            object incomingTraceIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingTraceIdPropertyKey,
-                out incomingTraceIdObject))
-            {
-                incomingTraceId = (string)incomingTraceIdObject;
-            }
-
-            var incomingSpanId = string.Empty;
-            object incomingSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSpanIdPropertyKey,
-                out incomingSpanIdObject))
-            {
-                incomingSpanId = (string)incomingSpanIdObject;
-            }
-
-            var incomingParentSpanId = string.Empty;
-            object incomingParentSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingParentSpanIdPropertyKey,
-                out incomingParentSpanIdObject))
-            {
-                incomingParentSpanId = (string)incomingParentSpanIdObject;
-            }
-
-            var incomingFlags = string.Empty;
-            object incomingFlagsObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingFlagsPropertyKey,
-                out incomingFlagsObject))
-            {
-                incomingFlags = (string)incomingFlagsObject;
-            }
-
-            var incomingSampled = string.Empty;
-            object incomingSampledObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
-                out incomingSampledObject))
-            {
-                incomingSampled = (string)incomingSampledObject;
-            }
-
-            var traceId = string.Empty;
-            object traceIdObject;
-
-            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey,
-                out traceIdObject))
-            {
-                traceId = (string)traceIdObject;
-            }
-
-            var spanId = string.Empty;
-            object spanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey,
-                out spanIdObject))
-            {
-                spanId = (string)spanIdObject;
-            }
-
-            var parentSpanId = string.Empty;
-            object parentSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey,
-                out parentSpanIdObject))
-            {
-                parentSpanId = (string)parentSpanIdObject;
-            }
-
-            var flags = string.Empty;
-            object flagsObject;
-
-            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey,
-                out flagsObject))
-            {
-                flags = (string)flagsObject;
-            }
-
-            var sampled = string.Empty;
-            object sampledObject;
-
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
-                out sampledObject))
-            {
-                sampled = (string)sampledObject;
-            }
+            var traceId = _apmIncomingRequestParser.GetTraceId(request);
+            var spanId = _apmIncomingRequestParser.GetSpanId(request);
+            var parentSpanId = _apmIncomingRequestParser.GetParentSpanId(request);
+            var flags = _apmIncomingRequestParser.GetFlags(request);
+            var sampled = _apmIncomingRequestParser.GetSampled(request);
 
             var apmHttpClientFinishInformation = new ApmHttpClientFinishInformation
             {
@@ -684,17 +229,30 @@ namespace Distracey
         {
             request.Properties[Constants.ApmContextPropertyKey] = _apmContext;
 
-            AddApplicationName(request, _apmContext, _applicationName);
-            AddEventName(request, _apmContext);
-            AddMethodIdentifier(request, _apmContext);
-            AddTracing(request, _apmContext);
+            _apmIncomingRequestDecorator.AddApplicationName(request, _apmContext, _applicationName);
+            _apmIncomingRequestDecorator.AddEventName(request, _apmContext);
+            _apmIncomingRequestDecorator.AddMethodIdentifier(request, _apmContext);
+
+            _apmIncomingRequestDecorator.AddClientName(request, _apmContext);
+
+            _apmIncomingRequestDecorator.AddIncomingTraceId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddIncomingSpanId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddIncomingParentSpanId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddIncomingSampled(request, _apmContext);
+            _apmIncomingRequestDecorator.AddIncomingFlags(request, _apmContext);
+
+            _apmIncomingRequestDecorator.AddTraceId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddSpanId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddParentSpanId(request, _apmContext);
+            _apmIncomingRequestDecorator.AddSampled(request, _apmContext);
+            _apmIncomingRequestDecorator.AddFlags(request, _apmContext);
+
+            _apmIncomingRequestDecorator.StartResponseTime(request);
             LogStartOfRequest(request, _startAction);
-            StartResponseTime(request);
-
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            StopResponseTime(request);
+            _apmIncomingRequestDecorator.StopResponseTime(request);
             LogStopOfRequest(request, response, _finishAction);
+
             return response;
         }
 

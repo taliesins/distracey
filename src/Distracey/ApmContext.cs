@@ -52,6 +52,7 @@ namespace Distracey
             {
                 request = HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
             }
+
             SetIncomingTracing(apmContext, request);
 
             SetTracing(apmContext);
