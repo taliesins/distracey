@@ -44,7 +44,7 @@ namespace Distracey.Log4Net
                 apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
             }
 
-            var message = string.Format("Start - {0} - {1}", eventName, apmWebApiStartInformation.TraceId);
+            var message = string.Format("CS - Start - {0} - {1}", eventName, apmWebApiStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -78,7 +78,7 @@ namespace Distracey.Log4Net
                 apmContext[Constants.ResponseStatusCodePropertyKey] = apmWebApiFinishInformation.Response.StatusCode.ToString();
             }
 
-            var message = string.Format("Finish - {0} - {1} in {2} ms", eventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", eventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
