@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -39,8 +36,6 @@ namespace Distracey
             _finishAction = finishAction;
             _pluralizationService = pluralizationService;
         }
-
-
 
         public void StartResponseTime(HttpRequestMessage request)
         {

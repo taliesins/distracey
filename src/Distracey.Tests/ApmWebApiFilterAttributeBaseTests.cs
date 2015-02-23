@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Web.Http.Controllers;
 using NUnit.Framework;
 
 namespace Distracey.Tests
@@ -30,9 +31,12 @@ namespace Distracey.Tests
         {
             _httpRequestMessage.Headers.Add(Constants.TraceIdHeaderKey, "TestClient=1234");
 
-            _testApmWebApiFilterAttribute.AddTracing(_httpRequestMessage);
+            var actionContext = ContextUtil.CreateActionContext();
 
-            var traceId = _httpRequestMessage.Properties[Constants.TraceIdHeaderKey];
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
+            var traceId = actionContext.Request.Properties[Constants.TraceIdHeaderKey];
             Assert.AreEqual("TestClient=1234", traceId);
         }
     }

@@ -79,7 +79,7 @@ namespace Distracey.Logary
             else
             {
                 var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
-                Log.Log(message, LogLevel.Error, apmContext, null, null, apmWebApiFinishInformation.Exception);
+                Log.Log(message, LogLevel.Error, apmContext, null, null, apmWebApiFinishInformation.Exception, null);
             }
         }
     }

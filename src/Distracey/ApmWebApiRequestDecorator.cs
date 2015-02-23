@@ -124,11 +124,15 @@ namespace Distracey
                 var methodType = actionContext.Request.Method;
                 var actionName = actionContext.ActionDescriptor.ActionName;
 
-                var methodInfo = ((ReflectedHttpActionDescriptor)(actionContext.ActionDescriptor)).MethodInfo;
+                var methodInfo = actionContext.ActionDescriptor is ReflectedHttpActionDescriptor ? 
+                    ((ReflectedHttpActionDescriptor)(actionContext.ActionDescriptor)).MethodInfo :
+                    null;
 
-                var param = methodInfo.GetParameters()
-                   .Select(parameter => string.Format("{0} {1}", parameter.ParameterType.Name, parameter.Name))
-                   .ToArray();
+                var param = methodInfo == null ? 
+                    new string[]{}: 
+                    methodInfo.GetParameters()
+                       .Select(parameter => string.Format("{0} {1}", parameter.ParameterType.Name, parameter.Name))
+                       .ToArray();
 
                 var arguments = string.Join(", ", param);
 
