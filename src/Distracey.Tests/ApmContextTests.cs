@@ -19,7 +19,6 @@ namespace Distracey.Tests
         {
             _apmContext.Add(Constants.ClientNamePropertyKey, "TestClient");
 
-
             ApmContext.SetTracing(_apmContext);
 
             var traceId = _apmContext[Constants.TraceIdHeaderKey];

@@ -10,6 +10,7 @@ namespace Distracey
 {
     public class ApmWebApiRequestDecorator
     {
+        public const string NoParent = "0";
         private static readonly Type EnumerableType = typeof(IEnumerable);
 
         public void AddApplicationName(HttpRequestMessage request, string applicationName)
@@ -156,7 +157,7 @@ namespace Distracey
 
                 request.Properties[Constants.TraceIdHeaderKey] = traceId;
                 request.Properties[Constants.SpanIdHeaderKey] = traceId;
-                request.Properties[Constants.ParentSpanIdHeaderKey] = 0.ToString();
+                request.Properties[Constants.ParentSpanIdHeaderKey] = NoParent;
             }
             else
             {
@@ -176,7 +177,7 @@ namespace Distracey
                 IEnumerable<string> parentSpanIdHeaders = null;
                 if (!request.Headers.TryGetValues(Constants.ParentSpanIdHeaderKey, out parentSpanIdHeaders))
                 {
-                    request.Properties[Constants.ParentSpanIdHeaderKey] = 0.ToString();
+                    request.Properties[Constants.ParentSpanIdHeaderKey] = NoParent;
                 }
                 else
                 {

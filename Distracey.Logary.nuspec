@@ -19,7 +19,7 @@
     <tags>webapi apm logary</tags>
     <dependencies>
       <dependency id="Distracey" version="1.0.0.0" />
-      <dependency id="Intelliplan.Logary.Zipkin" version="1.5.0" />
+      <dependency id="Logary.Zipkin" version="2.6.0" />
     </dependencies>     
   </metadata>
   <files>
