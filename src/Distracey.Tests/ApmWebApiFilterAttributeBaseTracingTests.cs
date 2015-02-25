@@ -203,5 +203,48 @@ namespace Distracey.Tests
             var parentSpanId = (string)actionContext.Request.Properties[Constants.ParentSpanIdHeaderKey];
             Assert.AreEqual(ApmWebApiRequestDecorator.NoParent, parentSpanId);
         }
+
+        [Test]
+        public void WhenReceivingTracingInformationMethodIdentifierIsAdded()
+        {
+            var actionContext = ContextUtil.CreateActionContext();
+
+            var controllerName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            var methodType = actionContext.Request.Method;
+            var actionName = actionContext.ActionDescriptor.ActionName;
+            var arguments = string.Empty;
+
+            var expectedMethodIdentifier = string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
+
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.MethodIdentifierPropertyKey));
+            var methodIdentifier = (string)actionContext.Request.Properties[Constants.MethodIdentifierPropertyKey];
+            Assert.AreEqual(expectedMethodIdentifier, methodIdentifier);
+        }
+
+        [Test]
+        public void WhenReceivingTracingInformationEventNameIsAdded()
+        {
+            var actionContext = ContextUtil.CreateActionContext();
+
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.EventNamePropertyKey));
+            var eventName = (string)actionContext.Request.Properties[Constants.EventNamePropertyKey];
+            Assert.IsNotEmpty(eventName);
+        }
+
+        [Test]
+        public void WhenReceivingTracingInformatioApplicationNameIsAdded()
+        {
+            var actionContext = ContextUtil.CreateActionContext();
+
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.ApplicationNamePropertyKey));
+            var applicationName = (string)actionContext.Request.Properties[Constants.ApplicationNamePropertyKey];
+            Assert.IsNotEmpty(applicationName);
+        }
     }
 }

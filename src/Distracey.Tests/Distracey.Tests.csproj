@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="ApmContextTests.cs" />
     <Compile Include="ApmHttpClientDelegatingHandlerBaseTests.cs" />
-    <Compile Include="ApmWebApiFilterAttributeBaseTests.cs" />
+    <Compile Include="ApmWebApiFilterAttributeBaseTracingTests.cs" />
     <Compile Include="ContextUtil.cs" />
     <Compile Include="PerformanceCounterApmRuntimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
