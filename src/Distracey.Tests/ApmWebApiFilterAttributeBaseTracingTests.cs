@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Web.Http.Filters;
 using NUnit.Framework;
 
 namespace Distracey.Tests
@@ -23,6 +25,135 @@ namespace Distracey.Tests
         }
 
         [Test]
+        public void WhenLoggingStartOfRequest()
+        {
+            var startActionLogged = false;
+            var applicationName = string.Empty;
+            var eventName = string.Empty;
+            var flags = string.Empty;
+            var methodsIdentifier = string.Empty;
+            var parentSpanId = string.Empty;
+            var sampled = string.Empty;
+            var spanId = string.Empty;
+            var traceId = string.Empty;
+            var httpRequest = default(HttpRequestMessage);
+            var actionContext = ContextUtil.CreateActionContext();
+            actionContext.Request.Headers.Add(Constants.TraceIdHeaderKey, "TestClient=1234");
+            actionContext.Request.Headers.Add(Constants.SpanIdHeaderKey, "SpecialProcess=4321");
+            actionContext.Request.Headers.Add(Constants.ParentSpanIdHeaderKey, "ParentSpecialProcess=5678");
+            actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
+            actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
+
+            _startAction = information =>
+            {
+                startActionLogged = true;
+                applicationName = information.ApplicationName;
+                eventName = information.EventName;
+                flags = information.Flags;
+                methodsIdentifier = information.MethodIdentifier;
+                parentSpanId = information.ParentSpanId;
+                sampled = information.Sampled;
+                spanId = information.SpanId;
+                traceId = information.TraceId;
+                httpRequest = information.Request;
+            };
+
+            _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            Assert.IsNotNull(httpRequest);
+            Assert.IsTrue(startActionLogged);
+            Assert.IsNotNullOrEmpty(applicationName);
+            Assert.IsNotNullOrEmpty(eventName);
+            Assert.AreEqual("TestClient=1234", traceId);
+            Assert.AreEqual("SpecialProcess=4321", spanId);
+            Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);
+            Assert.AreEqual("Sampled", sampled);
+            Assert.AreEqual("Flags", flags);
+
+            var controllerName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            var methodType = actionContext.Request.Method;
+            var actionName = actionContext.ActionDescriptor.ActionName;
+            var arguments = string.Empty;
+
+            var expectedMethodIdentifier = string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
+
+            Assert.AreEqual(expectedMethodIdentifier, methodsIdentifier);
+
+        }
+
+        [Test]
+        public void WhenLoggingEndOfRequest()
+        {
+            var finishActionLogged = false;
+            var applicationName = string.Empty;
+            var eventName = string.Empty;
+            var responseTime = 0L;
+            var exception = default(object);
+            var flags = string.Empty;
+            var methodsIdentifier = string.Empty;
+            var parentSpanId = string.Empty;
+            var sampled = string.Empty;
+            var spanId = string.Empty;
+            var traceId = string.Empty;
+            var httpRequest = default(HttpRequestMessage);
+            var httpResponse = default(HttpResponseMessage);
+            var actionContext = ContextUtil.CreateActionContext();
+            actionContext.Request.Headers.Add(Constants.TraceIdHeaderKey, "TestClient=1234");
+            actionContext.Request.Headers.Add(Constants.SpanIdHeaderKey, "SpecialProcess=4321");
+            actionContext.Request.Headers.Add(Constants.ParentSpanIdHeaderKey, "ParentSpecialProcess=5678");
+            actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
+            actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
+
+            _finishAction = information =>
+            {
+                finishActionLogged = true;
+                applicationName = information.ApplicationName;
+                eventName = information.EventName;
+                exception = information.Exception;
+                flags = information.Flags;
+                methodsIdentifier = information.MethodIdentifier;
+                parentSpanId = information.ParentSpanId;
+                sampled = information.Sampled;
+                spanId = information.SpanId;
+                traceId = information.TraceId;
+                httpRequest = information.Request;
+                httpResponse = information.Response;
+                responseTime = information.ResponseTime;
+            };
+
+            _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
+            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+
+            var actionExecutedContext = new HttpActionExecutedContext(actionContext, new Exception("Exception occured"));
+
+            _testApmWebApiFilterAttribute.OnActionExecuted(actionExecutedContext);
+
+            Assert.IsNotNull(httpRequest);
+            //Assert.IsNotNull(httpResponse);
+            Assert.IsNotNull(exception);
+            Assert.IsTrue(finishActionLogged);
+            Assert.Greater(responseTime, 0);
+            Assert.IsNotNullOrEmpty(applicationName);
+            Assert.IsNotNullOrEmpty(eventName);
+            Assert.AreEqual("TestClient=1234", traceId);
+            Assert.AreEqual("SpecialProcess=4321", spanId);
+            Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);
+            Assert.AreEqual("Sampled", sampled);
+            Assert.AreEqual("Flags", flags);
+
+            var controllerName = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+            var methodType = actionContext.Request.Method;
+            var actionName = actionContext.ActionDescriptor.ActionName;
+            var arguments = string.Empty;
+
+            var expectedMethodIdentifier = string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
+
+            Assert.AreEqual(expectedMethodIdentifier, methodsIdentifier);
+
+        }
+
+        [Test]
         public void WhenReceivingSampledHeader()
         {
             var actionContext = ContextUtil.CreateActionContext();
@@ -32,7 +163,7 @@ namespace Distracey.Tests
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.SampledHeaderKey));
             var sampled = (string)actionContext.Request.Properties[Constants.SampledHeaderKey];
-            Assert.IsNotEmpty(sampled);
+            Assert.AreEqual("Sampled", sampled);
         }
 
         [Test]
@@ -55,7 +186,7 @@ namespace Distracey.Tests
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.FlagsHeaderKey));
             var flags = (string)actionContext.Request.Properties[Constants.FlagsHeaderKey];
-            Assert.IsNotEmpty(flags);
+            Assert.AreEqual("Flags", flags);
         }
 
         [Test]

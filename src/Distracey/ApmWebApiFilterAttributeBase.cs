@@ -135,8 +135,9 @@ namespace Distracey
             _apmWebApiRequestDecorator.AddEventName(actionContext, _pluralizationService);
             _apmWebApiRequestDecorator.AddMethodIdentifier(actionContext);
             _apmWebApiRequestDecorator.AddTracing(actionContext.Request);
-            LogStartOfRequest(actionContext.Request, _startAction);
             StartResponseTime(actionContext.Request);
+
+            LogStartOfRequest(actionContext.Request, _startAction);
             base.OnActionExecuting(actionContext);
         }
 

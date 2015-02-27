@@ -206,7 +206,7 @@ namespace Distracey
             var sampled = string.Empty;
             object sampledObject;
 
-            if (request.Properties.TryGetValue(Constants.IncomingSampledPropertyKey,
+            if (request.Properties.TryGetValue(Constants.SampledHeaderKey,
                 out sampledObject))
             {
                 sampled = (string)sampledObject;
