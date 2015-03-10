@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Examples.ServiceD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Examples.ServiceDepthThree", "src\Distracey.Examples.ServiceDepthThree\Distracey.Examples.ServiceDepthThree.csproj", "{1413DE20-2749-4A13-8837-874C236788C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Monitoring", "Distracey.Monitoring\Distracey.Monitoring.csproj", "{A4471AEA-2368-41EA-8373-63DFD37AAC9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{1413DE20-2749-4A13-8837-874C236788C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1413DE20-2749-4A13-8837-874C236788C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1413DE20-2749-4A13-8837-874C236788C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

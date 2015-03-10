@@ -145,5 +145,25 @@ namespace Distracey.Examples.Website.Clients
                 return results;
             }
         }
+
+        public string Ping()
+        {
+            var context = ApmContext.GetContext();
+            using (var client = new HttpClient(context.GetDelegatingHandler()))
+            {
+                client.BaseAddress = _baseUrl;
+                var url = string.Format("api/SmokeTest/Ping");
+                var response = client.GetAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(string.Format("Ping - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
+                }
+
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
+
+                return results;
+            }
+        }
     }
 }
