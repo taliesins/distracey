@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Configuration;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Examples.Website.Clients;
 using Distracey.Monitoring;
+using Swashbuckle.Swagger;
 
 namespace Distracey.Examples.Website.Controllers
 {
@@ -23,21 +22,21 @@ namespace Distracey.Examples.Website.Controllers
             _serviceDepthOneClient = serviceDepthOneClient;
         }
 
-        [HttpGet, Route("canary")]
-        public HttpResponseMessage Canary()
+        [HttpGet]
+        public CanaryResponse Canary()
         {
-            var canaryResponse = CanaryTester.RunAllTests(new Task<Canary>[]
+            var canaryResponse = CanaryTester.RunAllTests(new Task<ICanary>[]
             {
-                new Task<Canary>(() =>
+                new Task<ICanary>(() =>
                 {
                     try
                     {
                         var pingResponse = _serviceDepthOneClient.Ping();
                         
-                        return (new Canary
+                        return (new LiveCanary
                         {
                             Message = "ServiceDepthOne connectivity passed",
-                            Content = pingResponse
+                            Content = pingResponse.ToString()
                         });
                     }
                     catch (Exception ex)
@@ -51,13 +50,13 @@ namespace Distracey.Examples.Website.Controllers
                 }), 
             });
 
-            return Request.CreateResponse(HttpStatusCode.OK, canaryResponse);
+            return canaryResponse;
         }
 
-        [HttpGet, Route("ping")]
-        public HttpResponseMessage Ping()
+        [HttpGet]
+        public PingResponse Ping()
         {
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return new PingResponse();
         }
     }
 }

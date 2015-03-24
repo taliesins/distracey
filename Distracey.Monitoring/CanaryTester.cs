@@ -6,7 +6,7 @@ namespace Distracey.Monitoring
 {
     public static class CanaryTester
     {
-        public static CanaryResponse RunAllTests(params Task<Canary>[] testFunctionsToRun)
+        public static CanaryResponse RunAllTests(params Task<ICanary>[] testFunctionsToRun)
         {
             var success = new List<LiveCanary>();
             var errors = new List<DeadCanary>();
@@ -17,7 +17,7 @@ namespace Distracey.Monitoring
                 {
                     testFunction.Start();
                 }
-                Canary canary;
+                ICanary canary;
                 try
                 {
                     canary = testFunction.Result;

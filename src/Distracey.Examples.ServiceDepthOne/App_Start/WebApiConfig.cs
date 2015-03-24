@@ -10,7 +10,7 @@ namespace Distracey.Examples.ServiceDepthOne
                 name: "DefaultApiDepthOne",
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional },
-                constraints: new { controller = "DepthOne" }
+                constraints: new { controller = "(DepthOne|Smoketest)" }
             );
 
             config.Routes.MapHttpRoute(

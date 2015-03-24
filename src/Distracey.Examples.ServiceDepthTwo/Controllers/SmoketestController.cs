@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Examples.ServiceDepthTwo.Clients;
@@ -23,21 +21,21 @@ namespace Distracey.Examples.ServiceDepthTwo.Controllers
             _serviceDepthThreeClient = serviceDepthThreeClient;
         }
 
-        [HttpGet, Route("canary")]
-        public HttpResponseMessage Canary()
+        [HttpGet]
+        public CanaryResponse Canary()
         {
-            var canaryResponse = CanaryTester.RunAllTests(new Task<Canary>[]
+            var canaryResponse = CanaryTester.RunAllTests(new Task<ICanary>[]
             {
-                new Task<Canary>(() =>
+                new Task<ICanary>(() =>
                 {
                     try
                     {
                         var pingResponse = _serviceDepthThreeClient.Ping();
-                        
-                        return (new Canary
+
+                        return (new LiveCanary
                         {
                             Message = "ServiceDepthThree connectivity passed",
-                            Content = pingResponse
+                            Content = pingResponse.ToString()
                         });
                     }
                     catch (Exception ex)
@@ -51,13 +49,13 @@ namespace Distracey.Examples.ServiceDepthTwo.Controllers
                 }), 
             });
 
-            return Request.CreateResponse(HttpStatusCode.OK, canaryResponse);
+            return canaryResponse;
         }
 
-        [HttpGet, Route("ping")]
-        public HttpResponseMessage Ping()
+        [HttpGet]
+        public PingResponse Ping()
         {
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return new PingResponse();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Distracey.Monitoring;
 
 namespace Distracey.Examples.ServiceDepthTwo.Clients
 {
@@ -63,7 +64,7 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
             }
         }
 
-        public string Ping()
+        public PingResponse Ping()
         {
             var context = ApmContext.GetContext();
             using (var client = new HttpClient(context.GetDelegatingHandler()))
@@ -77,7 +78,7 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
                     throw new Exception(string.Format("Ping - {0} {1} {2}", url, response.StatusCode, response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()));
                 }
 
-                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<PingResponse>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
 
                 return results;
             }

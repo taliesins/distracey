@@ -10,7 +10,7 @@ namespace Distracey.Examples.Website
                 name: "DefaultApiDepthZero",
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional },
-                constraints: new { controller = "DepthZero" }
+                constraints: new { controller = "(DepthZero|Smoketest)" }
             );
 
             config.Routes.MapHttpRoute(

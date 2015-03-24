@@ -39,11 +39,12 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Canary.cs" />
+    <Compile Include="ICanary.cs" />
     <Compile Include="CanaryResponse.cs" />
     <Compile Include="CanaryTester.cs" />
     <Compile Include="DeadCanary.cs" />
     <Compile Include="LiveCanary.cs" />
+    <Compile Include="PingResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

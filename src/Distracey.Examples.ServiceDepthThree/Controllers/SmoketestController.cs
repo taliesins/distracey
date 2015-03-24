@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Monitoring;
 
@@ -12,20 +10,20 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
         {
         }
 
-        [HttpGet, Route("canary")]
-        public HttpResponseMessage Canary()
+        [HttpGet]
+        public CanaryResponse Canary()
         {
-            var canaryResponse = CanaryTester.RunAllTests(new Task<Canary>[]
+            var canaryResponse = CanaryTester.RunAllTests(new Task<ICanary>[]
             {
             });
 
-            return Request.CreateResponse(HttpStatusCode.OK, canaryResponse);
+            return canaryResponse;
         }
 
-        [HttpGet, Route("ping")]
-        public HttpResponseMessage Ping()
+        [HttpGet]
+        public PingResponse Ping()
         {
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return new PingResponse();
         }
     }
 }
