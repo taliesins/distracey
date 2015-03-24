@@ -6,5 +6,10 @@
         {
             return ApmContext.GetDelegatingHandler(apmContext);
         }
+
+        public static ApmMethodHandlerBase GetInvoker(this IApmContext apmContext)
+        {
+            return ApmContext.GetInvoker(apmContext);
+        }
     }
 }

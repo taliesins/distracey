@@ -78,12 +78,6 @@ namespace Distracey
             }
         }
 
-
-
-        
-
-
-
         public void AddMethodIdentifier(HttpRequestMessage request, IApmContext apmContext)
         {
             object methodIdentifierProperty;

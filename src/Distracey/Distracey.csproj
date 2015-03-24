@@ -72,6 +72,9 @@
     <Compile Include="ApmContextExtensions.cs" />
     <Compile Include="ApmExtensions.cs" />
     <Compile Include="ApmHttpClientDelegatingHandlerBase.cs" />
+    <Compile Include="ApmMethodHandlerBase.cs" />
+    <Compile Include="ApmMethodHandlerStartInformation.cs" />
+    <Compile Include="ApmMethodHandlerFinishInformation.cs" />
     <Compile Include="ApmHttpClientFinishInformation.cs" />
     <Compile Include="ApmHttpClientStartInformation.cs" />
     <Compile Include="ApmHttpClientRequestDecorator.cs" />
@@ -83,9 +86,12 @@
     <Compile Include="ApmWebApiStartInformation.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="IApmContext.cs" />
+    <Compile Include="IApmMethodHandlerFactory.cs" />
     <Compile Include="IApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="Null\NullApmHttpClientDelegatingHandler.cs" />
     <Compile Include="Null\NullApmHttpClientDelegatingHandlerFactory.cs" />
+    <Compile Include="Null\NullApmMethodHandler.cs" />
+    <Compile Include="Null\NullApmMethodHandlerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Reflection\BackingFieldResolver.cs" />
     <Compile Include="Helpers\Reflection\ByteBuffer.cs" />

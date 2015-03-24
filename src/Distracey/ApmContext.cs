@@ -11,7 +11,31 @@ namespace Distracey
     public class ApmContext : Dictionary<string, string>, IApmContext
 	{
         public static List<IApmHttpClientDelegatingHandlerFactory> ApmHttpClientDelegatingHandlerFactories = new List<IApmHttpClientDelegatingHandlerFactory>();
-        
+        public static List<IApmMethodHandlerFactory> ApmMethodHttpFactories = new List<IApmMethodHandlerFactory>();
+
+        public static ApmMethodHandlerBase GetInvoker(IApmContext apmContext)
+        {
+            if (!ApmMethodHttpFactories.Any())
+            {
+                return new NullApmMethodHandlerFactory().Create(apmContext);
+            }
+
+            ApmMethodHandlerBase apmMethodHandler = null;
+
+            foreach (var apmMethodHttpFactory in ApmMethodHttpFactories)
+            {
+                var currentApmMethod = apmMethodHttpFactory.Create(apmContext);
+                if (apmMethodHandler != null)
+                {
+                    currentApmMethod.InnerHandler = apmMethodHandler;
+                }
+
+                apmMethodHandler = currentApmMethod;
+            }
+
+            return apmMethodHandler;
+        }
+
         public static ApmHttpClientDelegatingHandlerBase GetDelegatingHandler(IApmContext apmContext)
         {
             if (!ApmHttpClientDelegatingHandlerFactories.Any())
