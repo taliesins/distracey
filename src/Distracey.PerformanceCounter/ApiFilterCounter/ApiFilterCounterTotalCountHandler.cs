@@ -15,26 +15,26 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             _instanceName = instanceName;
         }
 
-        public void Start(ApmWebApiStartInformation apmWebApiStartInformation)
+        public void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
         {
             var key = string.Empty;
             
             object counterProperty;
 
-            if (!apmWebApiStartInformation.Request.Properties.TryGetValue(TotalCountCounter, out counterProperty))
+            if (!apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
-                apmWebApiStartInformation.Request.Properties.Add(TotalCountCounter, counter);
+                apmContext.Add(TotalCountCounter, counter);
             }
         }
 
-        public void Finish(ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
         {
             object counterProperty;
 
-            if (apmWebApiFinishInformation.Request.Properties.TryGetValue(TotalCountCounter, out counterProperty))
+            if (apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.Increment();

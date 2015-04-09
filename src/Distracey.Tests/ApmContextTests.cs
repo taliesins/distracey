@@ -21,7 +21,7 @@ namespace Distracey.Tests
 
             ApmContext.SetTracing(_apmContext);
 
-            var traceId = _apmContext[Constants.TraceIdHeaderKey];
+            var traceId = (string)_apmContext[Constants.TraceIdHeaderKey];
 
             var regex = new Regex("TestClient=[^;]+");
 
@@ -36,7 +36,7 @@ namespace Distracey.Tests
 
             ApmContext.SetTracing(_apmContext);
 
-            var spanId = _apmContext[Constants.SpanIdHeaderKey];
+            var spanId = (string)_apmContext[Constants.SpanIdHeaderKey];
 
             var regex = new Regex("PreviousTestClient=12345;TestClient=[^;]+");
 
@@ -52,7 +52,7 @@ namespace Distracey.Tests
 
             ApmContext.SetTracing(_apmContext);
 
-            var spanId = _apmContext[Constants.SpanIdHeaderKey];
+            var spanId = (string)_apmContext[Constants.SpanIdHeaderKey];
 
             var regex = new Regex("PreviousTestClient=12345;PreviousTestClientB=12345;TestClient=[^;]+");
 

@@ -1,24 +1,24 @@
-﻿using System;
+using System;
 using log4net;
 using log4net.Core;
 
 namespace Distracey.Log4Net
 {
-    public class Log4NetApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
+    public class Log4NetApmMethodHandler : ApmMethodHandlerBase
     {
-        private static Type DeclaringType = typeof (Log4NetApmHttpClientDelegatingHandler);
+        private static readonly Type DeclaringType = typeof (Log4NetApmMethodHandler);
 
         public static string ApplicationName { get; set; }
         public static ILog Log { get; set; }
 
-        public Log4NetApmHttpClientDelegatingHandler(IApmContext apmContext)
-            : base(apmContext, ApplicationName, Start, Finish)
+        public Log4NetApmMethodHandler()
+            : base(ApplicationName, Start, Finish)
         {    
         }
-        
-        public static void Start(IApmContext apmContext, ApmHttpClientStartInformation apmWebApiStartInformation)
+
+        public static void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
         {
-            var message = string.Format("CS - Start - {0} - {1}", apmWebApiStartInformation.EventName, apmWebApiStartInformation.TraceId);
+            var message = string.Format("CS - Start - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -30,9 +30,9 @@ namespace Distracey.Log4Net
             logger.Log(logEvent);
         }
 
-        public static void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
         {
-            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmWebApiFinishInformation.EventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmMethodHandlerFinishInformation.EventName, apmMethodHandlerFinishInformation.TraceId, apmMethodHandlerFinishInformation.ResponseTime);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 

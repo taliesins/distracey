@@ -6,7 +6,6 @@ namespace Distracey.Log4Net
 {
     public class Log4NetApmApiFilterAttribute : ApmWebApiFilterAttributeBase
     {
-        private static readonly string EventType = typeof(Log4NetApmApiFilterAttribute).Name;
         private static Type DeclaringType = typeof(Log4NetApmApiFilterAttribute);
 
         public Log4NetApmApiFilterAttribute()
@@ -18,42 +17,8 @@ namespace Distracey.Log4Net
         public static bool AddResponseHeaders { get; set; }
         public static ILog Log { get; set; }
 
-        public static void Start(ApmWebApiStartInformation apmWebApiStartInformation)
+        public static void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
         {
-            object apmContextObject;
-            if (!apmWebApiStartInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                apmContextObject = new ApmContext();
-                apmWebApiStartInformation.Request.Properties.Add(Constants.ApmContextPropertyKey, apmContextObject);
-            }
-
-            var apmContext = (IApmContext) apmContextObject;
-
-            if (!apmContext.ContainsKey(Constants.EventTypePropertyKey))
-            {
-                apmContext[Constants.EventTypePropertyKey] = EventType;
-            }
-
-            if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
-            {
-                apmContext[Constants.EventNamePropertyKey] = apmWebApiStartInformation.EventName;
-            }
-
-            if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
-            {
-                apmContext[Constants.MethodIdentifierPropertyKey] = apmWebApiStartInformation.EventName;
-            }
-
-            if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
-            {
-                apmContext[Constants.RequestUriPropertyKey] = apmWebApiStartInformation.Request.RequestUri.ToString();
-            }
-
-            if (!apmContext.ContainsKey(Constants.RequestMethodPropertyKey))
-            {
-                apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
-            }
-
             var message = string.Format("SR - Start - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
@@ -66,20 +31,8 @@ namespace Distracey.Log4Net
             logger.Log(logEvent);
         }
 
-        public static void Finish(ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
         {
-            object apmContextObject;
-            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                throw new Exception("Add global filter for ApmWebApiFilterAttributeBase");
-            }
-
-            var apmContext = (IApmContext)apmContextObject;
-            if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
-            {
-                apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
-            }
-
             if (apmWebApiFinishInformation.Exception == null)
             {
                 var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);

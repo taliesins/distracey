@@ -10,8 +10,8 @@ namespace Distracey.Tests
     {
         private string _applicationName;
         private bool _addResponseHeaders;
-        private Action<ApmWebApiStartInformation> _startAction;
-        private Action<ApmWebApiFinishInformation> _finishAction;
+        private Action<IApmContext, ApmWebApiStartInformation> _startAction;
+        private Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
         private TestApmWebApiFilterAttribute _testApmWebApiFilterAttribute;
 
         [SetUp]
@@ -19,8 +19,8 @@ namespace Distracey.Tests
         {
             _applicationName = "ApplicationName";
             _addResponseHeaders = true;
-            _startAction = information => { };
-            _finishAction = information => { };
+            _startAction = (context, information) => { };
+            _finishAction = (context, information) => { };
             _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
         }
 
@@ -44,7 +44,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
             actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
 
-            _startAction = information =>
+            _startAction = (context, information) =>
             {
                 startActionLogged = true;
                 applicationName = information.ApplicationName;
@@ -105,7 +105,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
             actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
 
-            _finishAction = information =>
+            _finishAction = (context, information) =>
             {
                 finishActionLogged = true;
                 applicationName = information.ApplicationName;

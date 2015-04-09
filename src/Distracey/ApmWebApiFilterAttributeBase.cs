@@ -15,20 +15,20 @@ namespace Distracey
     {
         private readonly bool _addResponseHeaders;
         private readonly string _applicationName;
-        private readonly Action<ApmWebApiStartInformation> _startAction;
-        private readonly Action<ApmWebApiFinishInformation> _finishAction;
+        private readonly Action<IApmContext, ApmWebApiStartInformation> _startAction;
+        private readonly Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
         private readonly PluralizationService _pluralizationService;
 
         private static ApmWebApiRequestDecorator _apmWebApiRequestDecorator = new ApmWebApiRequestDecorator();
         private static ApmOutgoingResponseDecorator _apmOutgoingResponseDecorator = new ApmOutgoingResponseDecorator();
         private static ApmRequestParser _apmRequestParser = new ApmRequestParser();
 
-        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<ApmWebApiStartInformation> startAction, Action<ApmWebApiFinishInformation> finishAction)
+        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<IApmContext, ApmWebApiStartInformation> startAction, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
             : this(applicationName, addResponseHeaders, startAction, finishAction, PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us")))
         {
         }
 
-        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<ApmWebApiStartInformation> startAction, Action<ApmWebApiFinishInformation> finishAction, PluralizationService pluralizationService)
+        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<IApmContext, ApmWebApiStartInformation> startAction, Action<IApmContext, ApmWebApiFinishInformation> finishAction, PluralizationService pluralizationService)
         {
             _applicationName = applicationName;
             _addResponseHeaders = addResponseHeaders;
@@ -71,7 +71,7 @@ namespace Distracey
             }
         }
 
-        public void LogStartOfRequest(HttpRequestMessage request, Action<ApmWebApiStartInformation> startAction)
+        public void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmWebApiStartInformation> startAction)
         {
             var applicationName = _apmRequestParser.GetApplicationName(request);
             var eventName = _apmRequestParser.GetEventName(request);
@@ -95,10 +95,39 @@ namespace Distracey
                 Request = request
             };
 
-            startAction(apmWebApiStartInformation);
+            object apmContextObject;
+            if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            {
+                apmContextObject = new ApmContext();
+                request.Properties.Add(Constants.ApmContextPropertyKey, apmContextObject);
+            }
+
+            var apmContext = (IApmContext)apmContextObject;
+
+            if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
+            {
+                apmContext[Constants.EventNamePropertyKey] = apmWebApiStartInformation.EventName;
+            }
+
+            if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
+            {
+                apmContext[Constants.MethodIdentifierPropertyKey] = apmWebApiStartInformation.EventName;
+            }
+
+            if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
+            {
+                apmContext[Constants.RequestUriPropertyKey] = apmWebApiStartInformation.Request.RequestUri.ToString();
+            }
+
+            if (!apmContext.ContainsKey(Constants.RequestMethodPropertyKey))
+            {
+                apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
+            }
+
+            startAction(apmContext, apmWebApiStartInformation);
         }
 
-        public void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<ApmWebApiFinishInformation> finishAction)
+        public void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
         {
             var applicationName = _apmRequestParser.GetApplicationName(actionExecutedContext.Request);
             var eventName = _apmRequestParser.GetEventName(actionExecutedContext.Request);
@@ -126,7 +155,19 @@ namespace Distracey
                 Exception = actionExecutedContext.Exception
             };
 
-            finishAction(apmWebApiFinishInformation);
+            object apmContextObject;
+            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            {
+                throw new Exception("Add global filter for ApmWebApiFilterAttributeBase");
+            }
+
+            var apmContext = (IApmContext)apmContextObject;
+            if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
+            {
+                apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
+            }
+
+            finishAction(apmContext, apmWebApiFinishInformation);
         }
 
         public override void OnActionExecuting(HttpActionContext actionContext)

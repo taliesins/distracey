@@ -16,12 +16,12 @@ namespace Distracey
     {
         private readonly IApmContext _apmContext;
         private readonly string _applicationName;
-        private readonly Action<ApmHttpClientStartInformation> _startAction;
-        private readonly Action<ApmHttpClientFinishInformation> _finishAction;
+        private readonly Action<IApmContext, ApmHttpClientStartInformation> _startAction;
+        private readonly Action<IApmContext, ApmHttpClientFinishInformation> _finishAction;
         private readonly ApmHttpClientRequestDecorator _apmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
         private readonly ApmRequestParser _apmRequestParser = new ApmRequestParser();
 
-        public ApmHttpClientDelegatingHandlerBase(IApmContext apmContext, string applicationName, Action<ApmHttpClientStartInformation> startAction, Action<ApmHttpClientFinishInformation> finishAction)
+        public ApmHttpClientDelegatingHandlerBase(IApmContext apmContext, string applicationName, Action<IApmContext, ApmHttpClientStartInformation> startAction, Action<IApmContext, ApmHttpClientFinishInformation> finishAction)
         {
             _apmContext = apmContext;
             _applicationName = applicationName;
@@ -29,7 +29,7 @@ namespace Distracey
             _finishAction = finishAction;
         }
 
-        public void LogStartOfRequest(HttpRequestMessage request, Action<ApmHttpClientStartInformation> startAction)
+        public void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmHttpClientStartInformation> startAction)
         {
             var applicationName = _apmRequestParser.GetApplicationName(request);
             var eventName = _apmRequestParser.GetEventName(request);
@@ -67,10 +67,29 @@ namespace Distracey
                 Flags = flags
             };
 
-            startAction(apmHttpClientStartInformation);
+            object apmContextObject;
+            if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            {
+                apmContextObject = new ApmContext();
+                request.Properties.Add(Constants.ApmContextPropertyKey, apmContextObject);
+            }
+
+            var apmContext = (IApmContext)apmContextObject;
+
+            if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
+            {
+                apmContext[Constants.RequestUriPropertyKey] = request.RequestUri.ToString();
+            }
+
+            if (!apmContext.ContainsKey(Constants.RequestMethodPropertyKey))
+            {
+                apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
+            }
+
+            startAction(apmContext, apmHttpClientStartInformation);
         }
 
-        public void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<ApmHttpClientFinishInformation> finishAction)
+        public void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<IApmContext, ApmHttpClientFinishInformation> finishAction)
         {
             var applicationName = _apmRequestParser.GetApplicationName(request);
             var eventName = _apmRequestParser.GetEventName(request);
@@ -111,7 +130,25 @@ namespace Distracey
                 Flags = flags
             };
 
-            finishAction(apmHttpClientFinishInformation);
+            object apmContextObject;
+            if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            {
+                throw new Exception("Add delegating handler filter");
+            }
+
+            var apmContext = (IApmContext)apmContextObject;
+
+            if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
+            {
+                apmContext[Constants.TimeTakeMsPropertyKey] = responseTime.ToString();
+            }
+
+            if (!apmContext.ContainsKey(Constants.ResponseStatusCodePropertyKey))
+            {
+                apmContext[Constants.ResponseStatusCodePropertyKey] = response.StatusCode.ToString();
+            }
+
+            finishAction(apmContext, apmHttpClientFinishInformation);
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,

@@ -21,19 +21,19 @@ namespace Distracey.PerformanceCounter
         public static string ApplicationName { get; set; }
         public static bool AddResponseHeaders { get; set; }
 
-        public static void Start(ApmWebApiStartInformation apmWebApiStartInformation)
+        public static void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
         {
             foreach (var counter in CounterHandlers)
             {
-                counter.Start(apmWebApiStartInformation);
+                counter.Start(apmContext, apmWebApiStartInformation);
             }
         }
 
-        public static void Finish(ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
         {
             foreach (var counter in CounterHandlers)
             {
-                counter.Finish(apmWebApiFinishInformation);
+                counter.Finish(apmContext, apmWebApiFinishInformation);
             }
         }
 

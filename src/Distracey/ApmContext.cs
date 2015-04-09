@@ -8,7 +8,7 @@ using Distracey.Null;
 
 namespace Distracey
 {
-    public class ApmContext : Dictionary<string, string>, IApmContext
+    public class ApmContext : Dictionary<string, object>, IApmContext
 	{
         public static List<IApmHttpClientDelegatingHandlerFactory> ApmHttpClientDelegatingHandlerFactories = new List<IApmHttpClientDelegatingHandlerFactory>();
         public static List<IApmMethodHandlerFactory> ApmMethodHttpFactories = new List<IApmMethodHandlerFactory>();
@@ -121,11 +121,11 @@ namespace Distracey
 
         public static void SetTracing(IApmContext apmContext)
         {
-            var clientName = apmContext.ContainsKey(Constants.ClientNamePropertyKey) ? apmContext[Constants.ClientNamePropertyKey] : null;
-            var incomingTraceId = apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey) ?  apmContext[Constants.IncomingTraceIdPropertyKey] : null;
-            var incomingSpanId = apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey) ?  apmContext[Constants.IncomingSpanIdPropertyKey] : null;
-            var incomingFlags = apmContext.ContainsKey(Constants.IncomingFlagsPropertyKey) ?  apmContext[Constants.IncomingFlagsPropertyKey] : null;
-            var incomingSampled = apmContext.ContainsKey(Constants.IncomingSampledPropertyKey) ? apmContext[Constants.IncomingSampledPropertyKey] : null;
+            var clientName = apmContext.ContainsKey(Constants.ClientNamePropertyKey) ? (string)apmContext[Constants.ClientNamePropertyKey] : null;
+            var incomingTraceId = apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey) ? (string)apmContext[Constants.IncomingTraceIdPropertyKey] : null;
+            var incomingSpanId = apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey) ? (string)apmContext[Constants.IncomingSpanIdPropertyKey] : null;
+            var incomingFlags = apmContext.ContainsKey(Constants.IncomingFlagsPropertyKey) ? (string)apmContext[Constants.IncomingFlagsPropertyKey] : null;
+            var incomingSampled = apmContext.ContainsKey(Constants.IncomingSampledPropertyKey) ? (string)apmContext[Constants.IncomingSampledPropertyKey] : null;
 
             SetTracing(apmContext, clientName, incomingTraceId, incomingSpanId, incomingFlags, incomingSampled);
         }

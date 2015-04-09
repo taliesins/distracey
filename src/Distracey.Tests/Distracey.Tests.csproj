@@ -58,6 +58,7 @@
     <Compile Include="ApmHttpClientDelegatingHandlerBaseTests.cs" />
     <Compile Include="ApmWebApiFilterAttributeBaseTracingTests.cs" />
     <Compile Include="ContextUtil.cs" />
+    <Compile Include="Mocks\TestApmMethodHandler.cs" />
     <Compile Include="PerformanceCounterApmRuntimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\TestApmHttpClientDelegatingHandler.cs" />

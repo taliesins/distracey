@@ -70,7 +70,9 @@
     <Compile Include="Log4NetApmConfigurationExtensions.cs" />
     <Compile Include="Log4NetApmExceptionLogger.cs" />
     <Compile Include="Log4NetApmHttpClientDelegatingHandler.cs" />
+    <Compile Include="Log4NetApmMethodHandlerFactory.cs" />
     <Compile Include="Log4NetApmHttpClientDelegatingHandlerFactory.cs" />
+    <Compile Include="Log4NetApmMethodHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,22 +1,21 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace Distracey.PerformanceCounter.ApiFilterCounter
+namespace Distracey.PerformanceCounter.MethodCounter
 {
-    public class ApiFilterCounterLastOperationExecutionTimeHandler : IApiFilterCounter
+    public class MethodCounterLastOperationExecutionTimeHandler : IMethodCounter
     {
         private readonly string _instanceName;
-
-        private const string LastOperationExecutionTimeMsCounter = "ApiFilterCounterLastOperationExecutionTimeCounter";
+        private const string LastOperationExecutionTimeMsCounter = "MethodCounterLastOperationExecutionTimeCounter";
 
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public ApiFilterCounterLastOperationExecutionTimeHandler(string instanceName)
+        public MethodCounterLastOperationExecutionTimeHandler(string instanceName)
         {
             _instanceName = instanceName;
         }
 
-        public void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
+        public void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
         {
             var key = string.Empty;
             
@@ -24,21 +23,21 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
-                var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
+                var categoryName = PerformanceCounterApmMethodHandler.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
+                var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);
             }
         }
 
-        public void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
         {
             object counterProperty;
 
             if (apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.RawValue = apmWebApiFinishInformation.ResponseTime;
+                counter.RawValue = apmMethodHandlerFinishInformation.ResponseTime;
             }
         }
 

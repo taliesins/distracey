@@ -9,11 +9,11 @@
         {
         }
 
-        public static void Start(ApmHttpClientStartInformation apmWebApiStartInformation)
+        public static void Start(IApmContext apmContext, ApmHttpClientStartInformation apmWebApiStartInformation)
         {
         }
 
-        public static void Finish(ApmHttpClientFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmWebApiFinishInformation)
         {
         }
     }

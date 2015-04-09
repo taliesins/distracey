@@ -110,7 +110,7 @@ namespace Distracey
             }
             else
             {
-                clientName = apmContext[Constants.ClientNamePropertyKey];
+                clientName = (string)apmContext[Constants.ClientNamePropertyKey];
                 request.Properties[Constants.ClientNamePropertyKey] = clientName;
             }
         }
@@ -129,7 +129,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey))
                 {
-                    incomingTraceId = apmContext[Constants.IncomingTraceIdPropertyKey];
+                    incomingTraceId = (string)apmContext[Constants.IncomingTraceIdPropertyKey];
                     request.Properties[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
                 }
                 else
@@ -155,7 +155,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.FlagsHeaderKey))
                 {
-                    flags = apmContext[Constants.FlagsHeaderKey];
+                    flags = (string)apmContext[Constants.FlagsHeaderKey];
                     request.Properties[Constants.FlagsHeaderKey] = flags;
                 }
                 else
@@ -181,7 +181,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.SampledHeaderKey))
                 {
-                    sampled = apmContext[Constants.SampledHeaderKey];
+                    sampled = (string)apmContext[Constants.SampledHeaderKey];
                     request.Properties[Constants.SampledHeaderKey] = sampled;
                 }
                 else
@@ -207,7 +207,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.ParentSpanIdHeaderKey))
                 {
-                    parentSpanId = apmContext[Constants.ParentSpanIdHeaderKey];
+                    parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
                     request.Properties[Constants.ParentSpanIdHeaderKey] = parentSpanId;
                 }
                 else
@@ -233,7 +233,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.SpanIdHeaderKey))
                 {
-                    spanId = apmContext[Constants.SpanIdHeaderKey];
+                    spanId = (string)apmContext[Constants.SpanIdHeaderKey];
                     request.Properties[Constants.SpanIdHeaderKey] = spanId;
                 }
                 else
@@ -259,7 +259,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.TraceIdHeaderKey))
                 {
-                    traceId = apmContext[Constants.TraceIdHeaderKey];
+                    traceId = (string)apmContext[Constants.TraceIdHeaderKey];
                     request.Properties[Constants.TraceIdHeaderKey] = traceId;
                 }
                 else
@@ -285,7 +285,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.IncomingSampledPropertyKey))
                 {
-                    incomingFlags = apmContext[Constants.IncomingSampledPropertyKey];
+                    incomingFlags = (string)apmContext[Constants.IncomingSampledPropertyKey];
                     request.Properties[Constants.IncomingSampledPropertyKey] = incomingFlags;
                 }
                 else
@@ -311,7 +311,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.IncomingSampledPropertyKey))
                 {
-                    incomingSampled = apmContext[Constants.IncomingSampledPropertyKey];
+                    incomingSampled = (string)apmContext[Constants.IncomingSampledPropertyKey];
                     request.Properties[Constants.IncomingSampledPropertyKey] = incomingSampled;
                 }
                 else
@@ -337,7 +337,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.IncomingParentSpanIdPropertyKey))
                 {
-                    incomingParentSpanId = apmContext[Constants.IncomingParentSpanIdPropertyKey];
+                    incomingParentSpanId = (string)apmContext[Constants.IncomingParentSpanIdPropertyKey];
                     request.Properties[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
                 }
                 else
@@ -362,7 +362,7 @@ namespace Distracey
             {
                 if (apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey))
                 {
-                    incomingSpanId = apmContext[Constants.IncomingSpanIdPropertyKey];
+                    incomingSpanId = (string)apmContext[Constants.IncomingSpanIdPropertyKey];
                     request.Properties[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
                 }
                 else

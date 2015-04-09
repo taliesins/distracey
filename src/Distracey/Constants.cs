@@ -13,7 +13,6 @@
         public const string RequestMethodPropertyKey = "requestMethod";
         public const string RequestUriPropertyKey = "requestUri";
         public const string ResponseStatusCodePropertyKey = "responseStatusCode";
-        public const string EventTypePropertyKey = "eventType";
 
         public const string IncomingTraceIdPropertyKey = "incomingTraceId";
         public const string IncomingSpanIdPropertyKey = "incomingSpanId";

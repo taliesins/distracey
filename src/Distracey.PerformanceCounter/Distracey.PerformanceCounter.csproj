@@ -72,9 +72,16 @@
     <Compile Include="HttpClientCounter\HttpClientCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="HttpClientCounter\HttpClientCounterTotalCountHandler.cs" />
     <Compile Include="HttpClientCounter\IHttpClientCounter.cs" />
+    <Compile Include="MethodCounter\MethodCounterTotalCountHandler.cs" />
+    <Compile Include="MethodCounter\MethodCounterNumberOfOperationsPerSecondHandler.cs" />
+    <Compile Include="MethodCounter\MethodCounterLastOperationExecutionTimeHandler.cs" />
+    <Compile Include="MethodCounter\MethodCounterAverageTimeHandler.cs" />
+    <Compile Include="MethodCounter\IMethodCounter.cs" />
     <Compile Include="PerformanceCounterApmApiFilterAttribute.cs" />
     <Compile Include="PerformanceCounterApmConfigurationExtensions.cs" />
     <Compile Include="PerformanceCounterApmContext.cs" />
+    <Compile Include="PerformanceCounterApmMethodHandlerFactory.cs" />
+    <Compile Include="PerformanceCounterApmMethodHandler.cs" />
     <Compile Include="PerformanceCounterApmHttpClientDelegatingHandler.cs" />
     <Compile Include="PerformanceCounterApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="PerformanceCounterApmRuntime.cs" />

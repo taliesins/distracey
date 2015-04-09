@@ -17,37 +17,37 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             _instanceName = instanceName;
         }
 
-        public void Start(ApmHttpClientStartInformation apmHttpClientStartInformation)
+        public void Start(IApmContext apmContext, ApmHttpClientStartInformation apmHttpClientStartInformation)
         {
             var key = string.Empty;
             
             object counterProperty;
 
-            if (!apmHttpClientStartInformation.Request.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
+            if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
-                apmHttpClientStartInformation.Request.Properties.Add(AverageTimeTakenMsCounter, counter);
+                apmContext.Add(AverageTimeTakenMsCounter, counter);
             }
 
             object baseCounterProperty;
 
-            if (!apmHttpClientStartInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
                 var counterName = GetBaseCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
-                apmHttpClientStartInformation.Request.Properties.Add(AverageTimeTakenMsBaseCounter, baseCounter);
+                apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);
             }
         }
 
-        public void Finish(ApmHttpClientFinishInformation apmHttpClientFinishInformation)
+        public void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmHttpClientFinishInformation)
         {
             object counterProperty;
 
-            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
+            if (apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.IncrementBy(apmHttpClientFinishInformation.ResponseTime);
@@ -55,7 +55,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             object baseCounterProperty;
 
-            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var baseCounter = (System.Diagnostics.PerformanceCounter)baseCounterProperty;
                 baseCounter.Increment();

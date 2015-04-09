@@ -4,16 +4,16 @@
     {
         public static string ApplicationName { get; set; }
 
-        public NullApmMethodHandler(IApmContext apmContext)
+        public NullApmMethodHandler()
             : base(ApplicationName, Start, Finish)
         {
         }
 
-        public static void Start(ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
+        public static void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
         {
         }
 
-        public static void Finish(ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
         {
         }
     }
