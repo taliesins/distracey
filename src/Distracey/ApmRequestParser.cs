@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 
 namespace Distracey
@@ -147,13 +149,26 @@ namespace Distracey
 
         public string GetTraceId(HttpRequestMessage request)
         {
-            var traceId = string.Empty;
-            object traceIdObject;
-
-            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey,
-                out traceIdObject))
+            if (request == null)
             {
-                traceId = (string)traceIdObject;
+                return string.Empty;
+            }
+
+            var traceId = string.Empty;
+            object traceIdProperty;
+
+            if (request.Properties.TryGetValue(Constants.TraceIdHeaderKey, out traceIdProperty))
+            {
+                traceId = (string)traceIdProperty;
+            }
+            else
+            {
+                IEnumerable<string> traceIds = null;
+                if (request.Headers.TryGetValues(Constants.TraceIdHeaderKey, out traceIds))
+                {
+                    traceId = traceIds.First();
+                    request.Properties[Constants.TraceIdHeaderKey] = traceId;
+                }
             }
 
             return traceId;
@@ -161,13 +176,26 @@ namespace Distracey
 
         public string GetSpanId(HttpRequestMessage request)
         {
-            var spanId = string.Empty;
-            object spanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey,
-                out spanIdObject))
+            if (request == null)
             {
-                spanId = (string)spanIdObject;
+                return string.Empty;
+            }
+
+            var spanId = string.Empty;
+            object spanIdProperty;
+
+            if (request.Properties.TryGetValue(Constants.SpanIdHeaderKey, out spanIdProperty))
+            {
+                spanId = (string)spanIdProperty;
+            }
+            else
+            {
+                IEnumerable<string> spanIds = null;
+                if (request.Headers.TryGetValues(Constants.SpanIdHeaderKey, out spanIds))
+                {
+                    spanId = spanIds.First();
+                    request.Properties[Constants.SpanIdHeaderKey] = spanId;
+                }
             }
 
             return spanId;
@@ -175,13 +203,26 @@ namespace Distracey
 
         public string GetParentSpanId(HttpRequestMessage request)
         {
-            var parentSpanId = string.Empty;
-            object parentSpanIdObject;
-
-            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey,
-                out parentSpanIdObject))
+            if (request == null)
             {
-                parentSpanId = (string)parentSpanIdObject;
+                return string.Empty;
+            }
+
+            var parentSpanId = string.Empty;
+            object parentSpanIdProperty;
+
+            if (request.Properties.TryGetValue(Constants.ParentSpanIdHeaderKey, out parentSpanIdProperty))
+            {
+                parentSpanId = (string)parentSpanIdProperty;
+            }
+            else
+            {
+                IEnumerable<string> parentSpanIds = null;
+                if (request.Headers.TryGetValues(Constants.ParentSpanIdHeaderKey, out parentSpanIds))
+                {
+                    parentSpanId = parentSpanIds.First();
+                    request.Properties[Constants.ParentSpanIdHeaderKey] = parentSpanId;
+                }
             }
 
             return parentSpanId;
@@ -189,13 +230,26 @@ namespace Distracey
 
         public string GetFlags(HttpRequestMessage request)
         {
-            var flags = string.Empty;
-            object flagsObject;
-
-            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey,
-                out flagsObject))
+            if (request == null)
             {
-                flags = (string)flagsObject;
+                return string.Empty;
+            }
+
+            var flags = string.Empty;
+            object flagsProperty;
+
+            if (request.Properties.TryGetValue(Constants.FlagsHeaderKey, out flagsProperty))
+            {
+                flags = (string)flagsProperty;
+            }
+            else
+            {
+                IEnumerable<string> flagItems = null;
+                if (request.Headers.TryGetValues(Constants.FlagsHeaderKey, out flagItems))
+                {
+                    flags = flagItems.First();
+                    request.Properties[Constants.FlagsHeaderKey] = flags;
+                }
             }
 
             return flags;
@@ -203,13 +257,26 @@ namespace Distracey
 
         public string GetSampled(HttpRequestMessage request)
         {
-            var sampled = string.Empty;
-            object sampledObject;
-
-            if (request.Properties.TryGetValue(Constants.SampledHeaderKey,
-                out sampledObject))
+            if (request == null)
             {
-                sampled = (string)sampledObject;
+                return string.Empty;
+            }
+
+            var sampled = string.Empty;
+            object sampledProperty;
+
+            if (request.Properties.TryGetValue(Constants.SampledHeaderKey, out sampledProperty))
+            {
+                sampled = (string)sampledProperty;
+            }
+            else
+            {
+                IEnumerable<string> sampledItems = null;
+                if (request.Headers.TryGetValues(Constants.SampledHeaderKey, out sampledItems))
+                {
+                    sampled = sampledItems.First();
+                    request.Properties[Constants.SampledHeaderKey] = sampled;
+                }
             }
 
             return sampled;

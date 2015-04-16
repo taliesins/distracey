@@ -4,7 +4,7 @@
     {
         public ApmMethodHandlerBase Create(IApmContext apmContext)
         {
-            return new PerformanceCounterApmMethodHandler();
+            return new PerformanceCounterApmMethodHandler(apmContext);
         }
     }
 }

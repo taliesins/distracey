@@ -11,8 +11,8 @@ namespace Distracey.Log4Net
         public static string ApplicationName { get; set; }
         public static ILog Log { get; set; }
 
-        public Log4NetApmMethodHandler()
-            : base(ApplicationName, Start, Finish)
+        public Log4NetApmMethodHandler(IApmContext apmContext)
+            : base(apmContext, ApplicationName, Start, Finish)
         {    
         }
 

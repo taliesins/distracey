@@ -4,7 +4,7 @@
     {
         public ApmMethodHandlerBase Create(IApmContext apmContext)
         {
-            return new Log4NetApmMethodHandler();
+            return new Log4NetApmMethodHandler(apmContext);
         }
     }
 }

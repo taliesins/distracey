@@ -55,7 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApmContextTests.cs" />
-    <Compile Include="ApmHttpClientDelegatingHandlerBaseTests.cs" />
+    <Compile Include="ApmRequestParserTests.cs" />
+    <Compile Include="ApmMethodHandlerBaseTests.cs" />
     <Compile Include="ApmWebApiFilterAttributeBaseTracingTests.cs" />
     <Compile Include="ContextUtil.cs" />
     <Compile Include="Mocks\TestApmMethodHandler.cs" />

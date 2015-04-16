@@ -12,6 +12,7 @@ namespace Distracey
 	{
         public static List<IApmHttpClientDelegatingHandlerFactory> ApmHttpClientDelegatingHandlerFactories = new List<IApmHttpClientDelegatingHandlerFactory>();
         public static List<IApmMethodHandlerFactory> ApmMethodHttpFactories = new List<IApmMethodHandlerFactory>();
+        private static readonly ApmRequestParser ApmRequestParser = new ApmRequestParser();
 
         public static ApmMethodHandlerBase GetInvoker(IApmContext apmContext)
         {
@@ -105,11 +106,11 @@ namespace Distracey
 
             if (request != null)
             {
-                incomingTraceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
-                incomingSpanId = ApmHttpClientDelegatingHandlerBase.GetSpanId(request);
-                incomingParentSpanId = ApmHttpClientDelegatingHandlerBase.GetParentSpanId(request);
-                incomingSampled = ApmHttpClientDelegatingHandlerBase.GetSampled(request);
-                incomingFlags = ApmHttpClientDelegatingHandlerBase.GetFlags(request);
+                incomingTraceId = ApmRequestParser.GetTraceId(request);
+                incomingSpanId = ApmRequestParser.GetSpanId(request);
+                incomingParentSpanId = ApmRequestParser.GetParentSpanId(request);
+                incomingSampled = ApmRequestParser.GetSampled(request);
+                incomingFlags = ApmRequestParser.GetFlags(request);
             }
 
             apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;

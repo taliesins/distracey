@@ -7,8 +7,8 @@ namespace Distracey.Logary
         public static string ApplicationName { get; set; }
         public static Logger Log { get; set; }
 
-        public LogaryApmMethodHandler()
-            : base(ApplicationName, Start, Finish)
+        public LogaryApmMethodHandler(IApmContext apmContext)
+            : base(apmContext, ApplicationName, Start, Finish)
         {    
         }
 

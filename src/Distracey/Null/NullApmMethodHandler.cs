@@ -4,8 +4,8 @@
     {
         public static string ApplicationName { get; set; }
 
-        public NullApmMethodHandler()
-            : base(ApplicationName, Start, Finish)
+        public NullApmMethodHandler(IApmContext apmContext)
+            : base(apmContext, ApplicationName, Start, Finish)
         {
         }
 

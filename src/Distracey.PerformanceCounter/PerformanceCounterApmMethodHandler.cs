@@ -13,8 +13,8 @@ namespace Distracey.PerformanceCounter
                 new MethodCounterTotalCountHandler("Default")
             };
 
-        public PerformanceCounterApmMethodHandler()
-            : base(ApplicationName, Start, Finish)
+        public PerformanceCounterApmMethodHandler(IApmContext apmContext)
+            : base(apmContext, ApplicationName, Start, Finish)
         {
         }
 

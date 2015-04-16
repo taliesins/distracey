@@ -4,13 +4,14 @@ using NUnit.Framework;
 namespace Distracey.Tests
 {
     [TestFixture]
-    public class ApmHttpClientDelegatingHandlerBaseTests
+    public class ApmRequestParserTests
     {
         [Test]
         public void GetTraceIdWhenOneIsNotSpecified()
         {
             var request = new HttpRequestMessage();
-            var traceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
+            var apmRequestParser = new ApmRequestParser();
+            var traceId = apmRequestParser.GetTraceId(request);
 
             Assert.IsEmpty(traceId);
         }
@@ -20,7 +21,8 @@ namespace Distracey.Tests
         {
             var request = new HttpRequestMessage();
             request.Headers.Add(Constants.TraceIdHeaderKey, "clienta=ADSFFF");
-            var traceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
+            var apmRequestParser = new ApmRequestParser();
+            var traceId = apmRequestParser.GetTraceId(request);
 
             Assert.AreEqual("clienta=ADSFFF", traceId);
         }
@@ -30,7 +32,8 @@ namespace Distracey.Tests
         {
             var request = new HttpRequestMessage();
             request.Headers.Add(Constants.TraceIdHeaderKey, "jimmm,bobby,susan");
-            var traceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
+            var apmRequestParser = new ApmRequestParser();
+            var traceId = apmRequestParser.GetTraceId(request);
 
             Assert.AreEqual("jimmm,bobby,susan", traceId);
         }
@@ -40,7 +43,8 @@ namespace Distracey.Tests
         {
             var request = new HttpRequestMessage();
             request.Properties.Add(Constants.TraceIdHeaderKey, "clienta=ADSFFF");
-            var traceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
+            var apmRequestParser = new ApmRequestParser();
+            var traceId = apmRequestParser.GetTraceId(request);
 
             Assert.AreEqual("clienta=ADSFFF", traceId);
         }
@@ -50,10 +54,10 @@ namespace Distracey.Tests
         {
             var request = new HttpRequestMessage();
             request.Properties.Add(Constants.TraceIdHeaderKey, "jimmm,bobby,susan");
-            var traceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
+            var apmRequestParser = new ApmRequestParser();
+            var traceId = apmRequestParser.GetTraceId(request);
 
             Assert.AreEqual("jimmm,bobby,susan", traceId);
         }
-
     }
 }

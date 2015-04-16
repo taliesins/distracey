@@ -4,12 +4,14 @@ namespace Distracey
 {
     public abstract class ApmMethodHandlerBase
     {
+        private readonly IApmContext _apmContext;
         private readonly string _applicationName;
         private readonly Action<IApmContext, ApmMethodHandlerStartInformation> _startAction;
         private readonly Action<IApmContext, ApmMethodHandlerFinishInformation> _finishAction;
 
-        public ApmMethodHandlerBase(string applicationName, Action<IApmContext, ApmMethodHandlerStartInformation> startAction, Action<IApmContext, ApmMethodHandlerFinishInformation> finishAction)
+        public ApmMethodHandlerBase(IApmContext apmContext, string applicationName, Action<IApmContext, ApmMethodHandlerStartInformation> startAction, Action<IApmContext, ApmMethodHandlerFinishInformation> finishAction)
         {
+            _apmContext = apmContext;
             _applicationName = applicationName;
             _startAction = startAction;
             _finishAction = finishAction;
@@ -17,32 +19,37 @@ namespace Distracey
 
         public ApmMethodHandlerBase InnerHandler { get; set; }
 
-        public void LogStartOfRequest(IApmContext apmContext)
+        public void OnActionExecuting()
         {
-            LogStartOfRequest(apmContext, _startAction);
+            LogStartOfRequest(_startAction);
+
+            if (InnerHandler != null)
+            {
+                InnerHandler.OnActionExecuting();
+            }
         }
 
-        public void LogStartOfRequest(IApmContext apmContext, Action<IApmContext, ApmMethodHandlerStartInformation> startAction)
+        public void OnActionExecuted()
+        {
+            if (InnerHandler != null)
+            {
+                InnerHandler.OnActionExecuted();
+            }
+
+            LogStopOfRequest(_finishAction);
+        }
+
+        private void LogStartOfRequest(Action<IApmContext, ApmMethodHandlerStartInformation> startAction)
         {
             var apmMethodStartInformation = new ApmMethodHandlerStartInformation
             {
                 ApplicationName = _applicationName
             };
 
-            if (InnerHandler != null)
-            {
-                InnerHandler.LogStartOfRequest(apmContext);
-            }
-
-            startAction(apmContext, apmMethodStartInformation);
+            startAction(_apmContext, apmMethodStartInformation);
         }
 
-        public void LogStopOfRequest(IApmContext apmContext)
-        {
-            LogStopOfRequest(apmContext, _finishAction);
-        }
-
-        public void LogStopOfRequest(IApmContext apmContext, Action<IApmContext, ApmMethodHandlerFinishInformation> finishAction)
+        private void LogStopOfRequest(Action<IApmContext, ApmMethodHandlerFinishInformation> finishAction)
         {
             var apmMethodFinishInformation = new ApmMethodHandlerFinishInformation
             {
@@ -54,12 +61,7 @@ namespace Distracey
             //    apmContext[Constants.TimeTakeMsPropertyKey] = responseTime.ToString();
             //}
 
-            finishAction(apmContext, apmMethodFinishInformation);
-
-            if (InnerHandler != null)
-            {
-                InnerHandler.LogStopOfRequest(apmContext);
-            }
+            finishAction(_apmContext, apmMethodFinishInformation);
         }
     }
 }
