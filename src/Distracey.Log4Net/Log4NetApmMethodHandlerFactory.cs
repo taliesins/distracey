@@ -1,4 +1,6 @@
-﻿namespace Distracey.Log4Net
+﻿using Distracey.MethodHandler;
+
+namespace Distracey.Log4Net
 {
     public class Log4NetApmMethodHandlerFactory : IApmMethodHandlerFactory
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Distracey
+namespace Distracey.MethodHandler
 {
     public abstract class ApmMethodHandlerBase
     {
@@ -56,9 +56,9 @@ namespace Distracey
                 ApplicationName = _applicationName
             };
 
-            //if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
+            //if (!_apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
             //{
-            //    apmContext[Constants.TimeTakeMsPropertyKey] = responseTime.ToString();
+            //    _apmContext[Constants.TimeTakeMsPropertyKey] = responseTime.ToString();
             //}
 
             finishAction(_apmContext, apmMethodFinishInformation);

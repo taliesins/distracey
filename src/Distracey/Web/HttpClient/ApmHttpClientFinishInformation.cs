@@ -1,10 +1,14 @@
-﻿namespace Distracey
+﻿using System.Net.Http;
+
+namespace Distracey.Web.HttpClient
 {
-    public class ApmMethodHandlerFinishInformation
+    public class ApmHttpClientFinishInformation
     {
         public string ApplicationName { get; set; }
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
+        public HttpRequestMessage Request { get; set; }
+        public HttpResponseMessage Response { get; set; }
         public long ResponseTime { get; set; }
 
         public string ClientName { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using Distracey.Web.HttpClient;
 
 namespace Distracey.PerformanceCounter.HttpClientCounter
 {

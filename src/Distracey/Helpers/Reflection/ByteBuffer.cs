@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     class ByteBuffer
     {

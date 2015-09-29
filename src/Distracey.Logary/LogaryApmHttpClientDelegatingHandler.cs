@@ -1,4 +1,5 @@
-﻿using Logary;
+﻿using Distracey.Web.HttpClient;
+using Logary;
 
 namespace Distracey.Logary
 {

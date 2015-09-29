@@ -1,67 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Web;
-using Distracey.Null;
+using Distracey.Helpers;
 
 namespace Distracey
 {
     public class ApmContext : Dictionary<string, object>, IApmContext
 	{
-        public static List<IApmHttpClientDelegatingHandlerFactory> ApmHttpClientDelegatingHandlerFactories = new List<IApmHttpClientDelegatingHandlerFactory>();
-        public static List<IApmMethodHandlerFactory> ApmMethodHttpFactories = new List<IApmMethodHandlerFactory>();
-        private static readonly ApmRequestParser ApmRequestParser = new ApmRequestParser();
-
-        public static ApmMethodHandlerBase GetInvoker(IApmContext apmContext)
-        {
-            if (!ApmMethodHttpFactories.Any())
-            {
-                return new NullApmMethodHandlerFactory().Create(apmContext);
-            }
-
-            ApmMethodHandlerBase apmMethodHandler = null;
-
-            foreach (var apmMethodHttpFactory in ApmMethodHttpFactories)
-            {
-                var currentApmMethod = apmMethodHttpFactory.Create(apmContext);
-                if (apmMethodHandler != null)
-                {
-                    currentApmMethod.InnerHandler = apmMethodHandler;
-                }
-
-                apmMethodHandler = currentApmMethod;
-            }
-
-            return apmMethodHandler;
-        }
-
-        public static ApmHttpClientDelegatingHandlerBase GetDelegatingHandler(IApmContext apmContext)
-        {
-            if (!ApmHttpClientDelegatingHandlerFactories.Any())
-            {
-                return new NullApmHttpClientDelegatingHandlerFactory().Create(apmContext);
-            }
-
-            ApmHttpClientDelegatingHandlerBase apmHttpClientDelegatingHandler = null;
-
-            foreach (var apmHttpClientDelegatingHandlerFactory in ApmHttpClientDelegatingHandlerFactories)
-            {
-                var currentApmHttpClientDelegatingHandler = apmHttpClientDelegatingHandlerFactory.Create(apmContext);
-                if (apmHttpClientDelegatingHandler != null)
-                {
-                    currentApmHttpClientDelegatingHandler.InnerHandler = apmHttpClientDelegatingHandler;
-                }
-                else
-                {
-                    currentApmHttpClientDelegatingHandler.InnerHandler = new HttpClientHandler();
-                }
-                apmHttpClientDelegatingHandler = currentApmHttpClientDelegatingHandler;
-            }
-
-            return apmHttpClientDelegatingHandler;
-        }
+        public static readonly List<IApmContextExtractor> ApmContextExtractors = new List<IApmContextExtractor>();
 
         public static IApmContext GetContext() 
         {
@@ -72,13 +20,10 @@ namespace Distracey
 
             SetContext(apmContext, method);
 
-            HttpRequestMessage request = null;
-            if (HttpContext.Current != null)
+            foreach (var apmContextExtractor in ApmContextExtractors)
             {
-                request = HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
+                apmContextExtractor.GetContext(apmContext, method);
             }
-
-            SetIncomingTracing(apmContext, request);
 
             SetTracing(apmContext);
 
@@ -87,37 +32,13 @@ namespace Distracey
 
         public static void SetContext(IApmContext apmContext, MethodBase method)
         {
-            var eventName = ApmHttpClientDelegatingHandlerBase.GetEventName(method);
-            var methodIdentifier = ApmHttpClientDelegatingHandlerBase.GetMethodIdentifier(method);
-            var clientName = ApmHttpClientDelegatingHandlerBase.GetClientName();
+            var eventName = GetEventName(method);
+            var methodIdentifier = GetMethodIdentifier(method);
+            var clientName = GetClientName();
 
             apmContext[Constants.EventNamePropertyKey] = eventName;
             apmContext[Constants.MethodIdentifierPropertyKey] = methodIdentifier;
             apmContext[Constants.ClientNamePropertyKey] = clientName;
-        }
-
-        public static void SetIncomingTracing(IApmContext apmContext, HttpRequestMessage request)
-        {
-            var incomingTraceId = string.Empty;
-            var incomingSpanId = string.Empty;
-            var incomingParentSpanId = string.Empty;
-            var incomingSampled = string.Empty;
-            var incomingFlags = string.Empty;
-
-            if (request != null)
-            {
-                incomingTraceId = ApmRequestParser.GetTraceId(request);
-                incomingSpanId = ApmRequestParser.GetSpanId(request);
-                incomingParentSpanId = ApmRequestParser.GetParentSpanId(request);
-                incomingSampled = ApmRequestParser.GetSampled(request);
-                incomingFlags = ApmRequestParser.GetFlags(request);
-            }
-
-            apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-            apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-            apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-            apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
-            apmContext[Constants.IncomingFlagsPropertyKey] = incomingFlags;
         }
 
         public static void SetTracing(IApmContext apmContext)
@@ -168,6 +89,28 @@ namespace Distracey
             apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
             apmContext[Constants.SampledHeaderKey] = sampled;
             apmContext[Constants.FlagsHeaderKey] = flags;
+        }
+
+        public static string GetMethodIdentifier(MethodBase methodInfo)
+        {
+            var param = methodInfo.GetParameters()
+                             .Select(parameter => string.Format("{0} {1}", parameter.ParameterType.Name, parameter.Name))
+                             .ToArray();
+
+            var arguments = string.Join(", ", param);
+
+            return string.Format("{0}.{1}({2})", methodInfo.DeclaringType.FullName, methodInfo.Name, arguments);
+        }
+
+        public static string GetEventName(MethodBase methodInfo)
+        {
+            return string.Format("{0}.{1}", methodInfo.DeclaringType.Name, methodInfo.Name);
+        }
+
+        public static string GetClientName()
+        {
+            var clientName = ConfigurationManager.AppSettings[Constants.ClientNamePropertyKey];
+            return clientName;
         }
 	}
 }

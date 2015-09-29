@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public static class Disassembler
     {

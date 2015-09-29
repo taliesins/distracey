@@ -5,7 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using Distracey.Reflection;
+using Distracey.Helpers.Reflection;
+using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {
@@ -165,8 +166,8 @@ namespace Distracey.PerformanceCounter
 
             foreach (var apmContextUsage in apmContextUsages)
             {
-                var methodIdentifier = ApmHttpClientDelegatingHandlerBase.GetMethodIdentifier(apmContextUsage);
-                var eventName = ApmHttpClientDelegatingHandlerBase.GetEventName(apmContextUsage);
+                var methodIdentifier = ApmContext.GetMethodIdentifier(apmContextUsage);
+                var eventName = ApmContext.GetEventName(apmContextUsage);
 
                 Trace.TraceInformation("Setting up get context uses '{0}' for event '{1}'", methodIdentifier, eventName);
 

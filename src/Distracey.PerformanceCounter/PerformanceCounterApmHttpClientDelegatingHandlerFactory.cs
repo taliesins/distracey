@@ -1,4 +1,6 @@
-﻿namespace Distracey.PerformanceCounter
+﻿using Distracey.Web.HttpClient;
+
+namespace Distracey.PerformanceCounter
 {
     public class PerformanceCounterApmHttpClientDelegatingHandlerFactory : IApmHttpClientDelegatingHandlerFactory
     {

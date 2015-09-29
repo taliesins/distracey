@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 
-namespace Distracey
+namespace Distracey.Web
 {
-    public class ApmRequestParser
+    public class ApmHttpRequestMessageParser
     {
         public string GetApplicationName(HttpRequestMessage request)
         {

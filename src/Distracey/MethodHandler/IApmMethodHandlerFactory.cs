@@ -1,4 +1,4 @@
-﻿namespace Distracey
+﻿namespace Distracey.MethodHandler
 {
     public interface IApmMethodHandlerFactory
     {

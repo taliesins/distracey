@@ -1,4 +1,5 @@
-﻿using Logary;
+﻿using Distracey.MethodHandler;
+using Logary;
 
 namespace Distracey.Logary
 {

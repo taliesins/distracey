@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Http;
 
-namespace Distracey
+namespace Distracey.Web.HttpClient
 {
     public class ApmHttpClientRequestDecorator
     {

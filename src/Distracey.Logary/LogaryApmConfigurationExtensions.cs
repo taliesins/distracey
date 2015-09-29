@@ -1,5 +1,7 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using Distracey.Web;
+using Distracey.Web.HttpClient;
 using Logary;
 
 namespace Distracey.Logary
@@ -8,7 +10,9 @@ namespace Distracey.Logary
     {
         public static void AddLogaryApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders, Logger log)
         {
-            ApmContext.ApmHttpClientDelegatingHandlerFactories.Add(new LogaryApmHttpClientDelegatingHandlerFactory());
+            ApmContextHttpMessageExtractor.AddExtractor();
+
+            ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new LogaryApmHttpClientDelegatingHandlerFactory());
 
             LogaryApmApiFilterAttribute.ApplicationName = applicationName;
             LogaryApmApiFilterAttribute.Log = log;

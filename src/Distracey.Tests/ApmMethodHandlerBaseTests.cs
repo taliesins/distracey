@@ -1,4 +1,5 @@
 ﻿using System;
+using Distracey.MethodHandler;
 using NUnit.Framework;
 
 namespace Distracey.Tests

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Distracey
+namespace Distracey.Helpers
 {
     /// <summary>
     /// Represents a globally unique identifier (GUID) with a

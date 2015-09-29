@@ -1,4 +1,6 @@
-﻿namespace Distracey.Null
+﻿using Distracey.MethodHandler;
+
+namespace Distracey.Null
 {
     public class NullApmMethodHandler : ApmMethodHandlerBase
     {

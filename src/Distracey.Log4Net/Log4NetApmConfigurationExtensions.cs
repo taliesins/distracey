@@ -1,5 +1,7 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using Distracey.Web;
+using Distracey.Web.HttpClient;
 using log4net;
 
 namespace Distracey.Log4Net
@@ -8,7 +10,9 @@ namespace Distracey.Log4Net
     {
         public static void AddLog4NetApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders, ILog log)
         {
-            ApmContext.ApmHttpClientDelegatingHandlerFactories.Add(new Log4NetApmHttpClientDelegatingHandlerFactory());
+            ApmContextHttpMessageExtractor.AddExtractor();
+
+            ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new Log4NetApmHttpClientDelegatingHandlerFactory());
 
             Log4NetApmApiFilterAttribute.ApplicationName = applicationName;
             Log4NetApmApiFilterAttribute.Log = log;

@@ -1,6 +1,6 @@
 ﻿using System.Web.Http.Filters;
 
-namespace Distracey
+namespace Distracey.Web.WebApi
 {
     public class ApmOutgoingResponseDecorator
     {

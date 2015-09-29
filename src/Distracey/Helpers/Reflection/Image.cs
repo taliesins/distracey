@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public sealed class Image : IDisposable
     {

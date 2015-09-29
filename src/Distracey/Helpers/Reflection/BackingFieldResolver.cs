@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public static class BackingFieldResolver
     {

@@ -1,4 +1,6 @@
-﻿namespace Distracey.Logary
+﻿using Distracey.MethodHandler;
+
+namespace Distracey.Logary
 {
     public class LogaryApmMethodHandlerFactory : IApmMethodHandlerFactory
     {

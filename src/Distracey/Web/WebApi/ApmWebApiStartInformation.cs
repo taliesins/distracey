@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace Distracey
+namespace Distracey.Web.WebApi
 {
     public class ApmWebApiStartInformation
     {

@@ -5,8 +5,9 @@ using System.Data.Entity.Design.PluralizationServices;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
+using Distracey.Helpers;
 
-namespace Distracey
+namespace Distracey.Web.WebApi
 {
     public class ApmWebApiRequestDecorator
     {

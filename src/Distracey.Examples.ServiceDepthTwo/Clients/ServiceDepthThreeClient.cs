@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Distracey.Monitoring;
+using Distracey.Web.HttpClient;
 
 namespace Distracey.Examples.ServiceDepthTwo.Clients
 {

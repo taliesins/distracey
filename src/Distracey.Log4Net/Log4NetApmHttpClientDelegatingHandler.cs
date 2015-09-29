@@ -1,4 +1,5 @@
 ﻿using System;
+using Distracey.Web.HttpClient;
 using log4net;
 using log4net.Core;
 

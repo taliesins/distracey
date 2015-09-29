@@ -1,7 +1,7 @@
 ﻿using System.Reflection.Emit;
 using System.Text;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public sealed class Instruction
     {

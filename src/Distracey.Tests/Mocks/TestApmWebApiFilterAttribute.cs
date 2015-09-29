@@ -1,4 +1,5 @@
 ﻿using System;
+using Distracey.Web.WebApi;
 
 namespace Distracey.Tests
 {

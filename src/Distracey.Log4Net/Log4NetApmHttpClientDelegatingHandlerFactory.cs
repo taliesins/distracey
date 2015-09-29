@@ -1,4 +1,6 @@
-﻿namespace Distracey.Log4Net
+﻿using Distracey.Web.HttpClient;
+
+namespace Distracey.Log4Net
 {
     public class Log4NetApmHttpClientDelegatingHandlerFactory : IApmHttpClientDelegatingHandlerFactory
     {

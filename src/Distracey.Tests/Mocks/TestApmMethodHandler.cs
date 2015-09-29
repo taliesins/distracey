@@ -1,4 +1,5 @@
 ﻿using System;
+using Distracey.MethodHandler;
 
 namespace Distracey.Tests
 {

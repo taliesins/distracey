@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public class MethodBodyReader
     {

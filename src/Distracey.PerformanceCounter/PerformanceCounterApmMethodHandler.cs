@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Distracey.MethodHandler;
 using Distracey.PerformanceCounter.MethodCounter;
 
 namespace Distracey.PerformanceCounter

@@ -1,4 +1,6 @@
-﻿namespace Distracey.Null
+﻿using Distracey.Web.HttpClient;
+
+namespace Distracey.Null
 {
     public class NullApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {

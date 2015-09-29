@@ -1,4 +1,5 @@
-﻿using Logary;
+﻿using Distracey.Web.WebApi;
+using Logary;
 
 namespace Distracey.Logary
 {

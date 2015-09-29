@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public abstract class ILPattern
     {

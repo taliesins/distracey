@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distracey
+namespace Distracey.Helpers
 {
     // <summary>
     // Helpers for safely using Task libraries. 

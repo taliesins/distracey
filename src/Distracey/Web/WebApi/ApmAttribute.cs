@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Distracey
+namespace Distracey.Web.WebApi
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ApmAttribute : Attribute

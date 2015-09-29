@@ -1,4 +1,4 @@
-﻿namespace Distracey
+﻿namespace Distracey.Web.HttpClient
 {
     public interface IApmHttpClientDelegatingHandlerFactory
     {

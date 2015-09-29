@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Distracey.PerformanceCounter.ApiFilterCounter;
+using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {

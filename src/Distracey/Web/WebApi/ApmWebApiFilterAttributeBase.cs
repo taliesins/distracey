@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace Distracey
+namespace Distracey.Web.WebApi
 {
     /// <summary>
     /// Used to track requests and responses made to webapi.
@@ -21,7 +21,7 @@ namespace Distracey
 
         private static readonly ApmWebApiRequestDecorator ApmWebApiRequestDecorator = new ApmWebApiRequestDecorator();
         private static readonly ApmOutgoingResponseDecorator ApmOutgoingResponseDecorator = new ApmOutgoingResponseDecorator();
-        private static readonly ApmRequestParser ApmRequestParser = new ApmRequestParser();
+        private static readonly ApmHttpRequestMessageParser ApmHttpRequestMessageParser = new ApmHttpRequestMessageParser();
 
         public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<IApmContext, ApmWebApiStartInformation> startAction, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
             : this(applicationName, addResponseHeaders, startAction, finishAction, PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us")))
@@ -39,6 +39,9 @@ namespace Distracey
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            //Initialize ApmContext if it does not exist
+            //HttpContext.Current.Session
+
             ApmWebApiRequestDecorator.AddApplicationName(actionContext.Request, _applicationName);
             ApmWebApiRequestDecorator.AddEventName(actionContext, _pluralizationService);
             ApmWebApiRequestDecorator.AddMethodIdentifier(actionContext);
@@ -58,6 +61,9 @@ namespace Distracey
             base.OnActionExecuted(actionExecutedContext);
             StopResponseTime(actionExecutedContext);
             LogStopOfRequest(actionExecutedContext, _finishAction);
+
+            //Dispose ApmContext if it does not exist
+            //HttpContext.Current.Session
         }
 
         private void StartResponseTime(HttpRequestMessage request)
@@ -96,14 +102,14 @@ namespace Distracey
 
         private void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmWebApiStartInformation> startAction)
         {
-            var applicationName = ApmRequestParser.GetApplicationName(request);
-            var eventName = ApmRequestParser.GetEventName(request);
-            var methodIdentifier = ApmRequestParser.GetMethodIdentifier(request);
-            var traceId = ApmRequestParser.GetTraceId(request);
-            var spanId = ApmRequestParser.GetSpanId(request);
-            var parentSpanId = ApmRequestParser.GetParentSpanId(request);
-            var sampled = ApmRequestParser.GetSampled(request);
-            var flags = ApmRequestParser.GetFlags(request);
+            var applicationName = ApmHttpRequestMessageParser.GetApplicationName(request);
+            var eventName = ApmHttpRequestMessageParser.GetEventName(request);
+            var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
+            var traceId = ApmHttpRequestMessageParser.GetTraceId(request);
+            var spanId = ApmHttpRequestMessageParser.GetSpanId(request);
+            var parentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(request);
+            var sampled = ApmHttpRequestMessageParser.GetSampled(request);
+            var flags = ApmHttpRequestMessageParser.GetFlags(request);
             
             var apmWebApiStartInformation = new ApmWebApiStartInformation
             {
@@ -152,15 +158,15 @@ namespace Distracey
 
         private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
         {
-            var applicationName = ApmRequestParser.GetApplicationName(actionExecutedContext.Request);
-            var eventName = ApmRequestParser.GetEventName(actionExecutedContext.Request);
-            var methodIdentifier = ApmRequestParser.GetMethodIdentifier(actionExecutedContext.Request);
-            var traceId = ApmRequestParser.GetTraceId(actionExecutedContext.Request);
-            var spanId = ApmRequestParser.GetSpanId(actionExecutedContext.Request);
-            var parentSpanId = ApmRequestParser.GetParentSpanId(actionExecutedContext.Request);
-            var sampled = ApmRequestParser.GetSampled(actionExecutedContext.Request);
-            var flags = ApmRequestParser.GetFlags(actionExecutedContext.Request);
-            var responseTime = ApmRequestParser.GetResponseTime(actionExecutedContext.Request);
+            var applicationName = ApmHttpRequestMessageParser.GetApplicationName(actionExecutedContext.Request);
+            var eventName = ApmHttpRequestMessageParser.GetEventName(actionExecutedContext.Request);
+            var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(actionExecutedContext.Request);
+            var traceId = ApmHttpRequestMessageParser.GetTraceId(actionExecutedContext.Request);
+            var spanId = ApmHttpRequestMessageParser.GetSpanId(actionExecutedContext.Request);
+            var parentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(actionExecutedContext.Request);
+            var sampled = ApmHttpRequestMessageParser.GetSampled(actionExecutedContext.Request);
+            var flags = ApmHttpRequestMessageParser.GetFlags(actionExecutedContext.Request);
+            var responseTime = ApmHttpRequestMessageParser.GetResponseTime(actionExecutedContext.Request);
 
             var apmWebApiFinishInformation = new ApmWebApiFinishInformation
             {

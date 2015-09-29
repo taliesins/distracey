@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Web.Http.Filters;
+using Distracey.Web.WebApi;
 using NUnit.Framework;
 
 namespace Distracey.Tests
