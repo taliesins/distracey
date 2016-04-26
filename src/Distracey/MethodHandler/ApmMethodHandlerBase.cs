@@ -21,6 +21,8 @@ namespace Distracey.MethodHandler
 
         public void OnActionExecuting()
         {
+            //Initialize ApmContext if it does not exist
+
             LogStartOfRequest(_startAction);
 
             if (InnerHandler != null)
@@ -37,6 +39,8 @@ namespace Distracey.MethodHandler
             }
 
             LogStopOfRequest(_finishAction);
+
+            //Dispose ApmContext if it does not exist previously
         }
 
         private void LogStartOfRequest(Action<IApmContext, ApmMethodHandlerStartInformation> startAction)

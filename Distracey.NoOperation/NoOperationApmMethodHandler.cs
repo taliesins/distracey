@@ -1,12 +1,12 @@
 ﻿using Distracey.MethodHandler;
 
-namespace Distracey.Null
+namespace Distracey.NoOperation
 {
-    public class NullApmMethodHandler : ApmMethodHandlerBase
+    public class NoOperationApmMethodHandler : ApmMethodHandlerBase
     {
         public static string ApplicationName { get; set; }
 
-        public NullApmMethodHandler(IApmContext apmContext)
+        public NoOperationApmMethodHandler(IApmContext apmContext)
             : base(apmContext, ApplicationName, Start, Finish)
         {
         }

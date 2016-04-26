@@ -44,8 +44,24 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Graphviz.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,13 +87,26 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Helpers\AsyncDiagnosticStack.cs" />
-    <Compile Include="Helpers\AsyncLocal.cs" />
-    <Compile Include="Helpers\AsyncLocalStack.cs" />
     <Compile Include="IApmContextExtractor.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
+    <Compile Include="Tracking\ExecutionEdge.cs" />
+    <Compile Include="Tracking\ExecutionGraph.cs" />
+    <Compile Include="Tracking\ExecutionEdgeType.cs" />
+    <Compile Include="Tracking\ExecutionVertex.cs" />
+    <Compile Include="Session\Session.cs" />
+    <Compile Include="Session\CallContextSessionContainer.cs" />
+    <Compile Include="Helpers\CircularBuffer.cs" />
+    <Compile Include="Session\ISession.cs" />
+    <Compile Include="Helpers\ICircularBuffer.cs" />
+    <Compile Include="Session\ISessionContainer.cs" />
+    <Compile Include="Session\Storage\ISessionStorage.cs" />
+    <Compile Include="Session\SessionContext.cs" />
+    <Compile Include="Session\Storage\NullSessionStorage.cs" />
+    <Compile Include="Session\Storage\SessionStorageBase.cs" />
+    <Compile Include="Tracking\ExecutionVertextType.cs" />
     <Compile Include="Web\ApmContextHttpMessageExtractor.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientApmContextExtensions.cs" />
+    <Compile Include="Web\Session\HttpContextSessionContainer.cs" />
     <Compile Include="Web\WebApi\ApmAttribute.cs" />
     <Compile Include="ApmContext.cs" />
     <Compile Include="ApmExtensions.cs" />
@@ -98,10 +127,6 @@
     <Compile Include="IApmContext.cs" />
     <Compile Include="MethodHandler\IApmMethodHandlerFactory.cs" />
     <Compile Include="Web\HttpClient\IApmHttpClientDelegatingHandlerFactory.cs" />
-    <Compile Include="Null\NullApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="Null\NullApmHttpClientDelegatingHandlerFactory.cs" />
-    <Compile Include="Null\NullApmMethodHandler.cs" />
-    <Compile Include="Null\NullApmMethodHandlerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Reflection\BackingFieldResolver.cs" />
     <Compile Include="Helpers\Reflection\ByteBuffer.cs" />
@@ -121,7 +146,9 @@
   <ItemGroup>
     <Content Include="PerformanceClient.csproj" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Null\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

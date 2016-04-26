@@ -42,39 +42,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Actor, Version=0.0.1.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FSharp.Actor-logary.3.4.0\lib\net40\FSharp.Actor.dll</HintPath>
+    <Reference Include="FSharp.Actor">
+      <HintPath>..\..\packages\FSharp.Actor-logary.3.6.1\lib\net40\FSharp.Actor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core">
+      <HintPath>..\..\packages\FSharp.Core.3.1.2.5\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Logary, Version=3.4.0.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Logary.3.4.0\lib\net40\Logary.dll</HintPath>
+    <Reference Include="Logary">
+      <HintPath>..\..\packages\Logary.3.6.1\lib\net40\Logary.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Logary.Zipkin">
-      <HintPath>..\..\packages\Logary.Zipkin.2.6.0\lib\net40\Logary.Zipkin.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Logary.CSharp">
+      <HintPath>..\..\packages\Logary.CSharp.3.6.1\lib\net40\Logary.CSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json.FSharp, Version=3.2.2.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.FSharp">
       <HintPath>..\..\packages\Newtonsoft.Json.FSharp.3.2.2\lib\net40\Newtonsoft.Json.FSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NodaTime, Version=1.3.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <Private>True</Private>
       <HintPath>..\..\packages\NodaTime.1.3.1\lib\net35-Client\NodaTime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="NodaTime.Serialization.JsonNet, Version=1.3.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NodaTime.Serialization.JsonNet">
       <HintPath>..\..\packages\NodaTime.Serialization.JsonNet.1.3.1\lib\net35-Client\NodaTime.Serialization.JsonNet.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

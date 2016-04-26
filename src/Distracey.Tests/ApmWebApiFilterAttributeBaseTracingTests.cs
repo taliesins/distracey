@@ -64,8 +64,8 @@ namespace Distracey.Tests
 
             Assert.IsNotNull(httpRequest);
             Assert.IsTrue(startActionLogged);
-            Assert.IsNotNullOrEmpty(applicationName);
-            Assert.IsNotNullOrEmpty(eventName);
+            Assert.IsNotEmpty(applicationName);
+            Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);
             Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);
@@ -135,8 +135,8 @@ namespace Distracey.Tests
             Assert.IsNotNull(exception);
             Assert.IsTrue(finishActionLogged);
             Assert.Greater(responseTime, 0);
-            Assert.IsNotNullOrEmpty(applicationName);
-            Assert.IsNotNullOrEmpty(eventName);
+            Assert.IsNotEmpty(applicationName);
+            Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);
             Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);

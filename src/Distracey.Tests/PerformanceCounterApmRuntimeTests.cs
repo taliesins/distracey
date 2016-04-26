@@ -24,7 +24,7 @@ namespace Distracey.Tests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void InstallPerformanceCounter()
         {
             var assembly = typeof(DepthZeroController).Assembly;
@@ -33,7 +33,7 @@ namespace Distracey.Tests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void UninstallPerformanceCounter()
         {
             var assembly = typeof(DepthZeroController).Assembly;
@@ -42,7 +42,7 @@ namespace Distracey.Tests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void GetPerformanceCounter()
         {
             var counter = new System.Diagnostics.PerformanceCounter

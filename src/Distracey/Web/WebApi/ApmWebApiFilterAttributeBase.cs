@@ -40,7 +40,7 @@ namespace Distracey.Web.WebApi
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             //Initialize ApmContext if it does not exist
-            //HttpContext.Current.Session
+            //HttpContext.Current.SessionContext
 
             ApmWebApiRequestDecorator.AddApplicationName(actionContext.Request, _applicationName);
             ApmWebApiRequestDecorator.AddEventName(actionContext, _pluralizationService);
@@ -63,7 +63,7 @@ namespace Distracey.Web.WebApi
             LogStopOfRequest(actionExecutedContext, _finishAction);
 
             //Dispose ApmContext if it does not exist
-            //HttpContext.Current.Session
+            //HttpContext.Current.SessionContext
         }
 
         private void StartResponseTime(HttpRequestMessage request)

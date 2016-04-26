@@ -1,6 +1,7 @@
 ﻿using Distracey.Web.HttpClient;
 using Logary;
 
+
 namespace Distracey.Logary
 {
     public class LogaryApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase

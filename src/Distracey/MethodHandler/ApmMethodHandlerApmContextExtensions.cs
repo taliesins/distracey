@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Distracey.Null;
 
 namespace Distracey.MethodHandler
 {
@@ -12,7 +11,7 @@ namespace Distracey.MethodHandler
         {
             if (!ApmMethodHttpFactories.Any())
             {
-                return new NullApmMethodHandlerFactory().Create(apmContext);
+                return null;
             }
 
             ApmMethodHandlerBase apmMethodHandler = null;

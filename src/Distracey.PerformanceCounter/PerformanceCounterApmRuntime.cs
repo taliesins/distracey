@@ -50,6 +50,19 @@ namespace Distracey.PerformanceCounter
             {
                 Console.WriteLine(ex);
             }
+
+            var methodHanderCategoryName = PerformanceCounterApmMethodHandler.GetCategoryName(categoryName);
+            try
+            {
+                if (PerformanceCounterCategory.Exists(methodHanderCategoryName))
+                {
+                    PerformanceCounterCategory.Delete(methodHanderCategoryName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -72,6 +85,7 @@ namespace Distracey.PerformanceCounter
             PerformanceCounterCategory.Create(httpActionDescriptorCategoryName, "APM api filter category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, httpActionDescriptorCounters);
             Trace.TraceInformation("Built category '{0}' with {1} items", httpActionDescriptorCategoryName, httpActionDescriptorCounters.Count);
 
+            //Todo: Need to rather use ApmContext.GetDelegatingHandler and ApmContext.GetMethodHander
             var apmContextUsage = FindAllApmContextUsage(installerAssembly).Distinct().ToArray();
             var apmContextUsageCounters = GetCounterCreationDataCollectionForApmContextUsage(apmContextUsage);
             var httpClientCategoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(categoryName);

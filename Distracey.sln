@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey", "src\Distracey\Distracey.csproj", "{4C3A50A8-F0E2-4849-B0B7-78AFE3894963}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Examples.ServiceDepthThree", "src\Distracey.Examples.ServiceDepthThree\Distracey.Examples.ServiceDepthThree.csproj", "{1413DE20-2749-4A13-8837-874C236788C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Monitoring", "Distracey.Monitoring\Distracey.Monitoring.csproj", "{A4471AEA-2368-41EA-8373-63DFD37AAC9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.NoOperation", "Distracey.NoOperation\Distracey.NoOperation.csproj", "{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4471AEA-2368-41EA-8373-63DFD37AAC9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

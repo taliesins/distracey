@@ -6,6 +6,7 @@ namespace Distracey.Helpers
     /// Represents a globally unique identifier (GUID) with a
     /// shorter string value. Sguid
     /// </summary>
+    [Serializable]
     public struct ShortGuid
     {
         /// <summary>

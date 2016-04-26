@@ -1,12 +1,12 @@
 ﻿using Distracey.Web.HttpClient;
 
-namespace Distracey.Null
+namespace Distracey.NoOperation
 {
-    public class NullApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
+    public class NoOperationApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {
         public static string ApplicationName { get; set; }
 
-        public NullApmHttpClientDelegatingHandler(IApmContext apmContext)
+        public NoOperationApmHttpClientDelegatingHandler(IApmContext apmContext)
             : base(apmContext, ApplicationName, Start, Finish)
         {
         }

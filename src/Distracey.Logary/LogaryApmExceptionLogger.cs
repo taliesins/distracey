@@ -21,6 +21,7 @@ namespace Distracey.Logary
                 return;
             }
 
+            
             _log.Log("An unhandled exception occurred.", LogLevel.Error, (IApmContext)null, null, null, context.Exception, null);
             await base.LogAsync(context, cancellationToken);
         }

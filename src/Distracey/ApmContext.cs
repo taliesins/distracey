@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +8,7 @@ using Distracey.Helpers;
 
 namespace Distracey
 {
+    [Serializable]
     public class ApmContext : Dictionary<string, object>, IApmContext
 	{
         public static readonly List<IApmContextExtractor> ApmContextExtractors = new List<IApmContextExtractor>();

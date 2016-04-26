@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Distracey.Null;
 
 namespace Distracey.Web.HttpClient
 {
@@ -13,7 +12,7 @@ namespace Distracey.Web.HttpClient
         {
             if (!ApmHttpClientDelegatingHandlerFactories.Any())
             {
-                return new NullApmHttpClientDelegatingHandlerFactory().Create(apmContext);
+                return null;
             }
 
             ApmHttpClientDelegatingHandlerBase apmHttpClientDelegatingHandler = null;
