@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter
 {
     public class PerformanceCounterApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {
+// ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static List<IHttpClientCounter> CounterHandlers = new List<IHttpClientCounter>()
             {
                 new HttpClientCounterAverageTimeHandler("Default"),

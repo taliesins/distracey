@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter
 {
     public class PerformanceCounterApmMethodHandler : ApmMethodHandlerBase
     {
+// ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static List<IMethodCounter> CounterHandlers = new List<IMethodCounter>()
             {
                 new MethodCounterAverageTimeHandler("Default"),

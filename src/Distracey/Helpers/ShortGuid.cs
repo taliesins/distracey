@@ -13,6 +13,7 @@ namespace Distracey.Helpers
         /// A read-only instance of the ShortGuid class whose value
         /// is guaranteed to be all zeroes.
         /// </summary>
+// ReSharper disable once UnusedMember.Global
         public static readonly ShortGuid Empty = new ShortGuid(Guid.Empty);
 
         Guid _guid;

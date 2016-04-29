@@ -5,57 +5,56 @@ namespace Distracey.Helpers.Reflection
 {
     public sealed class Image : IDisposable
     {
-
-        long position;
-        Stream stream;
+        readonly long _position;
+        readonly Stream _stream;
 
         Image(Stream stream)
         {
-            this.stream = stream;
-            this.position = stream.Position;
-            this.stream.Position = 0;
+            _stream = stream;
+            _position = stream.Position;
+            _stream.Position = 0;
         }
 
         bool Advance(int length)
         {
-            if (stream.Position + length >= stream.Length)
+            if (_stream.Position + length >= _stream.Length)
                 return false;
 
-            stream.Seek(length, SeekOrigin.Current);
+            _stream.Seek(length, SeekOrigin.Current);
             return true;
         }
 
         bool MoveTo(uint position)
         {
-            if (position >= stream.Length)
+            if (position >= _stream.Length)
                 return false;
 
-            stream.Position = position;
+            _stream.Position = position;
             return true;
         }
 
         void IDisposable.Dispose()
         {
-            stream.Position = position;
+            _stream.Position = _position;
         }
 
         ushort ReadUInt16()
         {
-            return (ushort)(stream.ReadByte()
-                | (stream.ReadByte() << 8));
+            return (ushort)(_stream.ReadByte()
+                | (_stream.ReadByte() << 8));
         }
 
         uint ReadUInt32()
         {
-            return (uint)(stream.ReadByte()
-                | (stream.ReadByte() << 8)
-                | (stream.ReadByte() << 16)
-                | (stream.ReadByte() << 24));
+            return (uint)(_stream.ReadByte()
+                | (_stream.ReadByte() << 8)
+                | (_stream.ReadByte() << 16)
+                | (_stream.ReadByte() << 24));
         }
 
         bool IsManagedAssembly()
         {
-            if (stream.Length < 318)
+            if (_stream.Length < 318)
                 return false;
             if (ReadUInt16() != 0x5a4d)
                 return false;

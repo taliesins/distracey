@@ -8,19 +8,18 @@ namespace Distracey.Helpers.Reflection
     {
         class FieldPattern : ILPattern
         {
+            public static readonly object FieldKey = new object();
 
-            public static object FieldKey = new object();
-
-            ILPattern pattern;
+            readonly ILPattern _pattern;
 
             public FieldPattern(ILPattern pattern)
             {
-                this.pattern = pattern;
+                _pattern = pattern;
             }
 
             public override void Match(MatchContext context)
             {
-                pattern.Match(context);
+                _pattern.Match(context);
                 if (!context.success)
                     return;
 
@@ -35,7 +34,7 @@ namespace Distracey.Helpers.Reflection
             return new FieldPattern(ILPattern.OpCode(opcode));
         }
 
-        static ILPattern GetterPattern =
+        static readonly ILPattern GetterPattern =
             ILPattern.Sequence(
                 ILPattern.Optional(OpCodes.Nop),
                 ILPattern.Either(
@@ -50,7 +49,7 @@ namespace Distracey.Helpers.Reflection
                         ILPattern.OpCode(OpCodes.Ldloc_0))),
                 ILPattern.OpCode(OpCodes.Ret));
 
-        static ILPattern SetterPattern =
+        static readonly ILPattern SetterPattern =
             ILPattern.Sequence(
                 ILPattern.Optional(OpCodes.Nop),
                 ILPattern.OpCode(OpCodes.Ldarg_0),

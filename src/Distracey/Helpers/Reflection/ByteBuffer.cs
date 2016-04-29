@@ -4,65 +4,64 @@ namespace Distracey.Helpers.Reflection
 {
     class ByteBuffer
     {
-
-        internal byte[] buffer;
-        internal int position;
+        internal readonly byte[] Buffer;
+        internal int Position;
 
         public ByteBuffer(byte[] buffer)
         {
-            this.buffer = buffer;
+            Buffer = buffer;
         }
 
         public byte ReadByte()
         {
             CheckCanRead(1);
-            return buffer[position++];
+            return Buffer[Position++];
         }
 
         public byte[] ReadBytes(int length)
         {
             CheckCanRead(length);
             var value = new byte[length];
-            Buffer.BlockCopy(buffer, position, value, 0, length);
-            position += length;
+            System.Buffer.BlockCopy(Buffer, Position, value, 0, length);
+            Position += length;
             return value;
         }
 
         public short ReadInt16()
         {
             CheckCanRead(2);
-            short value = (short)(buffer[position]
-                | (buffer[position + 1] << 8));
-            position += 2;
+            short value = (short)(Buffer[Position]
+                | (Buffer[Position + 1] << 8));
+            Position += 2;
             return value;
         }
 
         public int ReadInt32()
         {
             CheckCanRead(4);
-            int value = buffer[position]
-                | (buffer[position + 1] << 8)
-                | (buffer[position + 2] << 16)
-                | (buffer[position + 3] << 24);
-            position += 4;
+            int value = Buffer[Position]
+                | (Buffer[Position + 1] << 8)
+                | (Buffer[Position + 2] << 16)
+                | (Buffer[Position + 3] << 24);
+            Position += 4;
             return value;
         }
 
         public long ReadInt64()
         {
             CheckCanRead(8);
-            uint low = (uint)(buffer[position]
-                | (buffer[position + 1] << 8)
-                | (buffer[position + 2] << 16)
-                | (buffer[position + 3] << 24));
+            uint low = (uint)(Buffer[Position]
+                | (Buffer[Position + 1] << 8)
+                | (Buffer[Position + 2] << 16)
+                | (Buffer[Position + 3] << 24));
 
-            uint high = (uint)(buffer[position + 4]
-                | (buffer[position + 5] << 8)
-                | (buffer[position + 6] << 16)
-                | (buffer[position + 7] << 24));
+            uint high = (uint)(Buffer[Position + 4]
+                | (Buffer[Position + 5] << 8)
+                | (Buffer[Position + 6] << 16)
+                | (Buffer[Position + 7] << 24));
 
             long value = (((long)high) << 32) | low;
-            position += 8;
+            Position += 8;
             return value;
         }
 
@@ -76,8 +75,8 @@ namespace Distracey.Helpers.Reflection
             }
 
             CheckCanRead(4);
-            float value = BitConverter.ToSingle(buffer, position);
-            position += 4;
+            float value = BitConverter.ToSingle(Buffer, Position);
+            Position += 4;
             return value;
         }
 
@@ -91,14 +90,14 @@ namespace Distracey.Helpers.Reflection
             }
 
             CheckCanRead(8);
-            double value = BitConverter.ToDouble(buffer, position);
-            position += 8;
+            double value = BitConverter.ToDouble(Buffer, Position);
+            Position += 8;
             return value;
         }
 
         void CheckCanRead(int count)
         {
-            if (position + count > buffer.Length)
+            if (Position + count > Buffer.Length)
                 throw new ArgumentOutOfRangeException();
         }
     }

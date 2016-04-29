@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter
 {
     public class PerformanceCounterApmApiFilterAttribute : ApmWebApiFilterAttributeBase
     {
+// ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static List<IApiFilterCounter> CounterHandlers = new List<IApiFilterCounter>
         {
             new ApiFilterCounterAverageTimeCounter("Default"),

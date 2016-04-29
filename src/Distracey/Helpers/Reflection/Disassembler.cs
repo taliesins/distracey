@@ -6,7 +6,6 @@ namespace Distracey.Helpers.Reflection
 {
     public static class Disassembler
     {
-
         public static IList<Instruction> GetInstructions(this MethodBase self)
         {
             if (self == null)

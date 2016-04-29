@@ -7,7 +7,7 @@ namespace Distracey.Log4Net
 {
     public class Log4NetApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {
-        private static Type DeclaringType = typeof (Log4NetApmHttpClientDelegatingHandler);
+        private static readonly Type DeclaringType = typeof (Log4NetApmHttpClientDelegatingHandler);
 
         public static string ApplicationName { get; set; }
         public static ILog Log { get; set; }

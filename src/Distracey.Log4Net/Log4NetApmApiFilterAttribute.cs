@@ -7,7 +7,7 @@ namespace Distracey.Log4Net
 {
     public class Log4NetApmApiFilterAttribute : ApmWebApiFilterAttributeBase
     {
-        private static Type DeclaringType = typeof(Log4NetApmApiFilterAttribute);
+        private static readonly Type DeclaringType = typeof(Log4NetApmApiFilterAttribute);
 
         public Log4NetApmApiFilterAttribute()
             : base(ApplicationName, AddResponseHeaders, Start, Finish)
