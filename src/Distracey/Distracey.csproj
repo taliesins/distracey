@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="IApmContextExtractor.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerBaseExtensions.cs" />
     <Compile Include="Tracking\ExecutionEdge.cs" />
     <Compile Include="Tracking\ExecutionGraph.cs" />
     <Compile Include="Tracking\ExecutionEdgeType.cs" />

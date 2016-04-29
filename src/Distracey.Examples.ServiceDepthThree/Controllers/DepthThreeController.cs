@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using Distracey.MethodHandler;
 
 namespace Distracey.Examples.ServiceDepthThree.Controllers
 {
@@ -10,7 +11,14 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
         {
             Request.ApmContext()["id"] = id.ToString();
 
-            return new[] { "three" };
+            return ReadFromFakeDatabaseForDepthThree();
+        }
+
+        private IEnumerable<string> ReadFromFakeDatabaseForDepthThree()
+        {
+            var apmContext = ApmContext.GetContext();
+            var methodHandler = apmContext.GetMethodHander();
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "two" });
         }
 
         public IEnumerable<string> GetDepthThreeException(int id)

@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using Distracey.MethodHandler;
 using Distracey.Web;
 using Distracey.Web.HttpClient;
 using log4net;
@@ -13,6 +14,7 @@ namespace Distracey.Log4Net
             ApmContextHttpMessageExtractor.AddExtractor();
 
             ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new Log4NetApmHttpClientDelegatingHandlerFactory());
+            ApmMethodHandlerApmContextExtensions.ApmMethodHttpFactories.Add(new Log4NetApmMethodHandlerFactory());
 
             Log4NetApmApiFilterAttribute.ApplicationName = applicationName;
             Log4NetApmApiFilterAttribute.Log = log;
@@ -20,6 +22,9 @@ namespace Distracey.Log4Net
 
             Log4NetApmHttpClientDelegatingHandler.ApplicationName = applicationName;
             Log4NetApmHttpClientDelegatingHandler.Log = log;
+
+            Log4NetApmMethodHandler.ApplicationName = applicationName;
+            Log4NetApmMethodHandler.Log = log;
 
             var log4NetApmApiFilterAttribute = new Log4NetApmApiFilterAttribute();
             configuration.Filters.Add(log4NetApmApiFilterAttribute);

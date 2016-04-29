@@ -39,7 +39,11 @@ namespace Distracey.Web.Session
             {
                 _callContextSessionContainer.Current = value;
                 // Cache current profiler SessionContext in HttpContext.Items if HttpContext accessible
-                HttpContext.Current.Items[CurrentSessionIdCacheKey] = value;
+
+                if (HttpContext.Current != null)
+                {
+                    HttpContext.Current.Items[CurrentSessionIdCacheKey] = value;
+                }
             } 
         }
     }

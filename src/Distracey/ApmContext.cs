@@ -13,14 +13,18 @@ namespace Distracey
 	{
         public static readonly List<IApmContextExtractor> ApmContextExtractors = new List<IApmContextExtractor>();
 
-        public static IApmContext GetContext() 
+        /// <summary>
+        /// Create a new APM context, extracting information from containing contexts.
+        /// </summary>
+        /// <returns></returns>
+        public static IApmContext GetContext(string eventName = "") 
         {
             //A small performance hit, but it means we get eventName for free
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
             var apmContext = new ApmContext();
 
-            SetContext(apmContext, method);
+            SetContext(apmContext, method, eventName);
 
             foreach (var apmContextExtractor in ApmContextExtractors)
             {
@@ -32,9 +36,12 @@ namespace Distracey
             return apmContext;
         }
 
-        public static void SetContext(IApmContext apmContext, MethodBase method)
+        public static void SetContext(IApmContext apmContext, MethodBase method, string eventName = "")
         {
-            var eventName = GetEventName(method);
+            if (string.IsNullOrEmpty(eventName))
+            {
+                eventName = GetEventName(method);
+            }
             var methodIdentifier = GetMethodIdentifier(method);
             var clientName = GetClientName();
 
