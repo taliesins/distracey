@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Examples.Website.Clients;
 using Distracey.Monitoring;
-using Swashbuckle.Swagger;
 
 namespace Distracey.Examples.Website.Controllers
 {

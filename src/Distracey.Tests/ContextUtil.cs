@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
@@ -14,7 +15,7 @@ namespace Distracey.Tests
         {
             HttpConfiguration config = configuration ?? new HttpConfiguration();
             IHttpRouteData route = routeData ?? new HttpRouteData(new HttpRoute());
-            HttpRequestMessage req = request ?? new HttpRequestMessage();
+            HttpRequestMessage req = request ?? new HttpRequestMessage(HttpMethod.Get, new Uri("http://foo.bar/"));
             req.SetConfiguration(config);
             req.SetRouteData(route);
 

@@ -2,7 +2,7 @@
 
 namespace Distracey
 {
-    public interface IApmContext : IDictionary<string, string>
+    public interface IApmContext : IDictionary<string, object>
     {
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Web.Http.Filters;
+using Distracey.Web.WebApi;
 using NUnit.Framework;
 
 namespace Distracey.Tests
@@ -10,8 +11,8 @@ namespace Distracey.Tests
     {
         private string _applicationName;
         private bool _addResponseHeaders;
-        private Action<ApmWebApiStartInformation> _startAction;
-        private Action<ApmWebApiFinishInformation> _finishAction;
+        private Action<IApmContext, ApmWebApiStartInformation> _startAction;
+        private Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
         private TestApmWebApiFilterAttribute _testApmWebApiFilterAttribute;
 
         [SetUp]
@@ -19,8 +20,8 @@ namespace Distracey.Tests
         {
             _applicationName = "ApplicationName";
             _addResponseHeaders = true;
-            _startAction = information => { };
-            _finishAction = information => { };
+            _startAction = (context, information) => { };
+            _finishAction = (context, information) => { };
             _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
         }
 
@@ -44,7 +45,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
             actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
 
-            _startAction = information =>
+            _startAction = (context, information) =>
             {
                 startActionLogged = true;
                 applicationName = information.ApplicationName;
@@ -63,8 +64,8 @@ namespace Distracey.Tests
 
             Assert.IsNotNull(httpRequest);
             Assert.IsTrue(startActionLogged);
-            Assert.IsNotNullOrEmpty(applicationName);
-            Assert.IsNotNullOrEmpty(eventName);
+            Assert.IsNotEmpty(applicationName);
+            Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);
             Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);
@@ -105,7 +106,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
             actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
 
-            _finishAction = information =>
+            _finishAction = (context, information) =>
             {
                 finishActionLogged = true;
                 applicationName = information.ApplicationName;
@@ -134,8 +135,8 @@ namespace Distracey.Tests
             Assert.IsNotNull(exception);
             Assert.IsTrue(finishActionLogged);
             Assert.Greater(responseTime, 0);
-            Assert.IsNotNullOrEmpty(applicationName);
-            Assert.IsNotNullOrEmpty(eventName);
+            Assert.IsNotEmpty(applicationName);
+            Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);
             Assert.AreEqual("ParentSpecialProcess=5678", parentSpanId);

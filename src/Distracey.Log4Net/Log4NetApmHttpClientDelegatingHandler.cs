@@ -1,4 +1,5 @@
 ﻿using System;
+using Distracey.Web.HttpClient;
 using log4net;
 using log4net.Core;
 
@@ -6,8 +7,7 @@ namespace Distracey.Log4Net
 {
     public class Log4NetApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {
-        private const string EventType = "Log4NetApmHttpClient";
-        private static Type DeclaringType = typeof (Log4NetApmHttpClientDelegatingHandler);
+        private static readonly Type DeclaringType = typeof (Log4NetApmHttpClientDelegatingHandler);
 
         public static string ApplicationName { get; set; }
         public static ILog Log { get; set; }
@@ -17,34 +17,9 @@ namespace Distracey.Log4Net
         {    
         }
         
-        public static void Start(ApmHttpClientStartInformation apmWebApiStartInformation)
+        public static void Start(IApmContext apmContext, ApmHttpClientStartInformation apmWebApiStartInformation)
         {
-            object apmContextObject;
-            if (!apmWebApiStartInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                apmContextObject = new ApmContext();
-                apmWebApiStartInformation.Request.Properties.Add(Constants.ApmContextPropertyKey, apmContextObject);
-            }
-
-            var apmContext = (IApmContext)apmContextObject;
-            var eventName = apmContext[Constants.EventNamePropertyKey];
-
-            if (!apmContext.ContainsKey(Constants.EventTypePropertyKey))
-            {
-                apmContext[Constants.EventTypePropertyKey] = EventType;
-            }
-
-            if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
-            {
-                apmContext[Constants.RequestUriPropertyKey] = apmWebApiStartInformation.Request.RequestUri.ToString();
-            }
-
-            if (!apmContext.ContainsKey(Constants.RequestMethodPropertyKey))
-            {
-                apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
-            }
-
-            var message = string.Format("CS - Start - {0} - {1}", eventName, apmWebApiStartInformation.TraceId);
+            var message = string.Format("CS - Start - {0} - {1}", apmWebApiStartInformation.EventName, apmWebApiStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -56,29 +31,9 @@ namespace Distracey.Log4Net
             logger.Log(logEvent);
         }
 
-        public static void Finish(ApmHttpClientFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmWebApiFinishInformation)
         {
-            object apmContextObject;
-            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                throw new Exception("Add delegating handler filter for Log4NetApmHttpClientDelegatingHandler");
-            }
-
-            var apmContext = (IApmContext)apmContextObject;
-
-            var eventName = apmContext[Constants.EventNamePropertyKey];
-
-            if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
-            {
-                apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
-            }
-
-            if (!apmContext.ContainsKey(Constants.ResponseStatusCodePropertyKey))
-            {
-                apmContext[Constants.ResponseStatusCodePropertyKey] = apmWebApiFinishInformation.Response.StatusCode.ToString();
-            }
-
-            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", eventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmWebApiFinishInformation.EventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 

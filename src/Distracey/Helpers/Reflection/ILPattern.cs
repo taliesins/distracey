@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public abstract class ILPattern
     {
@@ -25,17 +25,16 @@ namespace Distracey.Reflection
 
         class OptionalPattern : ILPattern
         {
-
-            ILPattern pattern;
+            readonly ILPattern _pattern;
 
             public OptionalPattern(ILPattern optional)
             {
-                this.pattern = optional;
+                _pattern = optional;
             }
 
             public override void Match(MatchContext context)
             {
-                pattern.TryMatch(context);
+                _pattern.TryMatch(context);
             }
         }
 
@@ -46,17 +45,16 @@ namespace Distracey.Reflection
 
         class SequencePattern : ILPattern
         {
-
-            ILPattern[] patterns;
+            readonly ILPattern[] _patterns;
 
             public SequencePattern(ILPattern[] patterns)
             {
-                this.patterns = patterns;
+                _patterns = patterns;
             }
 
             public override void Match(MatchContext context)
             {
-                foreach (var pattern in patterns)
+                foreach (var pattern in _patterns)
                 {
                     pattern.Match(context);
 
@@ -73,12 +71,11 @@ namespace Distracey.Reflection
 
         class OpCodePattern : ILPattern
         {
-
-            OpCode opcode;
+            readonly OpCode _opcode;
 
             public OpCodePattern(OpCode opcode)
             {
-                this.opcode = opcode;
+                this._opcode = opcode;
             }
 
             public override void Match(MatchContext context)
@@ -89,7 +86,7 @@ namespace Distracey.Reflection
                     return;
                 }
 
-                context.success = context.instruction.OpCode == opcode;
+                context.success = context.instruction.OpCode == _opcode;
                 context.Advance();
             }
         }
@@ -101,20 +98,19 @@ namespace Distracey.Reflection
 
         class EitherPattern : ILPattern
         {
-
-            ILPattern a;
-            ILPattern b;
+            readonly ILPattern _a;
+            readonly ILPattern _b;
 
             public EitherPattern(ILPattern a, ILPattern b)
             {
-                this.a = a;
-                this.b = b;
+                _a = a;
+                _b = b;
             }
 
             public override void Match(MatchContext context)
             {
-                if (!a.TryMatch(context))
-                    b.Match(context);
+                if (!_a.TryMatch(context))
+                    _b.Match(context);
             }
         }
 

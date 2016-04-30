@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Distracey.PerformanceCounter.HttpClientCounter;
+using Distracey.Web.HttpClient;
 
 namespace Distracey.PerformanceCounter
 {
     public class PerformanceCounterApmHttpClientDelegatingHandler : ApmHttpClientDelegatingHandlerBase
     {
+// ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static List<IHttpClientCounter> CounterHandlers = new List<IHttpClientCounter>()
             {
                 new HttpClientCounterAverageTimeHandler("Default"),
@@ -20,19 +22,19 @@ namespace Distracey.PerformanceCounter
 
         public static string ApplicationName { get; set; }
 
-        public static void Start(ApmHttpClientStartInformation apmWebApiStartInformation)
+        public static void Start(IApmContext apmContext, ApmHttpClientStartInformation apmWebApiStartInformation)
         {
             foreach (var counter in CounterHandlers)
             {
-                counter.Start(apmWebApiStartInformation);
+                counter.Start(apmContext, apmWebApiStartInformation);
             }
         }
 
-        public static void Finish(ApmHttpClientFinishInformation apmWebApiFinishInformation)
+        public static void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmWebApiFinishInformation)
         {
             foreach (var counter in CounterHandlers)
             {
-                counter.Finish(apmWebApiFinishInformation);
+                counter.Finish(apmContext, apmWebApiFinishInformation);
             }
         }
 

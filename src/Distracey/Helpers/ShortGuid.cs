@@ -1,17 +1,19 @@
 ﻿using System;
 
-namespace Distracey
+namespace Distracey.Helpers
 {
     /// <summary>
     /// Represents a globally unique identifier (GUID) with a
     /// shorter string value. Sguid
     /// </summary>
+    [Serializable]
     public struct ShortGuid
     {
         /// <summary>
         /// A read-only instance of the ShortGuid class whose value
         /// is guaranteed to be all zeroes.
         /// </summary>
+// ReSharper disable once UnusedMember.Global
         public static readonly ShortGuid Empty = new ShortGuid(Guid.Empty);
 
         Guid _guid;

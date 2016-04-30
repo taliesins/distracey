@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distracey
+namespace Distracey.Helpers
 {
     internal static class TaskHelpersExtensions
     {

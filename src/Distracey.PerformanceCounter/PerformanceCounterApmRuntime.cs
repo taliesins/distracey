@@ -5,7 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using Distracey.Reflection;
+using Distracey.Helpers.Reflection;
+using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {
@@ -49,6 +50,19 @@ namespace Distracey.PerformanceCounter
             {
                 Console.WriteLine(ex);
             }
+
+            var methodHanderCategoryName = PerformanceCounterApmMethodHandler.GetCategoryName(categoryName);
+            try
+            {
+                if (PerformanceCounterCategory.Exists(methodHanderCategoryName))
+                {
+                    PerformanceCounterCategory.Delete(methodHanderCategoryName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -71,6 +85,7 @@ namespace Distracey.PerformanceCounter
             PerformanceCounterCategory.Create(httpActionDescriptorCategoryName, "APM api filter category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, httpActionDescriptorCounters);
             Trace.TraceInformation("Built category '{0}' with {1} items", httpActionDescriptorCategoryName, httpActionDescriptorCounters.Count);
 
+            //Todo: Need to rather use ApmContext.GetDelegatingHandler and ApmContext.GetMethodHander
             var apmContextUsage = FindAllApmContextUsage(installerAssembly).Distinct().ToArray();
             var apmContextUsageCounters = GetCounterCreationDataCollectionForApmContextUsage(apmContextUsage);
             var httpClientCategoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(categoryName);
@@ -165,8 +180,8 @@ namespace Distracey.PerformanceCounter
 
             foreach (var apmContextUsage in apmContextUsages)
             {
-                var methodIdentifier = ApmHttpClientDelegatingHandlerBase.GetMethodIdentifier(apmContextUsage);
-                var eventName = ApmHttpClientDelegatingHandlerBase.GetEventName(apmContextUsage);
+                var methodIdentifier = ApmContext.GetMethodIdentifier(apmContextUsage);
+                var eventName = ApmContext.GetEventName(apmContextUsage);
 
                 Trace.TraceInformation("Setting up get context uses '{0}' for event '{1}'", methodIdentifier, eventName);
 

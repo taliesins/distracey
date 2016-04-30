@@ -1,4 +1,6 @@
-﻿namespace Distracey.Logary
+﻿using Distracey.Web.HttpClient;
+
+namespace Distracey.Logary
 {
     public class LogaryApmHttpClientDelegatingHandlerFactory : IApmHttpClientDelegatingHandlerFactory
     {

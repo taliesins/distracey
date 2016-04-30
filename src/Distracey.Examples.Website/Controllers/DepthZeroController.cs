@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
 using Distracey.Examples.Website.Clients;
+using Distracey.MethodHandler;
 
 namespace Distracey.Examples.Website.Controllers
 {
@@ -24,8 +25,14 @@ namespace Distracey.Examples.Website.Controllers
         public IEnumerable<string> GetDepthZero(int id)
         {
             Request.ApmContext()["id"] = id.ToString();
+            return ReadFromFakeDatabaseForDepthZero();
+        }
 
-            return new[] { "zero" };
+        private IEnumerable<string> ReadFromFakeDatabaseForDepthZero()
+        {
+            var apmContext = ApmContext.GetContext();
+            var methodHandler = apmContext.GetMethodHander();
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] {"zero"});
         }
 
         public IEnumerable<string> GetDepthOne(int id)

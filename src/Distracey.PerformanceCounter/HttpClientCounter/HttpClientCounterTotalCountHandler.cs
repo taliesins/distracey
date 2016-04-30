@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using Distracey.Web.HttpClient;
 
 namespace Distracey.PerformanceCounter.HttpClientCounter
 {
@@ -16,26 +17,26 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             _instanceName = instanceName;
         }
 
-        public void Start(ApmHttpClientStartInformation apmHttpClientStartInformation)
+        public void Start(IApmContext apmContext, ApmHttpClientStartInformation apmHttpClientStartInformation)
         {
             var key = string.Empty;
             
             object counterProperty;
 
-            if (!apmHttpClientStartInformation.Request.Properties.TryGetValue(TotalCountCounter, out counterProperty))
+            if (!apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
-                apmHttpClientStartInformation.Request.Properties.Add(TotalCountCounter, counter);
+                apmContext.Add(TotalCountCounter, counter);
             }
         }
 
-        public void Finish(ApmHttpClientFinishInformation apmHttpClientFinishInformation)
+        public void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmHttpClientFinishInformation)
         {
             object counterProperty;
 
-            if (apmHttpClientFinishInformation.Request.Properties.TryGetValue(TotalCountCounter, out counterProperty))
+            if (apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.Increment();

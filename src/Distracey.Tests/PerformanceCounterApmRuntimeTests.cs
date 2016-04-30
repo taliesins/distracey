@@ -13,18 +13,18 @@ namespace Distracey.Tests
         public void GetHttpClientsToMonitor()
         {
             var methods = PerformanceCounterApmRuntime.FindAllApmContextUsage(typeof(DepthZeroController).Assembly).ToList();
-            Assert.AreEqual(6, methods.Count());
+            Assert.AreEqual(7, methods.Count());
         }
 
         [Test]
         public void GetControllersToMonitor()
         {
             var methods = PerformanceCounterApmRuntime.FindAllHttpActionDescriptors(typeof(DepthZeroController).Assembly).ToList();
-            Assert.AreEqual(13, methods.Count());
+            Assert.AreEqual(10, methods.Count());
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void InstallPerformanceCounter()
         {
             var assembly = typeof(DepthZeroController).Assembly;
@@ -33,7 +33,7 @@ namespace Distracey.Tests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void UninstallPerformanceCounter()
         {
             var assembly = typeof(DepthZeroController).Assembly;
@@ -42,7 +42,7 @@ namespace Distracey.Tests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void GetPerformanceCounter()
         {
             var counter = new System.Diagnostics.PerformanceCounter

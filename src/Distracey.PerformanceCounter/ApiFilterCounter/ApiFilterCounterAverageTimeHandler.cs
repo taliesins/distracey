@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter.ApiFilterCounter
 {
@@ -18,37 +19,37 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             _instanceName = instanceName;
         }
 
-        public void Start(ApmWebApiStartInformation apmWebApiStartInformation)
+        public void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
         {
             var key = string.Empty;
             
             object counterProperty;
 
-            if (!apmWebApiStartInformation.Request.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
+            if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
-                apmWebApiStartInformation.Request.Properties.Add(AverageTimeTakenMsCounter, counter);
+                apmContext.Add(AverageTimeTakenMsCounter, counter);
             }
 
             object baseCounterProperty;
 
-            if (!apmWebApiStartInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
                 var counterName = GetBaseCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
-                apmWebApiStartInformation.Request.Properties.Add(AverageTimeTakenMsBaseCounter, baseCounter);
+                apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);
             }
         }
 
-        public void Finish(ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
         {
             object counterProperty;
 
-            if (apmWebApiFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
+            if (apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
                 counter.IncrementBy(apmWebApiFinishInformation.ResponseTime);
@@ -56,7 +57,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             object baseCounterProperty;
 
-            if (apmWebApiFinishInformation.Request.Properties.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
+            if (apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var baseCounter = (System.Diagnostics.PerformanceCounter)baseCounterProperty;
                 baseCounter.Increment();

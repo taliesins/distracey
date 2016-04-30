@@ -39,18 +39,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net">
+      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Swashbuckle.Core.5.0.4\lib\net40\Swashbuckle.Core.dll</HintPath>
+    <Reference Include="Swashbuckle.Core">
+      <HintPath>..\..\packages\Swashbuckle.Core.5.3.2\lib\net40\Swashbuckle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -112,7 +109,7 @@
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
     <Reference Include="WebActivatorEx">
-      <HintPath>..\..\packages\WebActivatorEx.2.0.6\lib\net40\WebActivatorEx.dll</HintPath>
+      <HintPath>..\..\packages\WebActivatorEx.2.1.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -156,13 +153,17 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Distracey.Monitoring\Distracey.Monitoring.csproj">
-      <Project>{a4471aea-2368-41ea-8373-63dfd37aac9a}</Project>
-      <Name>Distracey.Monitoring</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Distracey.Log4Net\Distracey.Log4Net.csproj">
       <Project>{f9923139-b970-4104-a58a-0b9af7d0c4f2}</Project>
       <Name>Distracey.Log4Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Monitoring\Distracey.Monitoring.csproj">
+      <Project>{a4471aea-2368-41ea-8373-63dfd37aac9a}</Project>
+      <Name>Distracey.Monitoring</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.NoOperation\Distracey.NoOperation.csproj">
+      <Project>{ff6d66ef-1ba8-4a8e-a37c-f7b3a874d3aa}</Project>
+      <Name>Distracey.NoOperation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Distracey.PerformanceCounter\Distracey.PerformanceCounter.csproj">
       <Project>{e0c5c855-4b11-4132-a9ad-b0e183a454dc}</Project>

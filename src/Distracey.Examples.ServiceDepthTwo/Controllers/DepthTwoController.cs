@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
 using Distracey.Examples.ServiceDepthTwo.Clients;
+using Distracey.MethodHandler;
 
 namespace Distracey.Examples.ServiceDepthTwo.Controllers
 {
@@ -25,7 +26,14 @@ namespace Distracey.Examples.ServiceDepthTwo.Controllers
         {
             Request.ApmContext()["id"] = id.ToString();
 
-            return new[] { "two" };
+            return ReadFromFakeDatabaseForDepthTwo();
+        }
+
+        private IEnumerable<string> ReadFromFakeDatabaseForDepthTwo()
+        {
+            var apmContext = ApmContext.GetContext();
+            var methodHandler = apmContext.GetMethodHander();
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "two" });
         }
 
         public IEnumerable<string> GetDepthThree(int id)

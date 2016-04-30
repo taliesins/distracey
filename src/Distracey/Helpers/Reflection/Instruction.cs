@@ -1,55 +1,55 @@
 ﻿using System.Reflection.Emit;
 using System.Text;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public sealed class Instruction
     {
-        int offset;
-        OpCode opcode;
-        object operand;
+        readonly int _offset;
+        OpCode _opcode;
+        object _operand;
 
-        Instruction previous;
-        Instruction next;
+        Instruction _previous;
+        Instruction _next;
 
         public int Offset
         {
-            get { return offset; }
+            get { return _offset; }
         }
 
         public OpCode OpCode
         {
-            get { return opcode; }
+            get { return _opcode; }
         }
 
         public object Operand
         {
-            get { return operand; }
-            internal set { operand = value; }
+            get { return _operand; }
+            internal set { _operand = value; }
         }
 
         public Instruction Previous
         {
-            get { return previous; }
-            internal set { previous = value; }
+            get { return _previous; }
+            internal set { _previous = value; }
         }
 
         public Instruction Next
         {
-            get { return next; }
-            internal set { next = value; }
+            get { return _next; }
+            internal set { _next = value; }
         }
 
         public int Size
         {
             get
             {
-                int size = opcode.Size;
+                int size = _opcode.Size;
 
-                switch (opcode.OperandType)
+                switch (_opcode.OperandType)
                 {
                     case OperandType.InlineSwitch:
-                        size += (1 + ((int[])operand).Length) * 4;
+                        size += (1 + ((int[])_operand).Length) * 4;
                         break;
                     case OperandType.InlineI8:
                     case OperandType.InlineR:
@@ -81,8 +81,8 @@ namespace Distracey.Reflection
 
         internal Instruction(int offset, OpCode opcode)
         {
-            this.offset = offset;
-            this.opcode = opcode;
+            _offset = offset;
+            _opcode = opcode;
         }
 
         public override string ToString()
@@ -92,22 +92,22 @@ namespace Distracey.Reflection
             AppendLabel(instruction, this);
             instruction.Append(':');
             instruction.Append(' ');
-            instruction.Append(opcode.Name);
+            instruction.Append(_opcode.Name);
 
-            if (operand == null)
+            if (_operand == null)
                 return instruction.ToString();
 
             instruction.Append(' ');
 
-            switch (opcode.OperandType)
+            switch (_opcode.OperandType)
             {
                 case OperandType.ShortInlineBrTarget:
                 case OperandType.InlineBrTarget:
-                    AppendLabel(instruction, (Instruction)operand);
+                    AppendLabel(instruction, (Instruction)_operand);
                     break;
                 case OperandType.InlineSwitch:
-                    var labels = (Instruction[])operand;
-                    for (int i = 0; i < labels.Length; i++)
+                    var labels = (Instruction[])_operand;
+                    for (var i = 0; i < labels.Length; i++)
                     {
                         if (i > 0)
                             instruction.Append(',');
@@ -117,11 +117,11 @@ namespace Distracey.Reflection
                     break;
                 case OperandType.InlineString:
                     instruction.Append('\"');
-                    instruction.Append(operand);
+                    instruction.Append(_operand);
                     instruction.Append('\"');
                     break;
                 default:
-                    instruction.Append(operand);
+                    instruction.Append(_operand);
                     break;
             }
 
@@ -131,7 +131,7 @@ namespace Distracey.Reflection
         static void AppendLabel(StringBuilder builder, Instruction instruction)
         {
             builder.Append("IL_");
-            builder.Append(instruction.offset.ToString("x4"));
+            builder.Append(instruction._offset.ToString("x4"));
         }
     }
 }

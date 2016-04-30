@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Distracey.Reflection
+namespace Distracey.Helpers.Reflection
 {
     public class MethodBodyReader
     {
@@ -70,9 +70,9 @@ namespace Distracey.Reflection
         {
             Instruction previous = null;
 
-            while (il.position < il.buffer.Length)
+            while (il.Position < il.Buffer.Length)
             {
-                var instruction = new Instruction(il.position, ReadOpCode());
+                var instruction = new Instruction(il.Position, ReadOpCode());
 
                 ReadOperand(instruction);
 
@@ -97,7 +97,7 @@ namespace Distracey.Reflection
                     break;
                 case OperandType.InlineSwitch:
                     int length = il.ReadInt32();
-                    int base_offset = il.position + (4 * length);
+                    int base_offset = il.Position + (4 * length);
                     int[] branches = new int[length];
                     for (int i = 0; i < length; i++)
                         branches[i] = il.ReadInt32() + base_offset;
@@ -105,10 +105,10 @@ namespace Distracey.Reflection
                     instruction.Operand = branches;
                     break;
                 case OperandType.ShortInlineBrTarget:
-                    instruction.Operand = (((sbyte)il.ReadByte()) + il.position);
+                    instruction.Operand = (((sbyte)il.ReadByte()) + il.Position);
                     break;
                 case OperandType.InlineBrTarget:
-                    instruction.Operand = il.ReadInt32() + il.position;
+                    instruction.Operand = il.ReadInt32() + il.Position;
                     break;
                 case OperandType.ShortInlineI:
                     if (instruction.OpCode == OpCodes.Ldc_I4_S)

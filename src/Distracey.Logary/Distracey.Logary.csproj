@@ -42,40 +42,37 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Actor, Version=0.0.1.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\FSharp.Actor-logary.3.0.2\lib\net40\FSharp.Actor.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="FSharp.Actor">
+      <HintPath>..\..\packages\FSharp.Actor-logary.3.6.1\lib\net40\FSharp.Actor.dll</HintPath>
       <Private>True</Private>
-      <HintPath>..\..\packages\FSharp.Core.3.1.2.1\lib\net40\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Logary, Version=3.0.2.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Logary.3.0.2\lib\net40\Logary.dll</HintPath>
+    <Reference Include="FSharp.Core">
+      <HintPath>..\..\packages\FSharp.Core.3.1.2.5\lib\net40\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Logary.Zipkin">
-      <HintPath>..\..\packages\Logary.Zipkin.2.6.0\lib\net40\Logary.Zipkin.dll</HintPath>
+    <Reference Include="Logary">
+      <HintPath>..\..\packages\Logary.3.6.1\lib\net40\Logary.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Logary.CSharp">
+      <HintPath>..\..\packages\Logary.CSharp.3.6.1\lib\net40\Logary.CSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json.FSharp, Version=3.1.2.0, Culture=neutral, PublicKeyToken=9adf1a27c1f9599c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Newtonsoft.Json.FSharp.3.1.2\lib\net40\Newtonsoft.Json.FSharp.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.FSharp">
+      <HintPath>..\..\packages\Newtonsoft.Json.FSharp.3.2.2\lib\net40\Newtonsoft.Json.FSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NodaTime, Version=1.3.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <Private>True</Private>
       <HintPath>..\..\packages\NodaTime.1.3.1\lib\net35-Client\NodaTime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="NodaTime.Serialization.JsonNet, Version=1.3.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NodaTime.Serialization.JsonNet">
       <HintPath>..\..\packages\NodaTime.Serialization.JsonNet.1.3.1\lib\net35-Client\NodaTime.Serialization.JsonNet.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -97,6 +94,8 @@
     <Compile Include="LogaryApmApiFilterAttribute.cs" />
     <Compile Include="LogaryApmConfigurationExtensions.cs" />
     <Compile Include="LogaryApmExceptionLogger.cs" />
+    <Compile Include="LogaryApmMethodHandlerFactory.cs" />
+    <Compile Include="LogaryApmMethodHandler.cs" />
     <Compile Include="LogaryApmHttpClientDelegatingHandler.cs" />
     <Compile Include="LogaryApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

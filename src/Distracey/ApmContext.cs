@@ -1,107 +1,62 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Web;
-using Distracey.Null;
+using Distracey.Helpers;
 
 namespace Distracey
 {
-    public class ApmContext : Dictionary<string, string>, IApmContext
+    [Serializable]
+    public class ApmContext : Dictionary<string, object>, IApmContext
 	{
-        public static List<IApmHttpClientDelegatingHandlerFactory> ApmHttpClientDelegatingHandlerFactories = new List<IApmHttpClientDelegatingHandlerFactory>();
-        
-        public static ApmHttpClientDelegatingHandlerBase GetDelegatingHandler(IApmContext apmContext)
-        {
-            if (!ApmHttpClientDelegatingHandlerFactories.Any())
-            {
-                return new NullApmHttpClientDelegatingHandlerFactory().Create(apmContext);
-            }
+        public static readonly List<IApmContextExtractor> ApmContextExtractors = new List<IApmContextExtractor>();
 
-            ApmHttpClientDelegatingHandlerBase apmHttpClientDelegatingHandler = null;
-
-            foreach (var apmHttpClientDelegatingHandlerFactory in ApmHttpClientDelegatingHandlerFactories)
-            {
-                var currentApmHttpClientDelegatingHandler = apmHttpClientDelegatingHandlerFactory.Create(apmContext);
-                if (apmHttpClientDelegatingHandler != null)
-                {
-                    currentApmHttpClientDelegatingHandler.InnerHandler = apmHttpClientDelegatingHandler;
-                }
-                else
-                {
-                    currentApmHttpClientDelegatingHandler.InnerHandler = new HttpClientHandler();
-                }
-                apmHttpClientDelegatingHandler = currentApmHttpClientDelegatingHandler;
-            }
-
-            return apmHttpClientDelegatingHandler;
-        }
-
-        public static IApmContext GetContext() 
+        /// <summary>
+        /// Create a new APM context, extracting information from containing contexts.
+        /// </summary>
+        /// <returns></returns>
+        public static IApmContext GetContext(string eventName = "") 
         {
             //A small performance hit, but it means we get eventName for free
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
             var apmContext = new ApmContext();
 
-            SetContext(apmContext, method);
+            SetContext(apmContext, method, eventName);
 
-            HttpRequestMessage request = null;
-            if (HttpContext.Current != null)
+            foreach (var apmContextExtractor in ApmContextExtractors)
             {
-                request = HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
+                apmContextExtractor.GetContext(apmContext, method);
             }
-
-            SetIncomingTracing(apmContext, request);
 
             SetTracing(apmContext);
 
             return apmContext;
         }
 
-        public static void SetContext(IApmContext apmContext, MethodBase method)
+        public static void SetContext(IApmContext apmContext, MethodBase method, string eventName = "")
         {
-            var eventName = ApmHttpClientDelegatingHandlerBase.GetEventName(method);
-            var methodIdentifier = ApmHttpClientDelegatingHandlerBase.GetMethodIdentifier(method);
-            var clientName = ApmHttpClientDelegatingHandlerBase.GetClientName();
+            if (string.IsNullOrEmpty(eventName))
+            {
+                eventName = GetEventName(method);
+            }
+            var methodIdentifier = GetMethodIdentifier(method);
+            var clientName = GetClientName();
 
             apmContext[Constants.EventNamePropertyKey] = eventName;
             apmContext[Constants.MethodIdentifierPropertyKey] = methodIdentifier;
             apmContext[Constants.ClientNamePropertyKey] = clientName;
         }
 
-        public static void SetIncomingTracing(IApmContext apmContext, HttpRequestMessage request)
-        {
-            var incomingTraceId = string.Empty;
-            var incomingSpanId = string.Empty;
-            var incomingParentSpanId = string.Empty;
-            var incomingSampled = string.Empty;
-            var incomingFlags = string.Empty;
-
-            if (request != null)
-            {
-                incomingTraceId = ApmHttpClientDelegatingHandlerBase.GetTraceId(request);
-                incomingSpanId = ApmHttpClientDelegatingHandlerBase.GetSpanId(request);
-                incomingParentSpanId = ApmHttpClientDelegatingHandlerBase.GetParentSpanId(request);
-                incomingSampled = ApmHttpClientDelegatingHandlerBase.GetSampled(request);
-                incomingFlags = ApmHttpClientDelegatingHandlerBase.GetFlags(request);
-            }
-
-            apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-            apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-            apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-            apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
-            apmContext[Constants.IncomingFlagsPropertyKey] = incomingFlags;
-        }
-
         public static void SetTracing(IApmContext apmContext)
         {
-            var clientName = apmContext.ContainsKey(Constants.ClientNamePropertyKey) ? apmContext[Constants.ClientNamePropertyKey] : null;
-            var incomingTraceId = apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey) ?  apmContext[Constants.IncomingTraceIdPropertyKey] : null;
-            var incomingSpanId = apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey) ?  apmContext[Constants.IncomingSpanIdPropertyKey] : null;
-            var incomingFlags = apmContext.ContainsKey(Constants.IncomingFlagsPropertyKey) ?  apmContext[Constants.IncomingFlagsPropertyKey] : null;
-            var incomingSampled = apmContext.ContainsKey(Constants.IncomingSampledPropertyKey) ? apmContext[Constants.IncomingSampledPropertyKey] : null;
+            var clientName = apmContext.ContainsKey(Constants.ClientNamePropertyKey) ? (string)apmContext[Constants.ClientNamePropertyKey] : null;
+            var incomingTraceId = apmContext.ContainsKey(Constants.IncomingTraceIdPropertyKey) ? (string)apmContext[Constants.IncomingTraceIdPropertyKey] : null;
+            var incomingSpanId = apmContext.ContainsKey(Constants.IncomingSpanIdPropertyKey) ? (string)apmContext[Constants.IncomingSpanIdPropertyKey] : null;
+            var incomingFlags = apmContext.ContainsKey(Constants.IncomingFlagsPropertyKey) ? (string)apmContext[Constants.IncomingFlagsPropertyKey] : null;
+            var incomingSampled = apmContext.ContainsKey(Constants.IncomingSampledPropertyKey) ? (string)apmContext[Constants.IncomingSampledPropertyKey] : null;
 
             SetTracing(apmContext, clientName, incomingTraceId, incomingSpanId, incomingFlags, incomingSampled);
         }
@@ -143,6 +98,28 @@ namespace Distracey
             apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
             apmContext[Constants.SampledHeaderKey] = sampled;
             apmContext[Constants.FlagsHeaderKey] = flags;
+        }
+
+        public static string GetMethodIdentifier(MethodBase methodInfo)
+        {
+            var param = methodInfo.GetParameters()
+                             .Select(parameter => string.Format("{0} {1}", parameter.ParameterType.Name, parameter.Name))
+                             .ToArray();
+
+            var arguments = string.Join(", ", param);
+
+            return string.Format("{0}.{1}({2})", methodInfo.DeclaringType.FullName, methodInfo.Name, arguments);
+        }
+
+        public static string GetEventName(MethodBase methodInfo)
+        {
+            return string.Format("{0}.{1}", methodInfo.DeclaringType.Name, methodInfo.Name);
+        }
+
+        public static string GetClientName()
+        {
+            var clientName = ConfigurationManager.AppSettings[Constants.ClientNamePropertyKey];
+            return clientName;
         }
 	}
 }

@@ -7,16 +7,16 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distracey
+namespace Distracey.Helpers
 {
     // <summary>
     // Helpers for safely using Task libraries. 
     // </summary>
     internal static class TaskHelpers
     {
-        private static readonly Task _defaultCompleted = FromResult<AsyncVoid>(default(AsyncVoid));
+        private static readonly Task DefaultCompleted = FromResult<AsyncVoid>(default(AsyncVoid));
 
-        private static readonly Task<object> _completedTaskReturningNull = FromResult<object>(null);
+        private static readonly Task<object> CompletedTaskReturningNull = FromResult<object>(null);
 
         // <summary>
         // Returns a canceled Task. The task is completed, IsCanceled = True, IsFaulted = False.
@@ -39,7 +39,7 @@ namespace Distracey
         // </summary>        
         internal static Task Completed()
         {
-            return _defaultCompleted;
+            return DefaultCompleted;
         }
 
         // <summary>
@@ -56,7 +56,7 @@ namespace Distracey
         // <typeparam name="TResult"></typeparam>
         internal static Task<TResult> FromError<TResult>(Exception exception)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
+            var tcs = new TaskCompletionSource<TResult>();
             tcs.SetException(exception);
             return tcs.Task;
         }
@@ -74,7 +74,7 @@ namespace Distracey
         // </summary>
         internal static Task<TResult> FromErrors<TResult>(IEnumerable<Exception> exceptions)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
+            var tcs = new TaskCompletionSource<TResult>();
             tcs.SetException(exceptions);
             return tcs.Task;
         }
@@ -84,14 +84,14 @@ namespace Distracey
         // </summary>        
         internal static Task<TResult> FromResult<TResult>(TResult result)
         {
-            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
+            var tcs = new TaskCompletionSource<TResult>();
             tcs.SetResult(result);
             return tcs.Task;
         }
 
         internal static Task<object> NullResult()
         {
-            return _completedTaskReturningNull;
+            return CompletedTaskReturningNull;
         }
 
         // <summary>
@@ -117,7 +117,7 @@ namespace Distracey
             }
             catch (Exception ex)
             {
-                return TaskHelpers.FromError(ex);
+                return FromError(ex);
             }
         }
 
@@ -135,17 +135,17 @@ namespace Distracey
                     // short-circuit: iteration canceled
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return TaskHelpers.Canceled();
+                        return Canceled();
                     }
 
                     // short-circuit: iteration complete
                     if (!enumerator.MoveNext())
                     {
-                        return TaskHelpers.Completed();
+                        return Completed();
                     }
 
                     // fast case: Task completed synchronously & successfully
-                    Task currentTask = enumerator.Current;
+                    var currentTask = enumerator.Current;
                     if (currentTask.Status == TaskStatus.RanToCompletion)
                     {
                         continue;
@@ -163,7 +163,7 @@ namespace Distracey
             }
             catch (Exception ex)
             {
-                return TaskHelpers.FromError(ex);
+                return FromError(ex);
             }
         }
 
@@ -390,7 +390,7 @@ namespace Distracey
 
             private static Task<TResult> GetCancelledTask()
             {
-                TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
+                var tcs = new TaskCompletionSource<TResult>();
                 tcs.SetCanceled();
                 return tcs.Task;
             }
