@@ -62,7 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Distracey\Distracey.csproj">
+    <ProjectReference Include="..\Distracey\Distracey.csproj">
       <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
       <Name>Distracey</Name>
     </ProjectReference>

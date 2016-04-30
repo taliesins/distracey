@@ -25,9 +25,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Examples.ServiceD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Examples.ServiceDepthThree", "src\Distracey.Examples.ServiceDepthThree\Distracey.Examples.ServiceDepthThree.csproj", "{1413DE20-2749-4A13-8837-874C236788C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Monitoring", "Distracey.Monitoring\Distracey.Monitoring.csproj", "{A4471AEA-2368-41EA-8373-63DFD37AAC9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Monitoring", "src\Distracey.Monitoring\Distracey.Monitoring.csproj", "{A4471AEA-2368-41EA-8373-63DFD37AAC9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.NoOperation", "Distracey.NoOperation\Distracey.NoOperation.csproj", "{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.NoOperation", "src\Distracey.NoOperation\Distracey.NoOperation.csproj", "{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
