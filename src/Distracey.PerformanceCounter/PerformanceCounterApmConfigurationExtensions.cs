@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
+using Distracey.Common;
 using Distracey.Web;
 using Distracey.Web.WebApi;
 
@@ -11,14 +12,10 @@ namespace Distracey.PerformanceCounter
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            PerformanceCounterApmEventLogger.ApplicationName = applicationName;
-            EventLoggerExtensions.ApmEventLoggers.Add(new PerformanceCounterApmEventLogger());
+            EventLoggerExtensions.ApmEventLoggers.Add(new PerformanceCounterApmEventLogger(applicationName));
 
-            if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
-            {
-                var apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(addResponseHeaders);
-                configuration.Filters.Add(apmWebApiFilterAttribute);
-            }
+            configuration.AddApmWebApiFilter(addResponseHeaders);
+            configuration.Services.Add(typeof(IExceptionLogger), new PerformanceCounterApmExceptionLogger(applicationName));
         }
     }
 }

@@ -5,7 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using Distracey.Helpers.Reflection;
+using Distracey.Common;
+using Distracey.Common.Helpers.Reflection;
 using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
@@ -63,6 +64,19 @@ namespace Distracey.PerformanceCounter
             {
                 Console.WriteLine(ex);
             }
+
+            var performanceCategoryName = PerformanceCounterApmExceptionLogger.GetUnhandledExceptionCategoryName(categoryName);
+            try
+            {
+                if (PerformanceCounterCategory.Exists(performanceCategoryName))
+                {
+                    PerformanceCounterCategory.Delete(performanceCategoryName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -91,6 +105,11 @@ namespace Distracey.PerformanceCounter
             var httpClientCategoryName = PerformanceCounterApmEventLogger.GetHttpClientCategoryName(categoryName);
             PerformanceCounterCategory.Create(httpClientCategoryName, "APM http client category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, apmContextUsageCounters);
             Trace.TraceInformation("Built category '{0}' with {1} items", httpClientCategoryName, apmContextUsageCounters.Count);
+
+            //Todo: need to register unhandled exception performance counters
+            //var unhandledExceptionCategoryName = PerformanceCounterApmExceptionLogger.GetUnhandledExceptionCategoryName(categoryName);
+            //PerformanceCounterCategory.Create(unhandledExceptionCategoryName, "APM http client category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, apmContextUsageCounters);
+            //Trace.TraceInformation("Built category '{0}' with {1} items", unhandledExceptionCategoryName, apmContextUsageCounters.Count);
         }
 
         private static CounterCreationDataCollection GetCounterCreationDataCollectionForHttpActionDescriptors(ReflectedHttpActionDescriptor[] httpActionDescriptors)

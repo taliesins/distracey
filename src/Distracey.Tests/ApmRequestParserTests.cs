@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using Distracey.Common;
 using Distracey.Web;
 using NUnit.Framework;
 

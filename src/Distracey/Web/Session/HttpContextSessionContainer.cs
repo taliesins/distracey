@@ -1,5 +1,5 @@
 ﻿using System.Web;
-using Distracey.Session;
+using Distracey.Common.Session;
 
 namespace Distracey.Web.Session
 {

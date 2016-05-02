@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using Distracey.PerformanceCounter.ApiFilterCounter;
@@ -11,10 +12,11 @@ using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {
-    public class PerformanceCounterApmEventLogger : IEventLogger
+    public class PerformanceCounterApmEventLogger : IEventLogger, IDisposable
     {
-        public PerformanceCounterApmEventLogger()
+        public PerformanceCounterApmEventLogger(string applicationName)
         {
+            ApplicationName = applicationName;
             this.Subscribe<ApmEvent<ApmMethodHandlerStartInformation>>(OnApmMethodHandlerStartInformation);
             this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation);
             this.Subscribe<ApmEvent<ApmHttpClientStartInformation>>(OnApmHttpClientStartInformation);
@@ -150,6 +152,16 @@ namespace Distracey.PerformanceCounter
         public static string GetApiFilterCategoryName(string categoryName)
         {
             return String.Format("{0}-ApiFilter", categoryName);
+        }
+
+        public void Dispose()
+        {
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>();
         }
     }
 }

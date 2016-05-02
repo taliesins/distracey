@@ -153,6 +153,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
+      <Project>{176F4711-56BF-4B47-BE37-07E3BC5A7D30}</Project>
+      <Name>Distracey.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey.Log4Net\Distracey.Log4Net.csproj">
       <Project>{f9923139-b970-4104-a58a-0b9af7d0c4f2}</Project>
       <Name>Distracey.Log4Net</Name>

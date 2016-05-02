@@ -48,22 +48,6 @@
       <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Graphviz.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -87,33 +71,13 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ApmEventContext.cs" />
-    <Compile Include="EventLoggerExtensions.cs" />
-    <Compile Include="IApmContextExtractor.cs" />
-    <Compile Include="IEventLogger.cs" />
+    <Compile Include="Web\ApmExtensions.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerExtensions.cs" />
-    <Compile Include="Tracking\ExecutionEdge.cs" />
-    <Compile Include="Tracking\ExecutionGraph.cs" />
-    <Compile Include="Tracking\ExecutionEdgeType.cs" />
-    <Compile Include="Tracking\ExecutionVertex.cs" />
-    <Compile Include="Session\Session.cs" />
-    <Compile Include="Session\CallContextSessionContainer.cs" />
-    <Compile Include="Helpers\CircularBuffer.cs" />
-    <Compile Include="Session\ISession.cs" />
-    <Compile Include="Helpers\ICircularBuffer.cs" />
-    <Compile Include="Session\ISessionContainer.cs" />
-    <Compile Include="Session\Storage\ISessionStorage.cs" />
-    <Compile Include="Session\SessionContext.cs" />
-    <Compile Include="Session\Storage\NullSessionStorage.cs" />
-    <Compile Include="Session\Storage\SessionStorageBase.cs" />
-    <Compile Include="Tracking\ExecutionVertextType.cs" />
     <Compile Include="Web\ApmContextHttpMessageExtractor.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientApmContextExtensions.cs" />
     <Compile Include="Web\Session\HttpContextSessionContainer.cs" />
     <Compile Include="Web\WebApi\ApmAttribute.cs" />
-    <Compile Include="ApmContext.cs" />
-    <Compile Include="ApmExtensions.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientDelegatingHandler.cs" />
     <Compile Include="MethodHandler\ApmMethodHandler.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerStartInformation.cs" />
@@ -124,22 +88,11 @@
     <Compile Include="Web\ApmHttpRequestMessageParser.cs" />
     <Compile Include="Web\WebApi\ApmOutgoingResponseDecorator.cs" />
     <Compile Include="Web\WebApi\ApmWebApiFilterAttribute.cs" />
+    <Compile Include="Web\WebApi\ApmWebApiFilterAttributeExtensions.cs" />
     <Compile Include="Web\WebApi\ApmWebApiFinishInformation.cs" />
     <Compile Include="Web\WebApi\ApmWebApiRequestDecorator.cs" />
     <Compile Include="Web\WebApi\ApmWebApiStartInformation.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="IApmContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\Reflection\BackingFieldResolver.cs" />
-    <Compile Include="Helpers\Reflection\ByteBuffer.cs" />
-    <Compile Include="Helpers\Reflection\Disassembler.cs" />
-    <Compile Include="Helpers\Reflection\ILPattern.cs" />
-    <Compile Include="Helpers\Reflection\Image.cs" />
-    <Compile Include="Helpers\Reflection\Instruction.cs" />
-    <Compile Include="Helpers\Reflection\MethodBodyReader.cs" />
-    <Compile Include="Helpers\ShortGuid.cs" />
-    <Compile Include="Helpers\TaskHelpers.cs" />
-    <Compile Include="Helpers\TaskHelpersExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -148,9 +101,7 @@
   <ItemGroup>
     <Content Include="PerformanceClient.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Null\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
       <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>

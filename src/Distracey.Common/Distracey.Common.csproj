@@ -35,10 +35,37 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApmContext.cs" />
+    <Compile Include="ApmEventContext.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="EventAggregator\AsyncEventHub.cs" />
     <Compile Include="EventAggregator\AsyncEventHubExtensions.cs" />
     <Compile Include="EventAggregator\TaskExtensions.cs" />
+    <Compile Include="EventLoggerExtensions.cs" />
+    <Compile Include="Helpers\CircularBuffer.cs" />
+    <Compile Include="Helpers\ICircularBuffer.cs" />
+    <Compile Include="Helpers\Reflection\BackingFieldResolver.cs" />
+    <Compile Include="Helpers\Reflection\ByteBuffer.cs" />
+    <Compile Include="Helpers\Reflection\Disassembler.cs" />
+    <Compile Include="Helpers\Reflection\ILPattern.cs" />
+    <Compile Include="Helpers\Reflection\Image.cs" />
+    <Compile Include="Helpers\Reflection\Instruction.cs" />
+    <Compile Include="Helpers\Reflection\MethodBodyReader.cs" />
+    <Compile Include="Helpers\ShortGuid.cs" />
+    <Compile Include="Helpers\TaskHelpers.cs" />
+    <Compile Include="Helpers\TaskHelpersExtensions.cs" />
+    <Compile Include="IApmContext.cs" />
+    <Compile Include="IApmContextExtractor.cs" />
+    <Compile Include="IEventLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session\CallContextSessionContainer.cs" />
+    <Compile Include="Session\ISession.cs" />
+    <Compile Include="Session\ISessionContainer.cs" />
+    <Compile Include="Session\Session.cs" />
+    <Compile Include="Session\SessionContext.cs" />
+    <Compile Include="Session\Storage\ISessionStorage.cs" />
+    <Compile Include="Session\Storage\NullSessionStorage.cs" />
+    <Compile Include="Session\Storage\SessionStorageBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

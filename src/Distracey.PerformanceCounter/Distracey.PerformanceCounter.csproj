@@ -72,6 +72,7 @@
     <Compile Include="HttpClientCounter\HttpClientCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="HttpClientCounter\HttpClientCounterTotalCountHandler.cs" />
     <Compile Include="HttpClientCounter\IHttpClientCounter.cs" />
+    <Compile Include="PerformanceCounterApmExceptionLogger.cs" />
     <Compile Include="PerformanceCounterApmEventLogger.cs" />
     <Compile Include="MethodCounter\MethodCounterTotalCountHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterNumberOfOperationsPerSecondHandler.cs" />
@@ -81,6 +82,9 @@
     <Compile Include="PerformanceCounterApmConfigurationExtensions.cs" />
     <Compile Include="PerformanceCounterApmRuntime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnhandledExceptionCounter\IUnhandledExceptionCounter.cs" />
+    <Compile Include="UnhandledExceptionCounter\UnhandledExceptionCounterNumberOfOperationsPerSecondHandler.cs" />
+    <Compile Include="UnhandledExceptionCounter\UnhandledExceptionCounterTotalCountHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">

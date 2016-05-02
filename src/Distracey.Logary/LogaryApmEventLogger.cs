@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using Distracey.Web.HttpClient;
@@ -7,7 +9,7 @@ using Logary;
 
 namespace Distracey.Logary
 {
-    public class LogaryApmEventLogger : IEventLogger
+    public class LogaryApmEventLogger : IEventLogger, IDisposable
     {
         public LogaryApmEventLogger(string applicationName, Logger log)
         {
@@ -105,6 +107,16 @@ namespace Distracey.Logary
             }
 
             return Task.FromResult(false);
+        }
+
+        public void Dispose()
+        {
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>();
         }
     }
 }

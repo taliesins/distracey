@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using Distracey.Common;
 using Distracey.Web;
 using Distracey.Web.WebApi;
 using log4net;
@@ -15,12 +15,7 @@ namespace Distracey.Log4Net
 
             EventLoggerExtensions.ApmEventLoggers.Add(new Log4NetApmEventLogger(applicationName, log));
 
-            if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
-            {
-                var apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(addResponseHeaders);
-                configuration.Filters.Add(apmWebApiFilterAttribute);
-            }
-
+            configuration.AddApmWebApiFilter(addResponseHeaders);
             configuration.Services.Add(typeof(IExceptionLogger), new Log4NetApmExceptionLogger(log));
         }
     }

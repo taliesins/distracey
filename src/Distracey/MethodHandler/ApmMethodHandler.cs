@@ -1,4 +1,5 @@
-﻿using Distracey.Common.EventAggregator;
+﻿using Distracey.Common;
+using Distracey.Common.EventAggregator;
 
 namespace Distracey.MethodHandler
 {

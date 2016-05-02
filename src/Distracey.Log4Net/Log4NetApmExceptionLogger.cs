@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http.ExceptionHandling;
+using Distracey.Common;
 using log4net;
 
 namespace Distracey.Log4Net

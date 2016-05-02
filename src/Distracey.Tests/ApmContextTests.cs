@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Distracey.Common;
 using NUnit.Framework;
 
 namespace Distracey.Tests

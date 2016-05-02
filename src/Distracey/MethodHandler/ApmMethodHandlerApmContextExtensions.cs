@@ -1,4 +1,6 @@
-﻿namespace Distracey.MethodHandler
+﻿using Distracey.Common;
+
+namespace Distracey.MethodHandler
 {
     public static class ApmMethodHandlerApmContextExtensions
     {

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
 namespace Distracey.Web.HttpClient

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using Distracey.Web.HttpClient;
@@ -6,7 +8,7 @@ using Distracey.Web.WebApi;
 
 namespace Distracey.NoOperation
 {
-    public class NoOperationApmEventLogger : IEventLogger
+    public class NoOperationApmEventLogger : IEventLogger, IDisposable
     {
         public NoOperationApmEventLogger()
         {
@@ -46,6 +48,16 @@ namespace Distracey.NoOperation
         private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishInformation>> task)
         {
             return Task.FromResult(false);
+        }
+
+        public void Dispose()
+        {
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>();
         }
     }
 }

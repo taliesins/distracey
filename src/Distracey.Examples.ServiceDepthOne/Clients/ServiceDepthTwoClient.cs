@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Distracey.Common;
 using Distracey.Monitoring;
 using Distracey.Web.HttpClient;
 

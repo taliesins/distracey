@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using Distracey.Web.HttpClient;
@@ -9,7 +10,7 @@ using log4net.Core;
 
 namespace Distracey.Log4Net
 {
-    public class Log4NetApmEventLogger : IEventLogger
+    public class Log4NetApmEventLogger : IEventLogger, IDisposable
     {
         private static readonly Type DeclaringType = typeof(Log4NetApmEventLogger);
 
@@ -159,6 +160,16 @@ namespace Distracey.Log4Net
             }
 
             return Task.FromResult(false);
+        }
+
+        public void Dispose()
+        {
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>();
         }
     }
 }

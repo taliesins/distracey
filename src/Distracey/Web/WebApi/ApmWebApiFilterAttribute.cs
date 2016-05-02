@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
 namespace Distracey.Web.WebApi

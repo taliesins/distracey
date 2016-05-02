@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using NUnit.Framework;
