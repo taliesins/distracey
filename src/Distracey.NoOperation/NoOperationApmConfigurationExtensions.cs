@@ -12,7 +12,7 @@ namespace Distracey.NoOperation
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            EventLoggerExtensions.ApmEventLoggers.Add(new NoOperationEventLogger());
+            EventLoggerExtensions.ApmEventLoggers.Add(new NoOperationApmEventLogger());
 
             if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
             {

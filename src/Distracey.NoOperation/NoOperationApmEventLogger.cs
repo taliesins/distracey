@@ -6,9 +6,9 @@ using Distracey.Web.WebApi;
 
 namespace Distracey.NoOperation
 {
-    public class NoOperationEventLogger : IEventLogger
+    public class NoOperationApmEventLogger : IEventLogger
     {
-        public NoOperationEventLogger()
+        public NoOperationApmEventLogger()
         {
             this.Subscribe<ApmEvent<ApmMethodHandlerStartInformation>>(OnApmMethodHandlerStartInformation);
             this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation);

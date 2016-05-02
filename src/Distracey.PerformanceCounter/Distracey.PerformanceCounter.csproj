@@ -72,7 +72,7 @@
     <Compile Include="HttpClientCounter\HttpClientCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="HttpClientCounter\HttpClientCounterTotalCountHandler.cs" />
     <Compile Include="HttpClientCounter\IHttpClientCounter.cs" />
-    <Compile Include="PerformanceCounterEventLogger.cs" />
+    <Compile Include="PerformanceCounterApmEventLogger.cs" />
     <Compile Include="MethodCounter\MethodCounterTotalCountHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterLastOperationExecutionTimeHandler.cs" />

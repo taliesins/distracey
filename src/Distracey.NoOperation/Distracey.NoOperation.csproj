@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="NoOperationApmConfigurationExtensions.cs" />
     <Compile Include="NoOperationApmExceptionLogger.cs" />
-    <Compile Include="NoOperationEventLogger.cs" />
+    <Compile Include="NoOperationApmEventLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

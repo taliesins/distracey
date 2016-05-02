@@ -91,7 +91,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="LogaryEventLogger.cs" />
+    <Compile Include="LogaryApmEventLogger.cs" />
     <Compile Include="LogaryApmConfigurationExtensions.cs" />
     <Compile Include="LogaryApmExceptionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

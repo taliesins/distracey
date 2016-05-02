@@ -28,7 +28,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetMethodCategoryName(_applicationName);
+                var categoryName = PerformanceCounterApmEventLogger.GetMethodCategoryName(_applicationName);
                 var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -39,7 +39,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetMethodCategoryName(_applicationName);
+                var categoryName = PerformanceCounterApmEventLogger.GetMethodCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

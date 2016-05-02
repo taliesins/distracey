@@ -11,9 +11,9 @@ using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {
-    public class PerformanceCounterEventLogger : IEventLogger
+    public class PerformanceCounterApmEventLogger : IEventLogger
     {
-        public PerformanceCounterEventLogger()
+        public PerformanceCounterApmEventLogger()
         {
             this.Subscribe<ApmEvent<ApmMethodHandlerStartInformation>>(OnApmMethodHandlerStartInformation);
             this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation);

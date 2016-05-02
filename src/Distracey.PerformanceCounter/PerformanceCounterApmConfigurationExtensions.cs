@@ -11,8 +11,8 @@ namespace Distracey.PerformanceCounter
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            PerformanceCounterEventLogger.ApplicationName = applicationName;
-            EventLoggerExtensions.ApmEventLoggers.Add(new PerformanceCounterEventLogger());
+            PerformanceCounterApmEventLogger.ApplicationName = applicationName;
+            EventLoggerExtensions.ApmEventLoggers.Add(new PerformanceCounterApmEventLogger());
 
             if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
             {

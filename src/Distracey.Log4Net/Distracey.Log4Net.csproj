@@ -66,7 +66,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Log4NetEventLogger.cs" />
+    <Compile Include="Log4NetApmEventLogger.cs" />
     <Compile Include="Log4NetApmConfigurationExtensions.cs" />
     <Compile Include="Log4NetApmExceptionLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

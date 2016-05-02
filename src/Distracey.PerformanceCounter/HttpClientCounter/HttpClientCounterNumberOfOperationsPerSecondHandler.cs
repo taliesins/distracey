@@ -27,7 +27,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetHttpClientCategoryName(_applicationName);
+                var categoryName = PerformanceCounterApmEventLogger.GetHttpClientCategoryName(_applicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);

@@ -13,7 +13,7 @@ namespace Distracey.Log4Net
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            EventLoggerExtensions.ApmEventLoggers.Add(new Log4NetEventLogger(applicationName, log));
+            EventLoggerExtensions.ApmEventLoggers.Add(new Log4NetApmEventLogger(applicationName, log));
 
             if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
             {

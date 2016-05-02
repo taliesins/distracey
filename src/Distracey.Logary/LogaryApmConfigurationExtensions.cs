@@ -13,7 +13,7 @@ namespace Distracey.Logary
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            EventLoggerExtensions.ApmEventLoggers.Add(new LogaryEventLogger(applicationName, log));
+            EventLoggerExtensions.ApmEventLoggers.Add(new LogaryApmEventLogger(applicationName, log));
 
             if (configuration.Filters.All(x => x.GetType() != typeof(ApmWebApiFilterAttribute)))
             {
