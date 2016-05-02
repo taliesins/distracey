@@ -6,13 +6,15 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 {
     public class ApiFilterCounterTotalCountHandler : IApiFilterCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
         private const string TotalCountCounter = "ApiFilterCounterTotalCountCounter";
 
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public ApiFilterCounterTotalCountHandler(string instanceName)
+        public ApiFilterCounterTotalCountHandler(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -24,7 +26,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(TotalCountCounter, counter);

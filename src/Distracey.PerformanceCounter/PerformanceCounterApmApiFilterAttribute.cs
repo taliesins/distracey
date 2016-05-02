@@ -9,10 +9,10 @@ namespace Distracey.PerformanceCounter
 // ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static List<IApiFilterCounter> CounterHandlers = new List<IApiFilterCounter>
         {
-            new ApiFilterCounterAverageTimeCounter("Default"),
-            new ApiFilterCounterLastOperationExecutionTimeHandler("Default"),
-            new ApiFilterCounterNumberOfOperationsPerSecondHandler("Default"),
-            new ApiFilterCounterTotalCountHandler("Default")
+            new ApiFilterCounterAverageTimeCounter("Default", ApplicationName),
+            new ApiFilterCounterLastOperationExecutionTimeHandler("Default", ApplicationName),
+            new ApiFilterCounterNumberOfOperationsPerSecondHandler("Default", ApplicationName),
+            new ApiFilterCounterTotalCountHandler("Default", ApplicationName)
         }; 
 
         public PerformanceCounterApmApiFilterAttribute()

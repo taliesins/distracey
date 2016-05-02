@@ -1,6 +1,5 @@
 ﻿using System.Web.Http;
 using Distracey.Web;
-using Distracey.Web.HttpClient;
 
 namespace Distracey.PerformanceCounter
 {
@@ -10,14 +9,11 @@ namespace Distracey.PerformanceCounter
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new PerformanceCounterApmHttpClientDelegatingHandlerFactory());
-
-            EventLoggerExtensions.ApmMethodHttpFactories.Add(new PerformanceCounterEventLogger(applicationName));
+            PerformanceCounterEventLogger.ApplicationName = applicationName;
+            EventLoggerExtensions.ApmMethodHttpFactories.Add(new PerformanceCounterEventLogger());
 
             PerformanceCounterApmApiFilterAttribute.ApplicationName = applicationName;
             PerformanceCounterApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;
-
-            PerformanceCounterApmHttpClientDelegatingHandler.ApplicationName = applicationName;
 
             var performanceCounterApmApiFilterAttribute = new PerformanceCounterApmApiFilterAttribute();
             configuration.Filters.Add(performanceCounterApmApiFilterAttribute);

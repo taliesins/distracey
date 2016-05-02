@@ -55,8 +55,6 @@
     <Compile Include="NoOperationApmConfigurationExtensions.cs" />
     <Compile Include="NoOperationApmApiFilterAttribute.cs" />
     <Compile Include="NoOperationApmExceptionLogger.cs" />
-    <Compile Include="NoOperationApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="NoOperationApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="NoOperationEventLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

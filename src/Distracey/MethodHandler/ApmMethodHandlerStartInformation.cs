@@ -2,7 +2,6 @@
 {
     public class ApmMethodHandlerStartInformation
     {
-        public string ApplicationName { get; set; }
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
 

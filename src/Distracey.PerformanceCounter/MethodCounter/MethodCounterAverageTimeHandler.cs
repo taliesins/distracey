@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 {
     public class MethodCounterAverageTimeHandler : IMethodCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
         private const string AverageTimeTakenMsCounter = "MethodCounterAverageTimeCounter";
         private const string AverageTimeTakenMsBaseCounter = "MethodCounterAverageTimeBaseCounter";
@@ -13,8 +14,9 @@ namespace Distracey.PerformanceCounter.MethodCounter
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> BaseCounters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public MethodCounterAverageTimeHandler(string instanceName)
+        public MethodCounterAverageTimeHandler(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -26,7 +28,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetMethodCategoryName(_applicationName);
                 var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -37,7 +39,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetMethodCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

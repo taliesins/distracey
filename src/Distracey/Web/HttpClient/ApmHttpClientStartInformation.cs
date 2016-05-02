@@ -4,7 +4,6 @@ namespace Distracey.Web.HttpClient
 {
     public class ApmHttpClientStartInformation
     {
-        public string ApplicationName { get; set; }
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
         public HttpRequestMessage Request { get; set; }

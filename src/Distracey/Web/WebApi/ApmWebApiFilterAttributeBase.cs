@@ -102,7 +102,6 @@ namespace Distracey.Web.WebApi
 
         private void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmWebApiStartInformation> startAction)
         {
-            var applicationName = ApmHttpRequestMessageParser.GetApplicationName(request);
             var eventName = ApmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
             var traceId = ApmHttpRequestMessageParser.GetTraceId(request);
@@ -113,7 +112,6 @@ namespace Distracey.Web.WebApi
             
             var apmWebApiStartInformation = new ApmWebApiStartInformation
             {
-                ApplicationName = applicationName,
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
                 Flags = flags,
@@ -158,7 +156,6 @@ namespace Distracey.Web.WebApi
 
         private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
         {
-            var applicationName = ApmHttpRequestMessageParser.GetApplicationName(actionExecutedContext.Request);
             var eventName = ApmHttpRequestMessageParser.GetEventName(actionExecutedContext.Request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(actionExecutedContext.Request);
             var traceId = ApmHttpRequestMessageParser.GetTraceId(actionExecutedContext.Request);
@@ -170,7 +167,6 @@ namespace Distracey.Web.WebApi
 
             var apmWebApiFinishInformation = new ApmWebApiFinishInformation
             {
-                ApplicationName = applicationName,
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
                 Flags = flags,

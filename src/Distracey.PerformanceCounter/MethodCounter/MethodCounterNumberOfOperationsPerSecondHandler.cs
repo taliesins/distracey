@@ -6,14 +6,16 @@ namespace Distracey.PerformanceCounter.MethodCounter
 {
     public class MethodCounterNumberOfOperationsPerSecondHandler : IMethodCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
 
         private const string LastOperationExecutionTimeMsCounter = "MethodCounterNumberOfOperationsPerSecondCounter";
 
         private static readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public MethodCounterNumberOfOperationsPerSecondHandler(string instanceName)
+        public MethodCounterNumberOfOperationsPerSecondHandler(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -25,7 +27,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetMethodCategoryName(_applicationName);
                 var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);

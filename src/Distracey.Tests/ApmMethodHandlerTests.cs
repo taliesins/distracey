@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Distracey.Tests
 {
     [TestFixture]
-    public class ApmMethodHandlerBaseTests
+    public class ApmMethodHandlerTests
     {
         private Action<IApmContext, ApmMethodHandlerStartInformation> _startAction;
         private Action<IApmContext, ApmMethodHandlerFinishInformation> _finishAction;

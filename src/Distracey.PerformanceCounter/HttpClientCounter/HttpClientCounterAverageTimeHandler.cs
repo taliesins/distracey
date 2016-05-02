@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 {
     public class HttpClientCounterAverageTimeHandler : IHttpClientCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
         private const string AverageTimeTakenMsCounter = "HttpClientCounterAverageTimeCounter";
         private const string AverageTimeTakenMsBaseCounter = "HttpClientCounterAverageTimeBaseCounter";
@@ -13,8 +14,9 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> BaseCounters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public HttpClientCounterAverageTimeHandler(string instanceName)
+        public HttpClientCounterAverageTimeHandler(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -26,7 +28,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetCategoryName(_applicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -37,7 +39,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

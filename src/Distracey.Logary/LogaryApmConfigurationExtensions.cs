@@ -1,7 +1,6 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using Distracey.Web;
-using Distracey.Web.HttpClient;
 using Logary;
 
 namespace Distracey.Logary
@@ -12,16 +11,11 @@ namespace Distracey.Logary
         {
             ApmContextHttpMessageExtractor.AddExtractor();
 
-            ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new LogaryApmHttpClientDelegatingHandlerFactory());
-
             EventLoggerExtensions.ApmMethodHttpFactories.Add(new LogaryEventLogger(applicationName, log));
 
             LogaryApmApiFilterAttribute.ApplicationName = applicationName;
             LogaryApmApiFilterAttribute.Log = log;
             LogaryApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;
-
-            LogaryApmHttpClientDelegatingHandler.ApplicationName = applicationName;
-            LogaryApmHttpClientDelegatingHandler.Log = log;
 
             var logaryApmApiFilterAttribute = new LogaryApmApiFilterAttribute();
             configuration.Filters.Add(logaryApmApiFilterAttribute);

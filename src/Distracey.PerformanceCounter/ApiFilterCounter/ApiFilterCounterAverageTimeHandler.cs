@@ -6,6 +6,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 {
     public class ApiFilterCounterAverageTimeCounter : IApiFilterCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
 
         private const string AverageTimeTakenMsCounter = "ApiFilterCounterAverageTimeCounter";
@@ -14,8 +15,9 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
         private readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> BaseCounters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public ApiFilterCounterAverageTimeCounter(string instanceName)
+        public ApiFilterCounterAverageTimeCounter(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -27,7 +29,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -38,7 +40,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(apmWebApiStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

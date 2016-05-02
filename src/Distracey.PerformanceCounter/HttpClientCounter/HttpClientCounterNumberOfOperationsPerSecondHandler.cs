@@ -6,14 +6,16 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 {
     public class HttpClientCounterNumberOfOperationsPerSecondHandler : IHttpClientCounter
     {
+        private readonly string _applicationName;
         private readonly string _instanceName;
 
         private const string LastOperationExecutionTimeMsCounter = "HttpClientCounterNumberOfOperationsPerSecondCounter";
 
         private static readonly ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter> Counters = new ConcurrentDictionary<string, System.Diagnostics.PerformanceCounter>();
 
-        public HttpClientCounterNumberOfOperationsPerSecondHandler(string instanceName)
+        public HttpClientCounterNumberOfOperationsPerSecondHandler(string applicationName, string instanceName)
         {
+            _applicationName = applicationName;
             _instanceName = instanceName;
         }
 
@@ -25,7 +27,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmHttpClientDelegatingHandler.GetCategoryName(apmHttpClientStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetCategoryName(_applicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);

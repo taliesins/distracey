@@ -18,7 +18,7 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
         {
             var apmContext = ApmContext.GetContext();
             var methodHandler = apmContext.GetMethodHander();
-            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "two" });
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "three" });
         }
 
         public IEnumerable<string> GetDepthThreeException(int id)

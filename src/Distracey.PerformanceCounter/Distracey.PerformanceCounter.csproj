@@ -80,8 +80,6 @@
     <Compile Include="MethodCounter\IMethodCounter.cs" />
     <Compile Include="PerformanceCounterApmApiFilterAttribute.cs" />
     <Compile Include="PerformanceCounterApmConfigurationExtensions.cs" />
-    <Compile Include="PerformanceCounterApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="PerformanceCounterApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="PerformanceCounterApmRuntime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

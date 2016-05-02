@@ -7,20 +7,6 @@ namespace Distracey.Web
 {
     public class ApmHttpRequestMessageParser
     {
-        public string GetApplicationName(HttpRequestMessage request)
-        {
-            var applicationName = string.Empty;
-            object applicationNameObject;
-
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
-                out applicationNameObject))
-            {
-                applicationName = (string)applicationNameObject;
-            }
-
-            return applicationName;
-        }
-
         public string GetEventName(HttpRequestMessage request)
         {
             var eventName = string.Empty;

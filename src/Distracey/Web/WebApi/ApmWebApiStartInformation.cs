@@ -4,7 +4,6 @@ namespace Distracey.Web.WebApi
 {
     public class ApmWebApiStartInformation
     {
-        public string ApplicationName { get; set; }
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
         public HttpRequestMessage Request { get; set; }

@@ -2,37 +2,31 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Distracey.Common.EventAggregator;
 
 namespace Distracey.Web.HttpClient
 {
     /// <summary>
     /// Used to track requests and responses made by an http client.
     /// </summary>
-    public abstract class ApmHttpClientDelegatingHandlerBase : DelegatingHandler
+    public class ApmHttpClientDelegatingHandler : DelegatingHandler
     {
         private readonly IApmContext _apmContext;
-        private readonly string _applicationName;
-        private readonly Action<IApmContext, ApmHttpClientStartInformation> _startAction;
-        private readonly Action<IApmContext, ApmHttpClientFinishInformation> _finishAction;
         private readonly ApmHttpClientRequestDecorator _apmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
         private readonly ApmHttpRequestMessageParser _apmHttpRequestMessageParser = new ApmHttpRequestMessageParser();
 
-        public ApmHttpClientDelegatingHandlerBase(IApmContext apmContext, string applicationName, Action<IApmContext, ApmHttpClientStartInformation> startAction, Action<IApmContext, ApmHttpClientFinishInformation> finishAction)
+        public ApmHttpClientDelegatingHandler(IApmContext apmContext, HttpMessageHandler httpMessageHandler)
         {
             _apmContext = apmContext;
-            _applicationName = applicationName;
-            _startAction = startAction;
-            _finishAction = finishAction;
+            InnerHandler = httpMessageHandler ?? new HttpClientHandler();
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-    CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             //Initialize ApmContext if it does not exist
 
             request.Properties[Constants.ApmContextPropertyKey] = _apmContext;
 
-            _apmHttpClientRequestDecorator.AddApplicationName(request, _apmContext, _applicationName);
             _apmHttpClientRequestDecorator.AddEventName(request, _apmContext);
             _apmHttpClientRequestDecorator.AddMethodIdentifier(request, _apmContext);
 
@@ -51,19 +45,18 @@ namespace Distracey.Web.HttpClient
             _apmHttpClientRequestDecorator.AddFlags(request, _apmContext);
 
             _apmHttpClientRequestDecorator.StartResponseTime(request);
-            LogStartOfRequest(request, _startAction);
+            LogStartOfRequest(request);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             _apmHttpClientRequestDecorator.StopResponseTime(request);
-            LogStopOfRequest(request, response, _finishAction);
+            LogStopOfRequest(request, response);
 
             //Dispose ApmContext if it does not exist previously
 
             return response;
         }
 
-        private void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmHttpClientStartInformation> startAction)
+        private void LogStartOfRequest(HttpRequestMessage request)
         {
-            var applicationName = _apmHttpRequestMessageParser.GetApplicationName(request);
             var eventName = _apmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
             var clientName = _apmHttpRequestMessageParser.GetClientName(request);
@@ -82,7 +75,6 @@ namespace Distracey.Web.HttpClient
 
             var apmHttpClientStartInformation = new ApmHttpClientStartInformation
             {
-                ApplicationName = applicationName,
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
                 Request = request,
@@ -118,12 +110,17 @@ namespace Distracey.Web.HttpClient
                 apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
             }
 
-            startAction(apmContext, apmHttpClientStartInformation);
+            var eventContext = new ApmEvent<ApmHttpClientStartInformation>
+            {
+                ApmContext = _apmContext,
+                Event = apmHttpClientStartInformation
+            };
+
+            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        private void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, Action<IApmContext, ApmHttpClientFinishInformation> finishAction)
+        private void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response)
         {
-            var applicationName = _apmHttpRequestMessageParser.GetApplicationName(request);
             var eventName = _apmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
             var responseTime = _apmHttpRequestMessageParser.GetResponseTime(request);
@@ -143,7 +140,6 @@ namespace Distracey.Web.HttpClient
 
             var apmHttpClientFinishInformation = new ApmHttpClientFinishInformation
             {
-                ApplicationName = applicationName,
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
                 Request = request,
@@ -180,7 +176,13 @@ namespace Distracey.Web.HttpClient
                 apmContext[Constants.ResponseStatusCodePropertyKey] = response.StatusCode.ToString();
             }
 
-            finishAction(apmContext, apmHttpClientFinishInformation);
+            var eventContext = new ApmEvent<ApmHttpClientFinishInformation>
+            {
+                ApmContext = _apmContext,
+                Event = apmHttpClientFinishInformation
+            };
+
+            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
         }
     }
 }

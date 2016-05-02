@@ -94,7 +94,7 @@
     <Compile Include="ApmContext.cs" />
     <Compile Include="ApmContextExtensions.cs" />
     <Compile Include="ApmExtensions.cs" />
-    <Compile Include="ApmHttpClientDelegatingHandlerBase.cs" />
+    <Compile Include="ApmHttpClientDelegatingHandler.cs" />
     <Compile Include="ApmHttpClientFinishInformation.cs" />
     <Compile Include="ApmHttpClientStartInformation.cs" />
     <Compile Include="ApmWebApiFilterAttributeBase.cs" />

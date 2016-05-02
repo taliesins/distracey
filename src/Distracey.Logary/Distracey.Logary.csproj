@@ -95,8 +95,6 @@
     <Compile Include="LogaryApmApiFilterAttribute.cs" />
     <Compile Include="LogaryApmConfigurationExtensions.cs" />
     <Compile Include="LogaryApmExceptionLogger.cs" />
-    <Compile Include="LogaryApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="LogaryApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

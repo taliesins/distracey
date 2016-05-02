@@ -29,7 +29,6 @@ namespace Distracey.Tests
         public void WhenLoggingStartOfRequest()
         {
             var startActionLogged = false;
-            var applicationName = string.Empty;
             var eventName = string.Empty;
             var flags = string.Empty;
             var methodsIdentifier = string.Empty;
@@ -48,7 +47,6 @@ namespace Distracey.Tests
             _startAction = (context, information) =>
             {
                 startActionLogged = true;
-                applicationName = information.ApplicationName;
                 eventName = information.EventName;
                 flags = information.Flags;
                 methodsIdentifier = information.MethodIdentifier;
@@ -64,7 +62,6 @@ namespace Distracey.Tests
 
             Assert.IsNotNull(httpRequest);
             Assert.IsTrue(startActionLogged);
-            Assert.IsNotEmpty(applicationName);
             Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);
@@ -87,7 +84,6 @@ namespace Distracey.Tests
         public void WhenLoggingEndOfRequest()
         {
             var finishActionLogged = false;
-            var applicationName = string.Empty;
             var eventName = string.Empty;
             var responseTime = 0L;
             var exception = default(object);
@@ -109,7 +105,6 @@ namespace Distracey.Tests
             _finishAction = (context, information) =>
             {
                 finishActionLogged = true;
-                applicationName = information.ApplicationName;
                 eventName = information.EventName;
                 exception = information.Exception;
                 flags = information.Flags;
@@ -135,7 +130,6 @@ namespace Distracey.Tests
             Assert.IsNotNull(exception);
             Assert.IsTrue(finishActionLogged);
             Assert.Greater(responseTime, 0);
-            Assert.IsNotEmpty(applicationName);
             Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);

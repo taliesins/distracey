@@ -37,30 +37,6 @@ namespace Distracey.Web.HttpClient
             }
         }
 
-        public void AddApplicationName(HttpRequestMessage request, IApmContext apmContext, string applicationName)
-        {
-            object applicationNameProperty;
-
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey, out applicationNameProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.ApplicationNamePropertyKey))
-                {
-                    apmContext[Constants.ApplicationNamePropertyKey] = (string)applicationNameProperty;
-                }
-            }
-            else
-            {
-                if (!apmContext.ContainsKey(Constants.ApplicationNamePropertyKey))
-                {
-                    request.Properties[Constants.ApplicationNamePropertyKey] = applicationName;
-                }
-                else
-                {
-                    request.Properties[Constants.ApplicationNamePropertyKey] = apmContext[Constants.ApplicationNamePropertyKey];
-                }
-            }
-        }
-
         public void AddEventName(HttpRequestMessage request, IApmContext apmContext)
         {
             object eventNameProperty;
