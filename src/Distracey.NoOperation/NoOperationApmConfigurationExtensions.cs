@@ -1,6 +1,5 @@
 ﻿using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
-using Distracey.MethodHandler;
 using Distracey.Web;
 using Distracey.Web.HttpClient;
 
@@ -13,14 +12,12 @@ namespace Distracey.NoOperation
             ApmContextHttpMessageExtractor.AddExtractor();
 
             ApmHttpClientApmContextExtensions.ApmHttpClientDelegatingHandlerFactories.Add(new NoOperationApmHttpClientDelegatingHandlerFactory());
-            ApmMethodHandlerApmContextExtensions.ApmMethodHttpFactories.Add(new NoOperationApmMethodHandlerFactory());
 
+            EventLoggerExtensions.ApmMethodHttpFactories.Add(new NoOperationEventLogger());
             NoOperationApmApiFilterAttribute.ApplicationName = applicationName;
             NoOperationApmApiFilterAttribute.AddResponseHeaders = addResponseHeaders;
 
             NoOperationApmHttpClientDelegatingHandler.ApplicationName = applicationName;
-
-            NoOperationApmMethodHandler.ApplicationName = applicationName;
 
             var noOperationApmApiFilterAttribute = new NoOperationApmApiFilterAttribute();
             configuration.Filters.Add(noOperationApmApiFilterAttribute);

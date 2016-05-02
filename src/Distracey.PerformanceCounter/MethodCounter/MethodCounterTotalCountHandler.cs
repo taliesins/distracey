@@ -25,7 +25,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
 
             if (!apmContext.TryGetValue(TotalCountCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmMethodHandler.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
+                var categoryName = PerformanceCounterEventLogger.GetCategoryName(apmMethodHandlerStartInformation.ApplicationName);
                 var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(TotalCountCounter, counter);

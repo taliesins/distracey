@@ -60,7 +60,6 @@
     <Compile Include="ApmMethodHandlerBaseTests.cs" />
     <Compile Include="ApmWebApiFilterAttributeBaseTracingTests.cs" />
     <Compile Include="ContextUtil.cs" />
-    <Compile Include="Mocks\TestApmMethodHandler.cs" />
     <Compile Include="PerformanceCounterApmRuntimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\TestApmHttpClientDelegatingHandler.cs" />
@@ -71,6 +70,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
+      <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
+      <Name>Distracey.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey.Examples.ServiceDepthOne\Distracey.Examples.ServiceDepthOne.csproj">
       <Project>{643ad846-9541-4756-affd-735902018157}</Project>
       <Name>Distracey.Examples.ServiceDepthOne</Name>

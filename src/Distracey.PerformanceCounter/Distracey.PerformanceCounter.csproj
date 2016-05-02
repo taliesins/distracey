@@ -72,6 +72,7 @@
     <Compile Include="HttpClientCounter\HttpClientCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="HttpClientCounter\HttpClientCounterTotalCountHandler.cs" />
     <Compile Include="HttpClientCounter\IHttpClientCounter.cs" />
+    <Compile Include="PerformanceCounterEventLogger.cs" />
     <Compile Include="MethodCounter\MethodCounterTotalCountHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterNumberOfOperationsPerSecondHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterLastOperationExecutionTimeHandler.cs" />
@@ -79,14 +80,16 @@
     <Compile Include="MethodCounter\IMethodCounter.cs" />
     <Compile Include="PerformanceCounterApmApiFilterAttribute.cs" />
     <Compile Include="PerformanceCounterApmConfigurationExtensions.cs" />
-    <Compile Include="PerformanceCounterApmMethodHandlerFactory.cs" />
-    <Compile Include="PerformanceCounterApmMethodHandler.cs" />
     <Compile Include="PerformanceCounterApmHttpClientDelegatingHandler.cs" />
     <Compile Include="PerformanceCounterApmHttpClientDelegatingHandlerFactory.cs" />
     <Compile Include="PerformanceCounterApmRuntime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
+      <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
+      <Name>Distracey.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey\Distracey.csproj">
       <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
       <Name>Distracey</Name>

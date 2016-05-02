@@ -51,7 +51,7 @@ namespace Distracey.PerformanceCounter
                 Console.WriteLine(ex);
             }
 
-            var methodHanderCategoryName = PerformanceCounterApmMethodHandler.GetCategoryName(categoryName);
+            var methodHanderCategoryName = PerformanceCounterEventLogger.GetCategoryName(categoryName);
             try
             {
                 if (PerformanceCounterCategory.Exists(methodHanderCategoryName))
