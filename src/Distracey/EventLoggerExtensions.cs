@@ -4,6 +4,6 @@ namespace Distracey
 {
     public static class EventLoggerExtensions
     {
-        public static readonly List<IEventLogger> ApmMethodHttpFactories = new List<IEventLogger>();
+        public static readonly List<IEventLogger> ApmEventLoggers = new List<IEventLogger>();
     }
 }

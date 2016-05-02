@@ -123,7 +123,7 @@
     <Compile Include="Web\HttpClient\ApmHttpClientRequestDecorator.cs" />
     <Compile Include="Web\ApmHttpRequestMessageParser.cs" />
     <Compile Include="Web\WebApi\ApmOutgoingResponseDecorator.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiFilterAttributeBase.cs" />
+    <Compile Include="Web\WebApi\ApmWebApiFilterAttribute.cs" />
     <Compile Include="Web\WebApi\ApmWebApiFinishInformation.cs" />
     <Compile Include="Web\WebApi\ApmWebApiRequestDecorator.cs" />
     <Compile Include="Web\WebApi\ApmWebApiStartInformation.cs" />

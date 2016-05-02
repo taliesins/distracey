@@ -28,7 +28,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetCategoryName(_applicationName);
+                var categoryName = PerformanceCounterEventLogger.GetHttpClientCategoryName(_applicationName);
                 var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -39,7 +39,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterEventLogger.GetCategoryName(_applicationName);
+                var categoryName = PerformanceCounterEventLogger.GetHttpClientCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmHttpClientStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

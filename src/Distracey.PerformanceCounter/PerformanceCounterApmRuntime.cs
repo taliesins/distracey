@@ -24,7 +24,7 @@ namespace Distracey.PerformanceCounter
                 categoryName = installerAssembly.GetName().Name;
             }
 
-            var httpActionDescriptorCategoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(categoryName);
+            var httpActionDescriptorCategoryName = PerformanceCounterEventLogger.GetApiFilterCategoryName(categoryName);
 
             try
             {
@@ -38,7 +38,7 @@ namespace Distracey.PerformanceCounter
                 Console.WriteLine(ex);
             }
 
-            var httpClientCategoryName = PerformanceCounterEventLogger.GetCategoryName(categoryName);
+            var httpClientCategoryName = PerformanceCounterEventLogger.GetHttpClientCategoryName(categoryName);
             try
             {
                 if (PerformanceCounterCategory.Exists(httpClientCategoryName))
@@ -81,14 +81,14 @@ namespace Distracey.PerformanceCounter
 
             var httpActionDescriptors = FindAllHttpActionDescriptors(installerAssembly).Distinct().ToArray();
             var httpActionDescriptorCounters = GetCounterCreationDataCollectionForHttpActionDescriptors(httpActionDescriptors);
-            var httpActionDescriptorCategoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(categoryName);
+            var httpActionDescriptorCategoryName = PerformanceCounterEventLogger.GetApiFilterCategoryName(categoryName);
             PerformanceCounterCategory.Create(httpActionDescriptorCategoryName, "APM api filter category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, httpActionDescriptorCounters);
             Trace.TraceInformation("Built category '{0}' with {1} items", httpActionDescriptorCategoryName, httpActionDescriptorCounters.Count);
 
             //Todo: Need to rather use ApmContext.GetDelegatingHandler and ApmContext.GetMethodHander
             var apmContextUsage = FindAllApmContextUsage(installerAssembly).Distinct().ToArray();
             var apmContextUsageCounters = GetCounterCreationDataCollectionForApmContextUsage(apmContextUsage);
-            var httpClientCategoryName = PerformanceCounterEventLogger.GetCategoryName(categoryName);
+            var httpClientCategoryName = PerformanceCounterEventLogger.GetHttpClientCategoryName(categoryName);
             PerformanceCounterCategory.Create(httpClientCategoryName, "APM http client category for " + categoryName, PerformanceCounterCategoryType.MultiInstance, apmContextUsageCounters);
             Trace.TraceInformation("Built category '{0}' with {1} items", httpClientCategoryName, apmContextUsageCounters.Count);
         }
@@ -112,13 +112,13 @@ namespace Distracey.PerformanceCounter
 
                 var arguments = string.Join(", ", param);
 
-                var methodIdentifier = ApmWebApiFilterAttributeBase.GetMethodIdentifier(methodType, controllerName, actionName, arguments);
-                var eventName = ApmWebApiFilterAttributeBase.GetEventName(methodType, actionName, controllerName);
+                var methodIdentifier = ApmWebApiFilterAttribute.GetMethodIdentifier(methodType, controllerName, actionName, arguments);
+                var eventName = ApmWebApiFilterAttribute.GetEventName(methodType, actionName, controllerName);
 
                 Trace.TraceInformation("Setting up controller action '{0}' for event '{1}'", methodIdentifier, eventName);
 
                 //Setup action performance counters
-                foreach (var counterHandler in PerformanceCounterApmApiFilterAttribute.CounterHandlers)
+                foreach (var counterHandler in PerformanceCounterEventLogger.ApiFilterCounterHandlers)
                 {
                     if (counterCreationDataCollection.Cast<CounterCreationData>().Any(x => x.CounterName == methodIdentifier))
                     {

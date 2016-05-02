@@ -5,35 +5,30 @@ using System.Globalization;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Distracey.Common.EventAggregator;
 
 namespace Distracey.Web.WebApi
 {
     /// <summary>
     /// Used to track requests and responses made to webapi.
     /// </summary>
-    public abstract class ApmWebApiFilterAttributeBase : ActionFilterAttribute
+    public class ApmWebApiFilterAttribute : ActionFilterAttribute
     {
         private readonly bool _addResponseHeaders;
-        private readonly string _applicationName;
-        private readonly Action<IApmContext, ApmWebApiStartInformation> _startAction;
-        private readonly Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
         private readonly PluralizationService _pluralizationService;
 
         private static readonly ApmWebApiRequestDecorator ApmWebApiRequestDecorator = new ApmWebApiRequestDecorator();
         private static readonly ApmOutgoingResponseDecorator ApmOutgoingResponseDecorator = new ApmOutgoingResponseDecorator();
         private static readonly ApmHttpRequestMessageParser ApmHttpRequestMessageParser = new ApmHttpRequestMessageParser();
 
-        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<IApmContext, ApmWebApiStartInformation> startAction, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
-            : this(applicationName, addResponseHeaders, startAction, finishAction, PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us")))
+        public ApmWebApiFilterAttribute(bool addResponseHeaders)
+            : this(addResponseHeaders, PluralizationService.CreateService(CultureInfo.GetCultureInfo("en-us")))
         {
         }
 
-        public ApmWebApiFilterAttributeBase(string applicationName, bool addResponseHeaders, Action<IApmContext, ApmWebApiStartInformation> startAction, Action<IApmContext, ApmWebApiFinishInformation> finishAction, PluralizationService pluralizationService)
+        public ApmWebApiFilterAttribute(bool addResponseHeaders, PluralizationService pluralizationService)
         {
-            _applicationName = applicationName;
             _addResponseHeaders = addResponseHeaders;
-            _startAction = startAction;
-            _finishAction = finishAction;
             _pluralizationService = pluralizationService;
         }
 
@@ -42,13 +37,12 @@ namespace Distracey.Web.WebApi
             //Initialize ApmContext if it does not exist
             //HttpContext.Current.SessionContext
 
-            ApmWebApiRequestDecorator.AddApplicationName(actionContext.Request, _applicationName);
             ApmWebApiRequestDecorator.AddEventName(actionContext, _pluralizationService);
             ApmWebApiRequestDecorator.AddMethodIdentifier(actionContext);
             ApmWebApiRequestDecorator.AddTracing(actionContext.Request);
             StartResponseTime(actionContext.Request);
 
-            LogStartOfRequest(actionContext.Request, _startAction);
+            LogStartOfRequest(actionContext.Request);
             base.OnActionExecuting(actionContext);
         }
 
@@ -60,7 +54,7 @@ namespace Distracey.Web.WebApi
             }
             base.OnActionExecuted(actionExecutedContext);
             StopResponseTime(actionExecutedContext);
-            LogStopOfRequest(actionExecutedContext, _finishAction);
+            LogStopOfRequest(actionExecutedContext);
 
             //Dispose ApmContext if it does not exist
             //HttpContext.Current.SessionContext
@@ -100,7 +94,7 @@ namespace Distracey.Web.WebApi
             }
         }
 
-        private void LogStartOfRequest(HttpRequestMessage request, Action<IApmContext, ApmWebApiStartInformation> startAction)
+        private void LogStartOfRequest(HttpRequestMessage request)
         {
             var eventName = ApmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
@@ -151,10 +145,16 @@ namespace Distracey.Web.WebApi
                 apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
             }
 
-            startAction(apmContext, apmWebApiStartInformation);
+            var eventContext = new ApmEvent<ApmWebApiStartInformation>
+            {
+                ApmContext = apmContext,
+                Event = apmWebApiStartInformation
+            };
+
+            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, Action<IApmContext, ApmWebApiFinishInformation> finishAction)
+        private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext)
         {
             var eventName = ApmHttpRequestMessageParser.GetEventName(actionExecutedContext.Request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(actionExecutedContext.Request);
@@ -183,7 +183,7 @@ namespace Distracey.Web.WebApi
             object apmContextObject;
             if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
             {
-                throw new Exception("Add global filter for ApmWebApiFilterAttributeBase");
+                throw new Exception("Add global filter for ApmWebApiFilterAttribute");
             }
 
             var apmContext = (IApmContext)apmContextObject;
@@ -192,7 +192,13 @@ namespace Distracey.Web.WebApi
                 apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
             }
 
-            finishAction(apmContext, apmWebApiFinishInformation);
+            var eventContext = new ApmEvent<ApmWebApiFinishInformation>
+            {
+                ApmContext = apmContext,
+                Event = apmWebApiFinishInformation
+            };
+
+            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public static void SetTracingResponseHeaders(HttpActionExecutedContext actionContext)

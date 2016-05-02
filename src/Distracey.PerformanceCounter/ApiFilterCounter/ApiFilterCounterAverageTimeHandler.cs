@@ -29,7 +29,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
+                var categoryName = PerformanceCounterEventLogger.GetApiFilterCategoryName(_applicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
@@ -40,7 +40,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
+                var categoryName = PerformanceCounterEventLogger.GetApiFilterCategoryName(_applicationName);
                 var counterName = GetBaseCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);

@@ -14,21 +14,6 @@ namespace Distracey.Web.WebApi
         public const string NoParent = "0";
         private static readonly Type EnumerableType = typeof(IEnumerable);
 
-        public void AddApplicationName(HttpRequestMessage request, string applicationName)
-        {
-            object applicationNameProperty;
-
-            if (request.Properties.TryGetValue(Constants.ApplicationNamePropertyKey,
-                out applicationNameProperty))
-            {
-                applicationName = (string)applicationNameProperty;
-            }
-            else
-            {
-                request.Properties[Constants.ApplicationNamePropertyKey] = applicationName;
-            }
-        }
-
         public void AddEventName(HttpActionContext actionContext, PluralizationService pluralizationService)
         {
             string eventName;

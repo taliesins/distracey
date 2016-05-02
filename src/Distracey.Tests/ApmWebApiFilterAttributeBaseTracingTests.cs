@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using Distracey.Common.EventAggregator;
+using Distracey.MethodHandler;
 using Distracey.Web.WebApi;
 using NUnit.Framework;
 
@@ -9,20 +12,50 @@ namespace Distracey.Tests
     [TestFixture]
     public class ApmWebApiFilterAttributeBaseTracingTests
     {
-        private string _applicationName;
         private bool _addResponseHeaders;
         private Action<IApmContext, ApmWebApiStartInformation> _startAction;
         private Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
-        private TestApmWebApiFilterAttribute _testApmWebApiFilterAttribute;
+        private ApmWebApiFilterAttribute _apmWebApiFilterAttribute;
 
         [SetUp]
         public void Setup()
         {
-            _applicationName = "ApplicationName";
             _addResponseHeaders = true;
             _startAction = (context, information) => { };
             _finishAction = (context, information) => { };
-            _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
+            _apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(_addResponseHeaders);
+
+            this.Subscribe<ApmEvent<ApmWebApiStartInformation>>(OnApmWebApiStartInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+            this.Subscribe<ApmEvent<ApmWebApiFinishInformation>>(OnApmWebApiFinishInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+        }
+
+        private Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartInformation>> task)
+        {
+            var apmEvent = task.Result;
+            var apmContext = apmEvent.ApmContext;
+            var apmWebApiStartInformation = apmEvent.Event;
+
+            _startAction(apmContext, apmWebApiStartInformation);
+
+            return Task.FromResult(false);
+        }
+
+        private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishInformation>> task)
+        {
+            var apmEvent = task.Result;
+            var apmContext = apmEvent.ApmContext;
+            var apmWebApiFinishInformation = apmEvent.Event;
+
+            _finishAction(apmContext, apmWebApiFinishInformation);
+
+            return Task.FromResult(false);
         }
 
         [Test]
@@ -57,8 +90,8 @@ namespace Distracey.Tests
                 httpRequest = information.Request;
             };
 
-            _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(_addResponseHeaders);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsNotNull(httpRequest);
             Assert.IsTrue(startActionLogged);
@@ -118,12 +151,12 @@ namespace Distracey.Tests
                 responseTime = information.ResponseTime;
             };
 
-            _testApmWebApiFilterAttribute = new TestApmWebApiFilterAttribute(_applicationName, _addResponseHeaders, _startAction, _finishAction);
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(_addResponseHeaders);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             var actionExecutedContext = new HttpActionExecutedContext(actionContext, new Exception("Exception occured"));
 
-            _testApmWebApiFilterAttribute.OnActionExecuted(actionExecutedContext);
+            _apmWebApiFilterAttribute.OnActionExecuted(actionExecutedContext);
 
             Assert.IsNotNull(httpRequest);
             //Assert.IsNotNull(httpResponse);
@@ -154,7 +187,7 @@ namespace Distracey.Tests
             var actionContext = ContextUtil.CreateActionContext();
             actionContext.Request.Headers.Add(Constants.SampledHeaderKey, "Sampled");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.SampledHeaderKey));
             var sampled = (string)actionContext.Request.Properties[Constants.SampledHeaderKey];
@@ -166,7 +199,7 @@ namespace Distracey.Tests
         {
             var actionContext = ContextUtil.CreateActionContext();
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsFalse(actionContext.Request.Properties.ContainsKey(Constants.SampledHeaderKey));
         }
@@ -177,7 +210,7 @@ namespace Distracey.Tests
             var actionContext = ContextUtil.CreateActionContext();
             actionContext.Request.Headers.Add(Constants.FlagsHeaderKey, "Flags");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.FlagsHeaderKey));
             var flags = (string)actionContext.Request.Properties[Constants.FlagsHeaderKey];
@@ -189,7 +222,7 @@ namespace Distracey.Tests
         {
             var actionContext = ContextUtil.CreateActionContext();
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsFalse(actionContext.Request.Properties.ContainsKey(Constants.FlagsHeaderKey));
         }
@@ -199,7 +232,7 @@ namespace Distracey.Tests
         {
             var actionContext = ContextUtil.CreateActionContext();
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -222,7 +255,7 @@ namespace Distracey.Tests
             var actionContext = ContextUtil.CreateActionContext();
             actionContext.Request.Headers.Add(Constants.TraceIdHeaderKey, "TestClient=1234");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -246,7 +279,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.TraceIdHeaderKey, "TestClient=1234");
             actionContext.Request.Headers.Add(Constants.SpanIdHeaderKey, "SpecialProcess=4321");
             
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -269,7 +302,7 @@ namespace Distracey.Tests
             actionContext.Request.Headers.Add(Constants.SpanIdHeaderKey, "SpecialProcess=4321");
             actionContext.Request.Headers.Add(Constants.ParentSpanIdHeaderKey, "ParentSpecialProcess=5678");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -290,7 +323,7 @@ namespace Distracey.Tests
             var actionContext = ContextUtil.CreateActionContext();
             actionContext.Request.Headers.Add(Constants.ParentSpanIdHeaderKey, "ParentSpecialProcess=5678");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -313,7 +346,7 @@ namespace Distracey.Tests
             var actionContext = ContextUtil.CreateActionContext();
             actionContext.Request.Headers.Add(Constants.SpanIdHeaderKey, "SpecialProcess=4321");
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.TraceIdHeaderKey));
             var traceId = (string)actionContext.Request.Properties[Constants.TraceIdHeaderKey];
@@ -342,7 +375,7 @@ namespace Distracey.Tests
 
             var expectedMethodIdentifier = string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.MethodIdentifierPropertyKey));
             var methodIdentifier = (string)actionContext.Request.Properties[Constants.MethodIdentifierPropertyKey];
@@ -354,23 +387,11 @@ namespace Distracey.Tests
         {
             var actionContext = ContextUtil.CreateActionContext();
 
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
+            _apmWebApiFilterAttribute.OnActionExecuting(actionContext);
 
             Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.EventNamePropertyKey));
             var eventName = (string)actionContext.Request.Properties[Constants.EventNamePropertyKey];
             Assert.IsNotEmpty(eventName);
-        }
-
-        [Test]
-        public void WhenReceivingTracingInformatioApplicationNameIsAdded()
-        {
-            var actionContext = ContextUtil.CreateActionContext();
-
-            _testApmWebApiFilterAttribute.OnActionExecuting(actionContext);
-
-            Assert.IsTrue(actionContext.Request.Properties.ContainsKey(Constants.ApplicationNamePropertyKey));
-            var applicationName = (string)actionContext.Request.Properties[Constants.ApplicationNamePropertyKey];
-            Assert.IsNotEmpty(applicationName);
         }
     }
 }

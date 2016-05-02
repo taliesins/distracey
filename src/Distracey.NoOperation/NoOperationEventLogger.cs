@@ -2,6 +2,7 @@
 using Distracey.Common.EventAggregator;
 using Distracey.MethodHandler;
 using Distracey.Web.HttpClient;
+using Distracey.Web.WebApi;
 
 namespace Distracey.NoOperation
 {
@@ -13,6 +14,8 @@ namespace Distracey.NoOperation
             this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation);
             this.Subscribe<ApmEvent<ApmHttpClientStartInformation>>(OnApmHttpClientStartInformation);
             this.Subscribe<ApmEvent<ApmHttpClientFinishInformation>>(OnApmHttpClientFinishInformation);
+            this.Subscribe<ApmEvent<ApmWebApiStartInformation>>(OnApmWebApiStartInformation);
+            this.Subscribe<ApmEvent<ApmWebApiFinishInformation>>(OnApmWebApiFinishInformation);
         }
 
         private Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartInformation>> task)
@@ -31,6 +34,16 @@ namespace Distracey.NoOperation
         }
 
         private Task OnApmHttpClientFinishInformation(Task<ApmEvent<ApmHttpClientFinishInformation>> task)
+        {
+            return Task.FromResult(false);
+        }
+
+        private Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartInformation>> task)
+        {
+            return Task.FromResult(false);
+        }
+
+        private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishInformation>> task)
         {
             return Task.FromResult(false);
         }

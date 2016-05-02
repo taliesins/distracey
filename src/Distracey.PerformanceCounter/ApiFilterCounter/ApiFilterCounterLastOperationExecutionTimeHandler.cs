@@ -27,7 +27,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
-                var categoryName = PerformanceCounterApmApiFilterAttribute.GetCategoryName(_applicationName);
+                var categoryName = PerformanceCounterEventLogger.GetApiFilterCategoryName(_applicationName);
                 var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);

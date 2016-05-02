@@ -78,7 +78,6 @@
     <Compile Include="MethodCounter\MethodCounterLastOperationExecutionTimeHandler.cs" />
     <Compile Include="MethodCounter\MethodCounterAverageTimeHandler.cs" />
     <Compile Include="MethodCounter\IMethodCounter.cs" />
-    <Compile Include="PerformanceCounterApmApiFilterAttribute.cs" />
     <Compile Include="PerformanceCounterApmConfigurationExtensions.cs" />
     <Compile Include="PerformanceCounterApmRuntime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

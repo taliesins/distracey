@@ -16,7 +16,7 @@ namespace Distracey
 
             if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContext))
             {
-                throw new Exception("Add global filter for ApmWebApiFilterAttributeBase");
+                throw new Exception("Add global filter for ApmWebApiFilterAttribute");
             }
 
             return (IApmContext)apmContext;
