@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
+using Distracey.Agent.Common.MethodHandler;
 using Distracey.Common;
 using Distracey.Examples.ServiceDepthOne.Clients;
-using Distracey.MethodHandler;
 using Distracey.Web;
 
 namespace Distracey.Examples.ServiceDepthOne.Controllers

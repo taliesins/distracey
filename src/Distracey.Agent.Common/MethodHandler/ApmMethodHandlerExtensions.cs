@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Distracey.MethodHandler
+namespace Distracey.Agent.Common.MethodHandler
 {
     public static class ApmMethodHandlerExtensions
     {

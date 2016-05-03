@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Web.Http.Filters;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
-using Distracey.MethodHandler;
 using Distracey.Web.WebApi;
 using NUnit.Framework;
 

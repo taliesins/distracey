@@ -1,9 +1,10 @@
-﻿namespace Distracey.MethodHandler
+﻿namespace Distracey.Agent.Common.MethodHandler
 {
-    public class ApmMethodHandlerStartInformation
+    public class ApmMethodHandlerFinishInformation
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
+        public long ResponseTime { get; set; }
 
         public string ClientName { get; set; }
 

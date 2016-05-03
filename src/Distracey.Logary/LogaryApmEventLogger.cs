@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Distracey.Agent.Common.MethodHandler;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
-using Distracey.MethodHandler;
 using Distracey.Web.HttpClient;
 using Distracey.Web.WebApi;
 using Logary;

@@ -1,7 +1,7 @@
 ﻿using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
-namespace Distracey.MethodHandler
+namespace Distracey.Agent.Common.MethodHandler
 {
     public class ApmMethodHandler
     {

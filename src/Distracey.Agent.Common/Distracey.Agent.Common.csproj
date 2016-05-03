@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF6D66EF-1BA8-4A8E-A37C-F7B3A874D3AA}</ProjectGuid>
+    <ProjectGuid>{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Distracey.NoOperation</RootNamespace>
-    <AssemblyName>Distracey.NoOperation</AssemblyName>
+    <RootNamespace>Distracey.Agent.Common</RootNamespace>
+    <AssemblyName>Distracey.Agent.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,50 +30,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NoOperationApmConfigurationExtensions.cs" />
-    <Compile Include="NoOperationApmExceptionLogger.cs" />
-    <Compile Include="NoOperationApmEventLogger.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandler.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerExtensions.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerFinishInformation.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerStartInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Distracey.Agent.Common\Distracey.Agent.Common.csproj">
-      <Project>{c7ca25a8-377e-47cd-a2f5-2feffc05e7e8}</Project>
-      <Name>Distracey.Agent.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
       <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
       <Name>Distracey.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Distracey\Distracey.csproj">
-      <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
-      <Name>Distracey</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

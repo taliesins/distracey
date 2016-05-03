@@ -68,6 +68,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Distracey.Agent.Common\Distracey.Agent.Common.csproj">
+      <Project>{c7ca25a8-377e-47cd-a2f5-2feffc05e7e8}</Project>
+      <Name>Distracey.Agent.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
       <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
       <Name>Distracey.Common</Name>

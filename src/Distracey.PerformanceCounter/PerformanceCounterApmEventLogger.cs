@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Distracey.Agent.Common.MethodHandler;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
-using Distracey.MethodHandler;
 using Distracey.PerformanceCounter.ApiFilterCounter;
 using Distracey.PerformanceCounter.HttpClientCounter;
 using Distracey.PerformanceCounter.MethodCounter;

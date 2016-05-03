@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using Distracey.Agent.Common.MethodHandler;
 using Distracey.Common;
-using Distracey.MethodHandler;
 
 namespace Distracey.PerformanceCounter.MethodCounter
 {

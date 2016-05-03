@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Common", "src\Dis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Tracking", "src\Distracey.Tracking\Distracey.Tracking.csproj", "{540E6A89-9405-4818-8E5A-0742ED770A41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distracey.Agent.Common", "src\Distracey.Agent.Common\Distracey.Agent.Common.csproj", "{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{540E6A89-9405-4818-8E5A-0742ED770A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{540E6A89-9405-4818-8E5A-0742ED770A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{540E6A89-9405-4818-8E5A-0742ED770A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -72,16 +72,11 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Web\ApmExtensions.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerExtensions.cs" />
     <Compile Include="Web\ApmContextHttpMessageExtractor.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientApmContextExtensions.cs" />
     <Compile Include="Web\Session\HttpContextSessionContainer.cs" />
     <Compile Include="Web\WebApi\ApmAttribute.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandler.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerStartInformation.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerFinishInformation.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientFinishInformation.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientStartInformation.cs" />
     <Compile Include="Web\HttpClient\ApmHttpClientRequestDecorator.cs" />
