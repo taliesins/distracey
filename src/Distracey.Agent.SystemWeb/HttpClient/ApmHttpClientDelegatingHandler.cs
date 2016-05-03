@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
-namespace Distracey.Web.HttpClient
+namespace Distracey.Agent.SystemWeb.HttpClient
 {
     /// <summary>
     /// Used to track requests and responses made by an http client.

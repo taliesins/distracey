@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
+using Distracey.Agent.SystemWeb;
 using Distracey.Common;
-using Distracey.Web;
 using NUnit.Framework;
 
 namespace Distracey.Tests

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Distracey.Agent.Common.MethodHandler;
+using Distracey.Agent.SystemWeb.HttpClient;
+using Distracey.Agent.SystemWeb.WebApi;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
-using Distracey.Web.HttpClient;
-using Distracey.Web.WebApi;
 
 namespace Distracey.NoOperation
 {

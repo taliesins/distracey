@@ -8,7 +8,7 @@ using System.Web.Http.Filters;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
-namespace Distracey.Web.WebApi
+namespace Distracey.Agent.SystemWeb.WebApi
 {
     /// <summary>
     /// Used to track requests and responses made to webapi.

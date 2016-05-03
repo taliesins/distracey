@@ -2,9 +2,9 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using Distracey.Agent.SystemWeb.WebApi;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
-using Distracey.Web.WebApi;
 using NUnit.Framework;
 
 namespace Distracey.Tests

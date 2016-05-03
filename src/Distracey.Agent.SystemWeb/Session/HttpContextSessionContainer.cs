@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using Distracey.Common.Session;
 
-namespace Distracey.Web.Session
+namespace Distracey.Agent.SystemWeb.Session
 {
     /// <summary>
     /// A IProfilingSessionContainer implementation

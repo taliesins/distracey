@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Web;
 using Distracey.Common;
 
-namespace Distracey.Web
+namespace Distracey.Agent.SystemWeb
 {
     public class ApmContextHttpMessageExtractor : IApmContextExtractor
     {

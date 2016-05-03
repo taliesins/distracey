@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Distracey.Common;
 
-namespace Distracey.Web.HttpClient
+namespace Distracey.Agent.SystemWeb.HttpClient
 {
     public class ApmHttpClientRequestDecorator
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using Distracey.Agent.SystemWeb.HttpClient;
 using Distracey.Common;
-using Distracey.Web.HttpClient;
 
 namespace Distracey.PerformanceCounter.HttpClientCounter
 {

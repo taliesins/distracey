@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Distracey.Web.WebApi
+namespace Distracey.Agent.SystemWeb.WebApi
 {
     public class ApmWebApiFinishInformation
     {

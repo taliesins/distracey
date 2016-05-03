@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
 using Distracey.Agent.Common.MethodHandler;
+using Distracey.Agent.SystemWeb;
 using Distracey.Common;
 using Distracey.Examples.Website.Clients;
-using Distracey.Web;
 
 namespace Distracey.Examples.Website.Controllers
 {

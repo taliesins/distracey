@@ -7,8 +7,8 @@
     <ProjectGuid>{C7CA25A8-377E-47CD-A2F5-2FEFFC05E7E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Distracey.Agent.Common</RootNamespace>
-    <AssemblyName>Distracey.Agent.Common</AssemblyName>
+    <RootNamespace>Distracey.Agent.Core</RootNamespace>
+    <AssemblyName>Distracey.Agent.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

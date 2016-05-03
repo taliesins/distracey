@@ -71,22 +71,6 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Web\ApmExtensions.cs" />
-    <Compile Include="Web\ApmContextHttpMessageExtractor.cs" />
-    <Compile Include="Web\HttpClient\ApmHttpClientApmContextExtensions.cs" />
-    <Compile Include="Web\Session\HttpContextSessionContainer.cs" />
-    <Compile Include="Web\WebApi\ApmAttribute.cs" />
-    <Compile Include="Web\HttpClient\ApmHttpClientDelegatingHandler.cs" />
-    <Compile Include="Web\HttpClient\ApmHttpClientFinishInformation.cs" />
-    <Compile Include="Web\HttpClient\ApmHttpClientStartInformation.cs" />
-    <Compile Include="Web\HttpClient\ApmHttpClientRequestDecorator.cs" />
-    <Compile Include="Web\ApmHttpRequestMessageParser.cs" />
-    <Compile Include="Web\WebApi\ApmOutgoingResponseDecorator.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiFilterAttribute.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiFilterAttributeExtensions.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiFinishInformation.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiRequestDecorator.cs" />
-    <Compile Include="Web\WebApi\ApmWebApiStartInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

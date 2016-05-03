@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Http;
 
-namespace Distracey.Web.WebApi
+namespace Distracey.Agent.SystemWeb.WebApi
 {
     public static class ApmWebApiFilterAttributeExtensions
     {

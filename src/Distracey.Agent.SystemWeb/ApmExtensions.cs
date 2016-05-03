@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Distracey.Common;
 
-namespace Distracey.Web
+namespace Distracey.Agent.SystemWeb
 {
     public static class ApmExtensions
     {

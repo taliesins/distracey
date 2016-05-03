@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Distracey.Agent.Common.MethodHandler;
+using Distracey.Agent.SystemWeb.HttpClient;
+using Distracey.Agent.SystemWeb.WebApi;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Distracey.PerformanceCounter.ApiFilterCounter;
 using Distracey.PerformanceCounter.HttpClientCounter;
 using Distracey.PerformanceCounter.MethodCounter;
-using Distracey.Web.HttpClient;
-using Distracey.Web.WebApi;
 
 namespace Distracey.PerformanceCounter
 {

@@ -1,7 +1,7 @@
 ﻿using System.Web.Http.Filters;
 using Distracey.Common;
 
-namespace Distracey.Web.WebApi
+namespace Distracey.Agent.SystemWeb.WebApi
 {
     public class ApmOutgoingResponseDecorator
     {

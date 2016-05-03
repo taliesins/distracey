@@ -8,7 +8,7 @@ using System.Web.Http.Controllers;
 using Distracey.Common;
 using Distracey.Common.Helpers;
 
-namespace Distracey.Web.WebApi
+namespace Distracey.Agent.SystemWeb.WebApi
 {
     public class ApmWebApiRequestDecorator
     {

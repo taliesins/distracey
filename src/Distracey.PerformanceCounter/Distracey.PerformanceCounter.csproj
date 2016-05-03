@@ -87,9 +87,13 @@
     <Compile Include="UnhandledExceptionCounter\UnhandledExceptionCounterTotalCountHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Distracey.Agent.Common\Distracey.Agent.Common.csproj">
+    <ProjectReference Include="..\Distracey.Agent.Core\Distracey.Agent.Core.csproj">
       <Project>{c7ca25a8-377e-47cd-a2f5-2feffc05e7e8}</Project>
-      <Name>Distracey.Agent.Common</Name>
+      <Name>Distracey.Agent.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Distracey.Agent.SystemWeb\Distracey.Agent.SystemWeb.csproj">
+      <Project>{76676001-ef79-4dd4-9ded-097dce81124a}</Project>
+      <Name>Distracey.Agent.SystemWeb</Name>
     </ProjectReference>
     <ProjectReference Include="..\Distracey.Common\Distracey.Common.csproj">
       <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
