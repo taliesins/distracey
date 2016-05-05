@@ -1,4 +1,5 @@
-﻿using Distracey.Common;
+﻿using System;
+using Distracey.Common;
 using Distracey.Common.EventAggregator;
 
 namespace Distracey.Agent.Common.MethodHandler
@@ -26,25 +27,25 @@ namespace Distracey.Agent.Common.MethodHandler
             }
         }
 
-        public void OnActionExecuted()
+        public void OnActionExecuted(Exception exception)
         {
             if (InnerHandler != null)
             {
-                InnerHandler.OnActionExecuted();
+                InnerHandler.OnActionExecuted(exception);
             }
 
-            LogStopOfRequest();
+            LogStopOfRequest(exception);
 
             //Dispose ApmContext if it does not exist previously
         }
 
         private void LogStartOfRequest()
         {
-            var apmMethodStartInformation = new ApmMethodHandlerStartInformation
+            var apmMethodStartInformation = new ApmMethodHandlerStartedMessage
             {
             };
 
-            var eventContext = new ApmEvent<ApmMethodHandlerStartInformation>
+            var eventContext = new ApmEvent<ApmMethodHandlerStartedMessage>
             {
                 ApmContext = _apmContext,
                 Event = apmMethodStartInformation
@@ -53,13 +54,14 @@ namespace Distracey.Agent.Common.MethodHandler
             this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        private void LogStopOfRequest()
+        private void LogStopOfRequest(Exception exception)
         {
-            var apmMethodFinishInformation = new ApmMethodHandlerFinishInformation
+            var apmMethodFinishInformation = new ApmMethodHandlerFinishedMessage
             {
+                Exception = exception
             };
 
-            var eventContext = new ApmEvent<ApmMethodHandlerFinishInformation>
+            var eventContext = new ApmEvent<ApmMethodHandlerFinishedMessage>
             {
                 ApmContext = _apmContext,
                 Event = apmMethodFinishInformation

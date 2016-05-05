@@ -20,7 +20,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             _instanceName = instanceName;
         }
 
-        public void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation)
+        public void Start(IApmContext apmContext, ApmWebApiStartedMessage apmWebApiStartedMessage)
         {
             var key = string.Empty;
             
@@ -29,20 +29,20 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetApiFilterCategoryName(_applicationName);
-                var counterName = GetCounterName(apmWebApiStartInformation.MethodIdentifier);
+                var counterName = GetCounterName(apmWebApiStartedMessage.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);
             }
         }
 
-        public void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation)
+        public void Finish(IApmContext apmContext, ApmWebApiFinishedMessage apmWebApiFinishedMessage)
         {
             object counterProperty;
 
             if (apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.RawValue = apmWebApiFinishInformation.ResponseTime;
+                counter.RawValue = apmWebApiFinishedMessage.ResponseTime;
             }
         }
 

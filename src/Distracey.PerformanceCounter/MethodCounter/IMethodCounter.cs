@@ -7,8 +7,8 @@ namespace Distracey.PerformanceCounter.MethodCounter
 {
     public interface IMethodCounter : IDisposable
     {
-        void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation);
-        void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation);
+        void Start(IApmContext apmContext, ApmMethodHandlerStartedMessage apmMethodHandlerStartedMessage);
+        void Finish(IApmContext apmContext, ApmMethodHandlerFinishedMessage apmMethodHandlerFinishedMessage);
         CounterCreationData[] GetCreationData(string methodIdentifier);
     }
 }

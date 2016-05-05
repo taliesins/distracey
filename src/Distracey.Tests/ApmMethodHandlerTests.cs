@@ -10,8 +10,8 @@ namespace Distracey.Tests
     [TestFixture]
     public class ApmMethodHandlerTests
     {
-        private Action<IApmContext, ApmMethodHandlerStartInformation> _startAction;
-        private Action<IApmContext, ApmMethodHandlerFinishInformation> _finishAction;
+        private Action<IApmContext, ApmMethodHandlerStartedMessage> _startAction;
+        private Action<IApmContext, ApmMethodHandlerFinishedMessage> _finishAction;
 
         [SetUp]
         public void Setup()
@@ -19,18 +19,18 @@ namespace Distracey.Tests
             _startAction = (context, information) => { };
             _finishAction = (context, information) => { };
 
-            this.Subscribe<ApmEvent<ApmMethodHandlerStartInformation>>(OnApmMethodHandlerStartInformation).ConfigureAwait(false).GetAwaiter().GetResult();
-            this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+            this.Subscribe<ApmEvent<ApmMethodHandlerStartedMessage>>(OnApmMethodHandlerStartInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+            this.Subscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>(OnApmMethodHandlerFinishInformation).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         [TearDown]
         public void TearDown()
         {
-            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
-            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartedMessage>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
         }
 
-        private Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartInformation>> task)
+        private Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -41,7 +41,7 @@ namespace Distracey.Tests
             return Task.FromResult(false);
         }
 
-        private Task OnApmMethodHandlerFinishInformation(Task<ApmEvent<ApmMethodHandlerFinishInformation>> task)
+        private Task OnApmMethodHandlerFinishInformation(Task<ApmEvent<ApmMethodHandlerFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -84,7 +84,7 @@ namespace Distracey.Tests
 
             var testApmMethodHandler = new ApmMethodHandler(apmContext);
             testApmMethodHandler.OnActionExecuting();
-            testApmMethodHandler.OnActionExecuted();
+            testApmMethodHandler.OnActionExecuted(null);
 
             Assert.IsTrue(finishActionLogged);
         }

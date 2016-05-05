@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Distracey.Agent.Common.MethodHandler;
+using Distracey.Agent.Core.MethodHandler;
 using Distracey.Agent.SystemWeb.HttpClient;
 using Distracey.Agent.SystemWeb.WebApi;
 using Distracey.Common;
@@ -12,17 +13,17 @@ using Distracey.PerformanceCounter.MethodCounter;
 
 namespace Distracey.PerformanceCounter
 {
-    public class PerformanceCounterApmEventLogger : IEventLogger, IDisposable
+    public class PerformanceCounterApmEventLogger : IApmMethodHandlerLogger, IApmHttpClientLogger, IApmWebApiFilterLogger, IDisposable
     {
         public PerformanceCounterApmEventLogger(string applicationName)
         {
             ApplicationName = applicationName;
-            this.Subscribe<ApmEvent<ApmMethodHandlerStartInformation>>(OnApmMethodHandlerStartInformation);
-            this.Subscribe<ApmEvent<ApmMethodHandlerFinishInformation>>(OnApmMethodHandlerFinishInformation);
-            this.Subscribe<ApmEvent<ApmHttpClientStartInformation>>(OnApmHttpClientStartInformation);
-            this.Subscribe<ApmEvent<ApmHttpClientFinishInformation>>(OnApmHttpClientFinishInformation);
-            this.Subscribe<ApmEvent<ApmWebApiStartInformation>>(OnApmWebApiStartInformation);
-            this.Subscribe<ApmEvent<ApmWebApiFinishInformation>>(OnApmWebApiFinishInformation);
+            this.Subscribe<ApmEvent<ApmMethodHandlerStartedMessage>>(OnApmMethodHandlerStartInformation);
+            this.Subscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>(OnApmMethodHandlerFinishInformation);
+            this.Subscribe<ApmEvent<ApmHttpClientStartedMessage>>(OnApmHttpClientStartInformation);
+            this.Subscribe<ApmEvent<ApmHttpClientFinishedMessage>>(OnApmHttpClientFinishInformation);
+            this.Subscribe<ApmEvent<ApmWebApiStartedMessage>>(OnApmWebApiStartInformation);
+            this.Subscribe<ApmEvent<ApmWebApiFinishedMessage>>(OnApmWebApiFinishInformation);
         }
 
         public static string ApplicationName { get; set; }
@@ -36,7 +37,7 @@ namespace Distracey.PerformanceCounter
                 new MethodCounterTotalCountHandler("Default", ApplicationName)
             };
 
-        private Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartInformation>> task)
+        public Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -50,7 +51,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        private Task OnApmMethodHandlerFinishInformation(Task<ApmEvent<ApmMethodHandlerFinishInformation>> task)
+        public Task OnApmMethodHandlerFinishInformation(Task<ApmEvent<ApmMethodHandlerFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -79,7 +80,7 @@ namespace Distracey.PerformanceCounter
                 new HttpClientCounterTotalCountHandler("Default", ApplicationName)
             };
 
-        private Task OnApmHttpClientStartInformation(Task<ApmEvent<ApmHttpClientStartInformation>> task)
+        public Task OnApmHttpClientStartInformation(Task<ApmEvent<ApmHttpClientStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -93,7 +94,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        private Task OnApmHttpClientFinishInformation(Task<ApmEvent<ApmHttpClientFinishInformation>> task)
+        public Task OnApmHttpClientFinishInformation(Task<ApmEvent<ApmHttpClientFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -121,7 +122,7 @@ namespace Distracey.PerformanceCounter
             new ApiFilterCounterTotalCountHandler("Default", ApplicationName)
         };
 
-        private Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartInformation>> task)
+        public Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -135,7 +136,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishInformation>> task)
+        public Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -156,12 +157,12 @@ namespace Distracey.PerformanceCounter
 
         public void Dispose()
         {
-            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartInformation>>();
-            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishInformation>>();
-            this.Unsubscribe<ApmEvent<ApmHttpClientStartInformation>>();
-            this.Unsubscribe<ApmEvent<ApmHttpClientFinishInformation>>();
-            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>();
-            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerStartedMessage>>();
+            this.Unsubscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientStartedMessage>>();
+            this.Unsubscribe<ApmEvent<ApmHttpClientFinishedMessage>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiStartedMessage>>();
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishedMessage>>();
         }
     }
 }

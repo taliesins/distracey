@@ -7,8 +7,8 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
 {
     public interface IHttpClientCounter : IDisposable
     {
-        void Start(IApmContext apmContext, ApmHttpClientStartInformation apmHttpClientStartInformation);
-        void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmHttpClientFinishInformation);
+        void Start(IApmContext apmContext, ApmHttpClientStartedMessage apmHttpClientStartedMessage);
+        void Finish(IApmContext apmContext, ApmHttpClientFinishedMessage apmHttpClientFinishedMessage);
         CounterCreationData[] GetCreationData(string methodIdentifier);
     }
 }

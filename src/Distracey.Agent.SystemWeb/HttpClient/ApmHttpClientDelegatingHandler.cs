@@ -74,7 +74,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
             var flags = _apmHttpRequestMessageParser.GetFlags(request);
             var sampled = _apmHttpRequestMessageParser.GetSampled(request);
 
-            var apmHttpClientStartInformation = new ApmHttpClientStartInformation
+            var apmHttpClientStartInformation = new ApmHttpClientStartedMessage
             {
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
@@ -111,7 +111,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmHttpClientStartInformation>
+            var eventContext = new ApmEvent<ApmHttpClientStartedMessage>
             {
                 ApmContext = _apmContext,
                 Event = apmHttpClientStartInformation
@@ -139,7 +139,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
             var flags = _apmHttpRequestMessageParser.GetFlags(request);
             var sampled = _apmHttpRequestMessageParser.GetSampled(request);
 
-            var apmHttpClientFinishInformation = new ApmHttpClientFinishInformation
+            var apmHttpClientFinishInformation = new ApmHttpClientFinishedMessage
             {
                 EventName = eventName,
                 MethodIdentifier = methodIdentifier,
@@ -177,7 +177,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 apmContext[Constants.ResponseStatusCodePropertyKey] = response.StatusCode.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmHttpClientFinishInformation>
+            var eventContext = new ApmEvent<ApmHttpClientFinishedMessage>
             {
                 ApmContext = _apmContext,
                 Event = apmHttpClientFinishInformation

@@ -2,7 +2,7 @@
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
-    public class ApmWebApiStartInformation
+    public class ApmWebApiStartedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }

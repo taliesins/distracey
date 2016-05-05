@@ -20,7 +20,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
             _instanceName = instanceName;
         }
 
-        public void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
+        public void Start(IApmContext apmContext, ApmMethodHandlerStartedMessage apmMethodHandlerStartedMessage)
         {
             var key = string.Empty;
             
@@ -29,13 +29,13 @@ namespace Distracey.PerformanceCounter.MethodCounter
             if (!apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetMethodCategoryName(_applicationName);
-                var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
+                var counterName = GetCounterName(apmMethodHandlerStartedMessage.MethodIdentifier);
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(LastOperationExecutionTimeMsCounter, counter);
             }
         }
 
-        public void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
+        public void Finish(IApmContext apmContext, ApmMethodHandlerFinishedMessage apmMethodHandlerFinishedMessage)
         {
             object counterProperty;
 

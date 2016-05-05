@@ -38,8 +38,9 @@
     <Compile Include="MethodHandler\ApmMethodHandler.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerApmContextExtensions.cs" />
     <Compile Include="MethodHandler\ApmMethodHandlerExtensions.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerFinishInformation.cs" />
-    <Compile Include="MethodHandler\ApmMethodHandlerStartInformation.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerFinishedMessage.cs" />
+    <Compile Include="MethodHandler\ApmMethodHandlerStartedMessage.cs" />
+    <Compile Include="MethodHandler\IApmMethodHandlerLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

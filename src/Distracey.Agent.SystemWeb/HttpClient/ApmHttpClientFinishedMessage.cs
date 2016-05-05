@@ -1,9 +1,13 @@
-﻿namespace Distracey.Agent.Common.MethodHandler
+﻿using System.Net.Http;
+
+namespace Distracey.Agent.SystemWeb.HttpClient
 {
-    public class ApmMethodHandlerFinishInformation
+    public class ApmHttpClientFinishedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
+        public HttpRequestMessage Request { get; set; }
+        public HttpResponseMessage Response { get; set; }
         public long ResponseTime { get; set; }
 
         public string ClientName { get; set; }

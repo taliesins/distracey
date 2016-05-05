@@ -6,15 +6,16 @@ namespace Distracey.Agent.Common.MethodHandler
     {
         public static void Execute(this ApmMethodHandler apmMethodHandler, Action action)
         {
-
             apmMethodHandler.OnActionExecuting();
             try
             {
                 action();
+                apmMethodHandler.OnActionExecuted(null);
             }
-            finally
+            catch (Exception exception)
             {
-                apmMethodHandler.OnActionExecuted();
+                apmMethodHandler.OnActionExecuted(exception);
+                throw;
             }
         }
 
@@ -23,11 +24,14 @@ namespace Distracey.Agent.Common.MethodHandler
             apmMethodHandler.OnActionExecuting();
             try
             {
-                return func();
+                var result = func();
+                apmMethodHandler.OnActionExecuted(null);
+                return result;
             }
-            finally
+            catch (Exception exception)
             {
-                apmMethodHandler.OnActionExecuted();
+                apmMethodHandler.OnActionExecuted(exception);
+                throw;
             }
         }
     }

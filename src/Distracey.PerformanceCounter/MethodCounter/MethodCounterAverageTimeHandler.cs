@@ -21,7 +21,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
             _instanceName = instanceName;
         }
 
-        public void Start(IApmContext apmContext, ApmMethodHandlerStartInformation apmMethodHandlerStartInformation)
+        public void Start(IApmContext apmContext, ApmMethodHandlerStartedMessage apmMethodHandlerStartedMessage)
         {
             var key = string.Empty;
             
@@ -30,7 +30,7 @@ namespace Distracey.PerformanceCounter.MethodCounter
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetMethodCategoryName(_applicationName);
-                var counterName = GetCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
+                var counterName = GetCounterName(apmMethodHandlerStartedMessage.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsCounter, counter);
@@ -41,20 +41,20 @@ namespace Distracey.PerformanceCounter.MethodCounter
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetMethodCategoryName(_applicationName);
-                var counterName = GetBaseCounterName(apmMethodHandlerStartInformation.MethodIdentifier);
+                var counterName = GetBaseCounterName(apmMethodHandlerStartedMessage.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);
             }
         }
 
-        public void Finish(IApmContext apmContext, ApmMethodHandlerFinishInformation apmMethodHandlerFinishInformation)
+        public void Finish(IApmContext apmContext, ApmMethodHandlerFinishedMessage apmMethodHandlerFinishedMessage)
         {
             object counterProperty;
 
             if (apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.IncrementBy(apmMethodHandlerFinishInformation.ResponseTime);
+                counter.IncrementBy(apmMethodHandlerFinishedMessage.ResponseTime);
             }
 
             object baseCounterProperty;

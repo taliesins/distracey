@@ -7,8 +7,8 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
 {
     public interface IApiFilterCounter : IDisposable
     {
-        void Start(IApmContext apmContext, ApmWebApiStartInformation apmWebApiStartInformation);
-        void Finish(IApmContext apmContext, ApmWebApiFinishInformation apmWebApiFinishInformation);
+        void Start(IApmContext apmContext, ApmWebApiStartedMessage apmWebApiStartedMessage);
+        void Finish(IApmContext apmContext, ApmWebApiFinishedMessage apmWebApiFinishedMessage);
         CounterCreationData[] GetCreationData(string methodIdentifier);
     }
 }

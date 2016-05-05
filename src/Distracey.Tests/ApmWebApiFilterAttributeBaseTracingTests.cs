@@ -13,8 +13,8 @@ namespace Distracey.Tests
     public class ApmWebApiFilterAttributeBaseTracingTests
     {
         private bool _addResponseHeaders;
-        private Action<IApmContext, ApmWebApiStartInformation> _startAction;
-        private Action<IApmContext, ApmWebApiFinishInformation> _finishAction;
+        private Action<IApmContext, ApmWebApiStartedMessage> _startAction;
+        private Action<IApmContext, ApmWebApiFinishedMessage> _finishAction;
         private ApmWebApiFilterAttribute _apmWebApiFilterAttribute;
 
         [SetUp]
@@ -25,18 +25,18 @@ namespace Distracey.Tests
             _finishAction = (context, information) => { };
             _apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(_addResponseHeaders);
 
-            this.Subscribe<ApmEvent<ApmWebApiStartInformation>>(OnApmWebApiStartInformation).ConfigureAwait(false).GetAwaiter().GetResult();
-            this.Subscribe<ApmEvent<ApmWebApiFinishInformation>>(OnApmWebApiFinishInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+            this.Subscribe<ApmEvent<ApmWebApiStartedMessage>>(OnApmWebApiStartInformation).ConfigureAwait(false).GetAwaiter().GetResult();
+            this.Subscribe<ApmEvent<ApmWebApiFinishedMessage>>(OnApmWebApiFinishInformation).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         [TearDown]
         public void TearDown()
         {
-            this.Unsubscribe<ApmEvent<ApmWebApiStartInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
-            this.Unsubscribe<ApmEvent<ApmWebApiFinishInformation>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+            this.Unsubscribe<ApmEvent<ApmWebApiStartedMessage>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
+            this.Unsubscribe<ApmEvent<ApmWebApiFinishedMessage>>().ConfigureAwait(false).GetAwaiter().GetResult(); ;
         }
 
-        private Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartInformation>> task)
+        private Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -47,7 +47,7 @@ namespace Distracey.Tests
             return Task.FromResult(false);
         }
 
-        private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishInformation>> task)
+        private Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;

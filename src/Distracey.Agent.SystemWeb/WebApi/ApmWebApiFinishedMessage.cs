@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
-    public class ApmWebApiFinishInformation
+    public class ApmWebApiFinishedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }

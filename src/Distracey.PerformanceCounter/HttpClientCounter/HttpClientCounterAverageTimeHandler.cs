@@ -21,7 +21,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             _instanceName = instanceName;
         }
 
-        public void Start(IApmContext apmContext, ApmHttpClientStartInformation apmHttpClientStartInformation)
+        public void Start(IApmContext apmContext, ApmHttpClientStartedMessage apmHttpClientStartedMessage)
         {
             var key = string.Empty;
             
@@ -30,7 +30,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             if (!apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetHttpClientCategoryName(_applicationName);
-                var counterName = GetCounterName(apmHttpClientStartInformation.MethodIdentifier);
+                var counterName = GetCounterName(apmHttpClientStartedMessage.MethodIdentifier);
 
                 var counter = Counters.GetOrAdd(key, s => GetCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsCounter, counter);
@@ -41,20 +41,20 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             if (!apmContext.TryGetValue(AverageTimeTakenMsBaseCounter, out baseCounterProperty))
             {
                 var categoryName = PerformanceCounterApmEventLogger.GetHttpClientCategoryName(_applicationName);
-                var counterName = GetBaseCounterName(apmHttpClientStartInformation.MethodIdentifier);
+                var counterName = GetBaseCounterName(apmHttpClientStartedMessage.MethodIdentifier);
                 var baseCounter = BaseCounters.GetOrAdd(key, s => GetBaseCounter(categoryName, _instanceName, counterName));
                 apmContext.Add(AverageTimeTakenMsBaseCounter, baseCounter);
             }
         }
 
-        public void Finish(IApmContext apmContext, ApmHttpClientFinishInformation apmHttpClientFinishInformation)
+        public void Finish(IApmContext apmContext, ApmHttpClientFinishedMessage apmHttpClientFinishedMessage)
         {
             object counterProperty;
 
             if (apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.IncrementBy(apmHttpClientFinishInformation.ResponseTime);
+                counter.IncrementBy(apmHttpClientFinishedMessage.ResponseTime);
             }
 
             object baseCounterProperty;

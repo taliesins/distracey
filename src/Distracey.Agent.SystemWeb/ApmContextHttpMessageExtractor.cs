@@ -20,26 +20,59 @@ namespace Distracey.Agent.SystemWeb
 
         private static void SetIncomingTracingForHttpRequestMessage(IApmContext apmContext, HttpRequestMessage request)
         {
-            var incomingTraceId = string.Empty;
-            var incomingSpanId = string.Empty;
-            var incomingParentSpanId = string.Empty;
-            var incomingSampled = string.Empty;
-            var incomingFlags = string.Empty;
+            if (request == null) return;
 
-            if (request != null)
+            object value;
+
+            if (!apmContext.TryGetValue(Constants.IncomingTraceIdPropertyKey, out value) || value == null)
             {
-                incomingTraceId = ApmHttpRequestMessageParser.GetTraceId(request);
-                incomingSpanId = ApmHttpRequestMessageParser.GetSpanId(request);
-                incomingParentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(request);
-                incomingSampled = ApmHttpRequestMessageParser.GetSampled(request);
-                incomingFlags = ApmHttpRequestMessageParser.GetFlags(request);
+                var incomingTraceId = ApmHttpRequestMessageParser.GetTraceId(request);
+
+                if (!string.IsNullOrEmpty(incomingTraceId))
+                {
+                    apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
+                }
             }
 
-            apmContext[Constants.IncomingTraceIdPropertyKey] = incomingTraceId;
-            apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
-            apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
-            apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
-            apmContext[Constants.IncomingFlagsPropertyKey] = incomingFlags;
+            if (!apmContext.TryGetValue(Constants.IncomingSpanIdPropertyKey, out value) || value == null)
+            {
+                var incomingSpanId = ApmHttpRequestMessageParser.GetSpanId(request);
+
+                if (!string.IsNullOrEmpty(incomingSpanId))
+                {
+                    apmContext[Constants.IncomingSpanIdPropertyKey] = incomingSpanId;
+                }
+            }
+
+            if (!apmContext.TryGetValue(Constants.IncomingParentSpanIdPropertyKey, out value) || value == null)
+            {
+                var incomingParentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(request);
+
+                if (!string.IsNullOrEmpty(incomingParentSpanId))
+                {
+                    apmContext[Constants.IncomingParentSpanIdPropertyKey] = incomingParentSpanId;
+                }
+            }
+
+            if (!apmContext.TryGetValue(Constants.IncomingSampledPropertyKey, out value) || value == null)
+            {
+                var incomingSampled = ApmHttpRequestMessageParser.GetSampled(request);
+
+                if (!string.IsNullOrEmpty(incomingSampled))
+                {
+                    apmContext[Constants.IncomingSampledPropertyKey] = incomingSampled;
+                }
+            }
+
+            if (!apmContext.TryGetValue(Constants.IncomingFlagsPropertyKey, out value) || value == null)
+            {
+                var incomingFlags = ApmHttpRequestMessageParser.GetFlags(request);
+
+                if (!string.IsNullOrEmpty(incomingFlags))
+                {
+                    apmContext[Constants.IncomingFlagsPropertyKey] = incomingFlags;
+                }
+            }
         }
 
         public void GetContext(IApmContext apmContext, MethodBase method)
