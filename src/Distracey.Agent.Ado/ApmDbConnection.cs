@@ -4,14 +4,14 @@ using System.Data;
 using System.Data.Common;
 using System.Transactions;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
 using Distracey.Common.Helpers;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.Ado
 {
     public class ApmDbConnection : DbConnection
     {
-        private bool wasPreviouslyUsed;
+        private bool _wasPreviouslyUsed;
 
         public ApmDbConnection(DbConnection connection)
             : this(connection, connection.TryGetProfiledProviderFactory())
@@ -205,7 +205,7 @@ namespace Distracey.Agent.Ado
 
         private void OpenConnection()
         {
-            if (wasPreviouslyUsed)
+            if (_wasPreviouslyUsed)
             {
                 ConnectionId = ShortGuid.NewGuid();
             }
@@ -215,78 +215,58 @@ namespace Distracey.Agent.Ado
 
         private void ClosedConnection()
         {
-            wasPreviouslyUsed = true;
+            _wasPreviouslyUsed = true;
 
             LogStopOfDbConnection(ConnectionId);
         }
 
         private void LogStartOfDbConnection(ShortGuid connectionId)
         {
+            var apmContext = GetApmContext();
             var dbConnectionOpenedMessage = new DbConnectionOpenedMessage
             {
                 ConectionId = connectionId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbConnectionOpenedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = dbConnectionOpenedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            dbConnectionOpenedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfDbConnection(ShortGuid connectionId)
         {
+            var apmContext = GetApmContext();
             var dbConnectionClosedMessage = new DbConnectionClosedMessage
             {
                 ConectionId = connectionId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbConnectionClosedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = dbConnectionClosedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            dbConnectionClosedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStartOfDtcTransaction(ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel)
         {
+            var apmContext = GetApmContext();
             var dbConnectionOpenedMessage = new DbConnectionOpenedMessage
             {
                 ConectionId = connectionId,
                 TransactionInformation = transactionInformation,
                 IsolationLevel = isolationLevel
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbConnectionOpenedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = dbConnectionOpenedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            dbConnectionOpenedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfDtcTransaction(ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel, TransactionStatus aborted)
         {
+            var apmContext = GetApmContext();
             var dbConnectionClosedMessage = new DbConnectionClosedMessage
             {
                 ConectionId = connectionId,
                 TransactionInformation = transactionInformation,
                 IsolationLevel = isolationLevel,
                 Aborted = aborted
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbConnectionClosedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = dbConnectionClosedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            dbConnectionClosedMessage.PublishMessage(apmContext, this);
         }
     }
 }

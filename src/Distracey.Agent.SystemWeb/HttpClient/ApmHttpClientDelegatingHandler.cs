@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.HttpClient
 {
@@ -60,13 +60,8 @@ namespace Distracey.Agent.SystemWeb.HttpClient
         {
             var eventName = _apmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
-            var clientName = _apmHttpRequestMessageParser.GetClientName(request);
 
-            var incomingTraceId = _apmHttpRequestMessageParser.GetIncomingTraceId(request);
-            var incomingSpanId = _apmHttpRequestMessageParser.GetIncomingSpanId(request);
-            var incomingParentSpanId = _apmHttpRequestMessageParser.GetIncomingParentSpanId(request);
-            var incomingFlags = _apmHttpRequestMessageParser.GetIncomingFlags(request);
-            var incomingSampled = _apmHttpRequestMessageParser.GetIncomingSampled(request);
+            var clientName = _apmHttpRequestMessageParser.GetClientName(request);
 
             var traceId = _apmHttpRequestMessageParser.GetTraceId(request);
             var spanId = _apmHttpRequestMessageParser.GetSpanId(request);
@@ -80,11 +75,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 MethodIdentifier = methodIdentifier,
                 Request = request,
                 ClientName = clientName,
-                IncomingTraceId = incomingTraceId,
-                IncomingSpanId = incomingSpanId,
-                IncomingParentSpanId = incomingParentSpanId,
-                IncomingSampled = incomingSampled,
-                IncomingFlags = incomingFlags,
                 TraceId = traceId,
                 SpanId = spanId,
                 ParentSpanId = parentSpanId,
@@ -111,13 +101,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmHttpClientStartedMessage>
-            {
-                ApmContext = _apmContext,
-                Event = apmHttpClientStartInformation
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            apmHttpClientStartInformation.PublishMessage(_apmContext, this);
         }
 
         private void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response)
@@ -126,12 +110,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
             var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
             var responseTime = _apmHttpRequestMessageParser.GetResponseTime(request);
             var clientName = _apmHttpRequestMessageParser.GetClientName(request);
-
-            var incomingTraceId = _apmHttpRequestMessageParser.GetIncomingTraceId(request);
-            var incomingSpanId = _apmHttpRequestMessageParser.GetIncomingSpanId(request);
-            var incomingParentSpanId = _apmHttpRequestMessageParser.GetIncomingParentSpanId(request);
-            var incomingFlags = _apmHttpRequestMessageParser.GetIncomingFlags(request);
-            var incomingSampled = _apmHttpRequestMessageParser.GetIncomingSampled(request);
 
             var traceId = _apmHttpRequestMessageParser.GetTraceId(request);
             var spanId = _apmHttpRequestMessageParser.GetSpanId(request);
@@ -147,11 +125,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 Response = response,
                 ResponseTime = responseTime,
                 ClientName = clientName,
-                IncomingTraceId = incomingTraceId,
-                IncomingSpanId = incomingSpanId,
-                IncomingParentSpanId = incomingParentSpanId,
-                IncomingSampled = incomingSampled,
-                IncomingFlags = incomingFlags,
                 TraceId = traceId,
                 SpanId = spanId,
                 ParentSpanId = parentSpanId,
@@ -177,13 +150,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
                 apmContext[Constants.ResponseStatusCodePropertyKey] = response.StatusCode.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmHttpClientFinishedMessage>
-            {
-                ApmContext = _apmContext,
-                Event = apmHttpClientFinishInformation
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            apmHttpClientFinishInformation.PublishMessage(_apmContext, this);
         }
     }
 }

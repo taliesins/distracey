@@ -1,6 +1,6 @@
 ﻿using Distracey.Common;
 
-namespace Distracey.Agent.Common.MethodHandler
+namespace Distracey.Agent.Core.MethodHandler
 {
     public static class ApmMethodHandlerApmContextExtensions
     {

@@ -7,6 +7,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
@@ -146,13 +147,7 @@ namespace Distracey.Agent.SystemWeb.WebApi
                 apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmWebApiStartedMessage>
-            {
-                ApmContext = apmContext,
-                Event = apmWebApiStartInformation
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            apmWebApiStartInformation.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext)
@@ -193,13 +188,7 @@ namespace Distracey.Agent.SystemWeb.WebApi
                 apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
             }
 
-            var eventContext = new ApmEvent<ApmWebApiFinishedMessage>
-            {
-                ApmContext = apmContext,
-                Event = apmWebApiFinishInformation
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            apmWebApiFinishInformation.PublishMessage(apmContext, this);
         }
 
         public static void SetTracingResponseHeaders(HttpActionExecutedContext actionContext)

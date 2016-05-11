@@ -2,8 +2,8 @@
 using System.Data;
 using System.Data.Common;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
 using Distracey.Common.Helpers;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.Ado
 {
@@ -69,36 +69,26 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteDbDataAdapter(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderStartedMessage = new DbDataAdapterStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbDataAdapterStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteDbDataAdapter(ShortGuid commandId, int recordsEffected, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderFinishedMessage = new DbDataAdapterFinishedMessage
             {
                 CommandId = commandId,
                 RecordsEffected = recordsEffected,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbDataAdapterFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
         }
 
         public override DataTable[] FillSchema(DataSet dataSet, SchemaType schemaType)

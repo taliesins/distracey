@@ -5,7 +5,7 @@ namespace Distracey.Agent.SystemWeb.WebApi
 {
     public interface IApmWebApiFilterLogger : IEventLogger
     {
-        Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartedMessage>> task);
-        Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishedMessage>> task);
+        Task OnApmWebApiStartedMessage(Task<ApmEvent<ApmWebApiStartedMessage>> task);
+        Task OnApmWebApiFinishedMessage(Task<ApmEvent<ApmWebApiFinishedMessage>> task);
     }
 }

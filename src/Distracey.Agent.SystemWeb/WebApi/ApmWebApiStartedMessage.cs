@@ -1,8 +1,9 @@
 ﻿using System.Net.Http;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
-    public class ApmWebApiStartedMessage
+    public class ApmWebApiStartedMessage : ITracingMessage, ISourceMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }

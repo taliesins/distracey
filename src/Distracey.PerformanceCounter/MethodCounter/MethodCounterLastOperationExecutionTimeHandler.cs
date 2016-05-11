@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using Distracey.Agent.Common.MethodHandler;
+using Distracey.Agent.Core.MethodHandler;
 using Distracey.Common;
 
 namespace Distracey.PerformanceCounter.MethodCounter

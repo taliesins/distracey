@@ -2,8 +2,8 @@
 using System.Data;
 using System.Data.Common;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
 using Distracey.Common.Helpers;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.Ado
 {
@@ -25,36 +25,26 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfDbTransaction(ShortGuid transactionId)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryStartedMessage = new DbTransactionStartedMessage
             {
                 TransactionId = transactionId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbTransactionStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfDbTransaction(ShortGuid transactionId, bool rollback, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryFinishedMessage = new DbTransactionFinishedMessage
             {
                 TransactionId = transactionId,
                 Rollback = rollback,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<DbTransactionFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
         }
 
         public ApmDbConnection InnerConnection { get; set; } 

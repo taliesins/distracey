@@ -1,8 +1,9 @@
 ﻿using Distracey.Common.Helpers;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.Ado
 {
-    public class ExecuteScalarStartedMessage
+    public class ExecuteScalarStartedMessage : IMessage
     {
         public ShortGuid CommandId { get; set; }
     }

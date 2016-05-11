@@ -5,7 +5,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
 {
     public interface IApmHttpClientLogger : IEventLogger
     {
-        Task OnApmHttpClientStartInformation(Task<ApmEvent<ApmHttpClientStartedMessage>> task);
-        Task OnApmHttpClientFinishInformation(Task<ApmEvent<ApmHttpClientFinishedMessage>> task);
+        Task OnApmHttpClientStartedMessage(Task<ApmEvent<ApmHttpClientStartedMessage>> task);
+        Task OnApmHttpClientFinishedMessage(Task<ApmEvent<ApmHttpClientFinishedMessage>> task);
     }
 }

@@ -5,12 +5,8 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
 using Distracey.Common.Helpers;
-
-#if NET45
-
-#endif
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.Ado
 {
@@ -174,36 +170,26 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteNonQuery(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryStartedMessage = new ExecuteNonQueryStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteNonQueryStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteNonQuery(ShortGuid commandId, int recordsEffected, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryFinishedMessage = new ExecuteNonQueryFinishedMessage
             {
                 CommandId = commandId,
                 RecordsEffected = recordsEffected,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteNonQueryFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
         }
 
         public override object ExecuteScalar()
@@ -229,38 +215,27 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteScalar(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeScalarStartedMessage = new ExecuteScalarStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteScalarStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeScalarStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeScalarStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteScalar(ShortGuid commandId, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeScalarFinishedMessage = new ExecuteScalarFinishedMessage
             {
                 CommandId = commandId,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteScalarFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeScalarFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeScalarFinishedMessage.PublishMessage(apmContext, this);
         }
 
-#if NET45
         public override async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
         {
             object result;
@@ -284,35 +259,25 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteScalarAsync(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeScalarAsyncStartedMessage = new ExecuteScalarAsyncStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteScalarAsyncStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeScalarAsyncStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeScalarAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteScalarAsync(ShortGuid commandId, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeScalarAsyncFinishedMessage = new ExecuteScalarAsyncFinishedMessage
             {
                 CommandId = commandId,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteScalarAsyncFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeScalarAsyncFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeScalarAsyncFinishedMessage.PublishMessage(apmContext, this);
         }
 
         public override async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
@@ -338,36 +303,26 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteNonQueryAsync(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryAsyncStartedMessage = new ExecuteNonQueryAsyncStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteNonQueryAsyncStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryAsyncStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteNonQueryAsync(ShortGuid commandId, int recordsEffected, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeNonQueryAsyncFinishedMessage = new ExecuteNonQueryAsyncFinishedMessage
             {
                 CommandId = commandId,
                 RecordsEffected = recordsEffected,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteNonQueryAsyncFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeNonQueryAsyncFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeNonQueryAsyncFinishedMessage.PublishMessage(apmContext, this);
         }
 
         protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
@@ -393,38 +348,27 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteDbDataReaderAsync(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderAsyncStartedMessage = new ExecuteDbDataReaderAsyncStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteDbDataReaderAsyncStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderAsyncStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteDbDataReaderAsync(ShortGuid commandId, int recordsEffected, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderAsyncFinishedMessage = new ExecuteDbDataReaderAsyncFinishedMessage
             {
                 CommandId = commandId,
                 RecordsEffected = recordsEffected,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteDbDataReaderAsyncFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderAsyncFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderAsyncFinishedMessage.PublishMessage(apmContext, this);
         }
-#endif
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
@@ -448,36 +392,26 @@ namespace Distracey.Agent.Ado
 
         private void LogStartOfExecuteDbDataReader(ShortGuid commandId)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderStartedMessage = new ExecuteDbDataReaderStartedMessage
             {
                 CommandId = commandId
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteDbDataReaderStartedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderStartedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderStartedMessage.PublishMessage(apmContext, this);
         }
 
         private void LogStopOfExecuteDbDataReader(ShortGuid commandId, int recordsEffected, Exception exception)
         {
+            var apmContext = GetApmContext();
             var executeDbDataReaderFinishedMessage = new ExecuteDbDataReaderFinishedMessage
             {
                 CommandId = commandId,
                 RecordsEffected = recordsEffected,
                 Exception = exception
-            };
+            }.AsMessage(apmContext);
 
-            var eventContext = new ApmEvent<ExecuteDbDataReaderFinishedMessage>
-            {
-                ApmContext = GetApmContext(),
-                Event = executeDbDataReaderFinishedMessage
-            };
-
-            this.Publish(eventContext).ConfigureAwait(false).GetAwaiter().GetResult();
+            executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
         }
 
         protected override DbParameter CreateDbParameter()

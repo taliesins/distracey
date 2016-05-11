@@ -66,6 +66,7 @@
     <Compile Include="ExecuteDbDataReaderFinishedMessage.cs" />
     <Compile Include="ExecuteDbDataReaderAsyncStartedMessage.cs" />
     <Compile Include="ExecuteDbDataReaderStartedMessage.cs" />
+    <Compile Include="IApmAdoLogger.cs" />
     <Compile Include="Support.cs" />
     <Compile Include="ApmDbCommand.cs">
       <SubType>Component</SubType>

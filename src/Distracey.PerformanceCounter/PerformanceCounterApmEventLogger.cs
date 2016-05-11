@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Distracey.Agent.Common.MethodHandler;
 using Distracey.Agent.Core.MethodHandler;
 using Distracey.Agent.SystemWeb.HttpClient;
 using Distracey.Agent.SystemWeb.WebApi;
@@ -18,12 +17,12 @@ namespace Distracey.PerformanceCounter
         public PerformanceCounterApmEventLogger(string applicationName)
         {
             ApplicationName = applicationName;
-            this.Subscribe<ApmEvent<ApmMethodHandlerStartedMessage>>(OnApmMethodHandlerStartInformation);
-            this.Subscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>(OnApmMethodHandlerFinishInformation);
-            this.Subscribe<ApmEvent<ApmHttpClientStartedMessage>>(OnApmHttpClientStartInformation);
-            this.Subscribe<ApmEvent<ApmHttpClientFinishedMessage>>(OnApmHttpClientFinishInformation);
-            this.Subscribe<ApmEvent<ApmWebApiStartedMessage>>(OnApmWebApiStartInformation);
-            this.Subscribe<ApmEvent<ApmWebApiFinishedMessage>>(OnApmWebApiFinishInformation);
+            this.Subscribe<ApmEvent<ApmMethodHandlerStartedMessage>>(OnApmMethodHandlerStartedMessage);
+            this.Subscribe<ApmEvent<ApmMethodHandlerFinishedMessage>>(OnApmMethodHandlerFinishedMessage);
+            this.Subscribe<ApmEvent<ApmHttpClientStartedMessage>>(OnApmHttpClientStartedMessage);
+            this.Subscribe<ApmEvent<ApmHttpClientFinishedMessage>>(OnApmHttpClientFinishedMessage);
+            this.Subscribe<ApmEvent<ApmWebApiStartedMessage>>(OnApmWebApiStartedMessage);
+            this.Subscribe<ApmEvent<ApmWebApiFinishedMessage>>(OnApmWebApiFinishedMessage);
         }
 
         public static string ApplicationName { get; set; }
@@ -37,7 +36,7 @@ namespace Distracey.PerformanceCounter
                 new MethodCounterTotalCountHandler("Default", ApplicationName)
             };
 
-        public Task OnApmMethodHandlerStartInformation(Task<ApmEvent<ApmMethodHandlerStartedMessage>> task)
+        public Task OnApmMethodHandlerStartedMessage(Task<ApmEvent<ApmMethodHandlerStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -51,7 +50,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        public Task OnApmMethodHandlerFinishInformation(Task<ApmEvent<ApmMethodHandlerFinishedMessage>> task)
+        public Task OnApmMethodHandlerFinishedMessage(Task<ApmEvent<ApmMethodHandlerFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -80,7 +79,7 @@ namespace Distracey.PerformanceCounter
                 new HttpClientCounterTotalCountHandler("Default", ApplicationName)
             };
 
-        public Task OnApmHttpClientStartInformation(Task<ApmEvent<ApmHttpClientStartedMessage>> task)
+        public Task OnApmHttpClientStartedMessage(Task<ApmEvent<ApmHttpClientStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -94,7 +93,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        public Task OnApmHttpClientFinishInformation(Task<ApmEvent<ApmHttpClientFinishedMessage>> task)
+        public Task OnApmHttpClientFinishedMessage(Task<ApmEvent<ApmHttpClientFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -122,7 +121,7 @@ namespace Distracey.PerformanceCounter
             new ApiFilterCounterTotalCountHandler("Default", ApplicationName)
         };
 
-        public Task OnApmWebApiStartInformation(Task<ApmEvent<ApmWebApiStartedMessage>> task)
+        public Task OnApmWebApiStartedMessage(Task<ApmEvent<ApmWebApiStartedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;
@@ -136,7 +135,7 @@ namespace Distracey.PerformanceCounter
             return Task.FromResult(false);
         }
 
-        public Task OnApmWebApiFinishInformation(Task<ApmEvent<ApmWebApiFinishedMessage>> task)
+        public Task OnApmWebApiFinishedMessage(Task<ApmEvent<ApmWebApiFinishedMessage>> task)
         {
             var apmEvent = task.Result;
             var apmContext = apmEvent.ApmContext;

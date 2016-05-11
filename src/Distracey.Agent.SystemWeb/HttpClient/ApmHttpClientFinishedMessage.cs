@@ -1,8 +1,9 @@
 ﻿using System.Net.Http;
+using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.HttpClient
 {
-    public class ApmHttpClientFinishedMessage
+    public class ApmHttpClientFinishedMessage : ITracingMessage, IClientSourceMessage, ISourceMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
@@ -17,11 +18,5 @@ namespace Distracey.Agent.SystemWeb.HttpClient
         public string ParentSpanId { get; set; }
         public string Sampled { get; set; }
         public string Flags { get; set; }
-
-        public string IncomingTraceId { get; set; }
-        public string IncomingSpanId { get; set; }
-        public string IncomingParentSpanId { get; set; }
-        public string IncomingSampled { get; set; }
-        public string IncomingFlags { get; set; }
     }
 }
