@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApmContextHelper.cs" />
     <Compile Include="ApmDbProviderFactoryExtensions.cs" />
     <Compile Include="DbConnectionClosedMessage.cs" />
     <Compile Include="DbConnectionOpenedMessage.cs" />

@@ -113,7 +113,5 @@ namespace Distracey.Common
         {
             return string.Format("{0}.{1}", methodInfo.DeclaringType.Name, methodInfo.Name);
         }
-
-        
 	}
 }

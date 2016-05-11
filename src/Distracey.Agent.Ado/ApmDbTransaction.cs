@@ -14,18 +14,13 @@ namespace Distracey.Agent.Ado
             InnerTransaction = transaction; 
             InnerConnection = connection;
             TransactionId = ShortGuid.NewGuid();
+            ApmContext = Common.ApmContext.GetContext(string.Format("DbTransaction.{0}", connection.ConnectionString.GetHashCode()));
 
-            LogStartOfDbTransaction(TransactionId);
+            LogStartOfDbTransaction(ApmContext, TransactionId);
         }
 
-        private IApmContext GetApmContext()
+        private void LogStartOfDbTransaction(IApmContext apmContext, ShortGuid transactionId)
         {
-            return ApmContextHelper.GetApmContext();
-        }
-
-        private void LogStartOfDbTransaction(ShortGuid transactionId)
-        {
-            var apmContext = GetApmContext();
             var executeNonQueryStartedMessage = new DbTransactionStartedMessage
             {
                 TransactionId = transactionId
@@ -34,9 +29,8 @@ namespace Distracey.Agent.Ado
             executeNonQueryStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfDbTransaction(ShortGuid transactionId, bool rollback, Exception exception)
+        private void LogStopOfDbTransaction(IApmContext apmContext, ShortGuid transactionId, bool rollback, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeNonQueryFinishedMessage = new DbTransactionFinishedMessage
             {
                 TransactionId = transactionId,
@@ -53,6 +47,8 @@ namespace Distracey.Agent.Ado
 
         public ShortGuid TransactionId { get; set; }
 
+        public IApmContext ApmContext { get; set; }
+
         public override IsolationLevel IsolationLevel
         {
             get { return InnerTransaction.IsolationLevel; }
@@ -68,11 +64,11 @@ namespace Distracey.Agent.Ado
             try
             {
                 InnerTransaction.Commit();
-                LogStopOfDbTransaction(TransactionId, false, null);
+                LogStopOfDbTransaction(ApmContext, TransactionId, false, null);
             }
             catch (Exception exception)
             {
-                LogStopOfDbTransaction(TransactionId, false, exception);
+                LogStopOfDbTransaction(ApmContext, TransactionId, false, exception);
                 throw;
             } 
         }
@@ -82,11 +78,11 @@ namespace Distracey.Agent.Ado
             try
             {
                 InnerTransaction.Rollback();
-                LogStopOfDbTransaction(TransactionId, true, null);
+                LogStopOfDbTransaction(ApmContext, TransactionId, true, null);
             }
             catch (Exception exception)
             {
-                LogStopOfDbTransaction(TransactionId, true, exception);
+                LogStopOfDbTransaction(ApmContext, TransactionId, true, exception);
                 throw;
             }
         }

@@ -23,11 +23,6 @@ namespace Distracey.Agent.Ado
             InnerConnection = connection;
         }
 
-        private IApmContext GetApmContext()
-        {
-            return ApmContextHelper.GetApmContext();
-        }
-
         public DbCommand InnerCommand { get; set; }
 
         public ApmDbConnection InnerConnection { get; set; } 
@@ -151,40 +146,42 @@ namespace Distracey.Agent.Ado
         {
             int recordsAffected;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteNonQuery.{0}", commandHash));
 
-            LogStartOfExecuteNonQuery(commandId);
+            LogStartOfExecuteNonQuery(apmContext, commandId, CommandText);
 
             try
             {
                 recordsAffected = InnerCommand.ExecuteNonQuery();
-                LogStopOfExecuteNonQuery(commandId, recordsAffected, null);
+                LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, recordsAffected, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteNonQuery(commandId, 0, exception);
+                LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, 0, exception);
                 throw;
             }
 
             return recordsAffected;
         }
 
-        private void LogStartOfExecuteNonQuery(ShortGuid commandId)
+        private void LogStartOfExecuteNonQuery(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeNonQueryStartedMessage = new ExecuteNonQueryStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeNonQueryStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteNonQuery(ShortGuid commandId, int recordsEffected, Exception exception)
+        private void LogStopOfExecuteNonQuery(IApmContext apmContext, ShortGuid commandId, string commandText, int recordsEffected, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeNonQueryFinishedMessage = new ExecuteNonQueryFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 RecordsEffected = recordsEffected,
                 Exception = exception
             }.AsMessage(apmContext);
@@ -196,40 +193,42 @@ namespace Distracey.Agent.Ado
         {
             object result;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalar.{0}", commandHash));
 
-            LogStartOfExecuteScalar(commandId);
+            LogStartOfExecuteScalar(apmContext, commandId, CommandText);
  
             try
             {
                 result = InnerCommand.ExecuteScalar();
-                LogStopOfExecuteScalar(commandId, null);
+                LogStopOfExecuteScalar(apmContext, commandId, CommandText, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteScalar(commandId, exception);
+                LogStopOfExecuteScalar(apmContext, commandId, CommandText, exception);
                 throw;
             }
 
             return result;
         }
 
-        private void LogStartOfExecuteScalar(ShortGuid commandId)
+        private void LogStartOfExecuteScalar(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeScalarStartedMessage = new ExecuteScalarStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeScalarStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteScalar(ShortGuid commandId, Exception exception)
+        private void LogStopOfExecuteScalar(IApmContext apmContext, ShortGuid commandId, string commandText, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeScalarFinishedMessage = new ExecuteScalarFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 Exception = exception
             }.AsMessage(apmContext);
 
@@ -240,40 +239,42 @@ namespace Distracey.Agent.Ado
         {
             object result;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalarAsync.{0}", commandHash));
 
-            LogStartOfExecuteScalarAsync(commandId);
+            LogStartOfExecuteScalarAsync(apmContext, commandId, CommandText);
 
             try
             {
                 result = await InnerCommand.ExecuteScalarAsync(cancellationToken);
-                LogStopOfExecuteScalarAsync(commandId, null);
+                LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteScalarAsync(commandId, exception);
+                LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, exception);
                 throw;
             }
 
             return result;
         }
 
-        private void LogStartOfExecuteScalarAsync(ShortGuid commandId)
+        private void LogStartOfExecuteScalarAsync(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeScalarAsyncStartedMessage = new ExecuteScalarAsyncStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeScalarAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteScalarAsync(ShortGuid commandId, Exception exception)
+        private void LogStopOfExecuteScalarAsync(IApmContext apmContext, ShortGuid commandId, string commandText, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeScalarAsyncFinishedMessage = new ExecuteScalarAsyncFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 Exception = exception
             }.AsMessage(apmContext);
 
@@ -284,40 +285,42 @@ namespace Distracey.Agent.Ado
         {
             int recordsEffected;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteNonQueryAsync.{0}", commandHash));
 
-            LogStartOfExecuteNonQueryAsync(commandId);
+            LogStartOfExecuteNonQueryAsync(apmContext, commandId, CommandText);
 
             try
             {
                 recordsEffected = await InnerCommand.ExecuteNonQueryAsync(cancellationToken);
-                LogStopOfExecuteNonQueryAsync(commandId, recordsEffected, null);
+                LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, recordsEffected, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteNonQueryAsync(commandId, 0, exception);
+                LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, 0, exception);
                 throw;
             }
 
             return recordsEffected;
         }
 
-        private void LogStartOfExecuteNonQueryAsync(ShortGuid commandId)
+        private void LogStartOfExecuteNonQueryAsync(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeNonQueryAsyncStartedMessage = new ExecuteNonQueryAsyncStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeNonQueryAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteNonQueryAsync(ShortGuid commandId, int recordsEffected, Exception exception)
+        private void LogStopOfExecuteNonQueryAsync(IApmContext apmContext, ShortGuid commandId, string commandText, int recordsEffected, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeNonQueryAsyncFinishedMessage = new ExecuteNonQueryAsyncFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 RecordsEffected = recordsEffected,
                 Exception = exception
             }.AsMessage(apmContext);
@@ -329,40 +332,42 @@ namespace Distracey.Agent.Ado
         {
             DbDataReader reader;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteDbDataReaderAsync.{0}", commandHash));
 
-            LogStartOfExecuteDbDataReaderAsync(commandId);
+            LogStartOfExecuteDbDataReaderAsync(apmContext, commandId, CommandText);
 
             try
             {
                 reader = await InnerCommand.ExecuteReaderAsync(behavior, cancellationToken);
-                LogStopOfExecuteDbDataReaderAsync(commandId, reader.RecordsAffected, null);
+                LogStopOfExecuteDbDataReaderAsync(apmContext, commandId, CommandText, reader.RecordsAffected, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteDbDataReader(commandId, 0, exception);
+                LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, 0, exception);
                 throw;
             }
 
             return new ApmDbDataReader(reader, InnerCommand, InnerConnection.ConnectionId, commandId);
         }
 
-        private void LogStartOfExecuteDbDataReaderAsync(ShortGuid commandId)
+        private void LogStartOfExecuteDbDataReaderAsync(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderAsyncStartedMessage = new ExecuteDbDataReaderAsyncStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeDbDataReaderAsyncStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteDbDataReaderAsync(ShortGuid commandId, int recordsEffected, Exception exception)
+        private void LogStopOfExecuteDbDataReaderAsync(IApmContext apmContext, ShortGuid commandId, string commandText, int recordsEffected, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderAsyncFinishedMessage = new ExecuteDbDataReaderAsyncFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 RecordsEffected = recordsEffected,
                 Exception = exception
             }.AsMessage(apmContext);
@@ -374,39 +379,41 @@ namespace Distracey.Agent.Ado
         {
             DbDataReader reader;
             var commandId = ShortGuid.NewGuid();
+            var commandHash = CommandText.GetHashCode();
+            var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteDbDataReader.{0}", commandHash));
 
-            LogStartOfExecuteDbDataReader(commandId);
+            LogStartOfExecuteDbDataReader(apmContext, commandId, CommandText);
             try
             {
                 reader = InnerCommand.ExecuteReader(behavior);
-                LogStopOfExecuteDbDataReader(commandId, reader.RecordsAffected, null);
+                LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, reader.RecordsAffected, null);
             }
             catch (Exception exception)
             {
-                LogStopOfExecuteDbDataReader(commandId, 0, exception);
+                LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, 0, exception);
                 throw;
             }
 
             return new ApmDbDataReader(reader, InnerCommand, InnerConnection.ConnectionId, commandId);
         }
 
-        private void LogStartOfExecuteDbDataReader(ShortGuid commandId)
+        private void LogStartOfExecuteDbDataReader(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderStartedMessage = new ExecuteDbDataReaderStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeDbDataReaderStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteDbDataReader(ShortGuid commandId, int recordsEffected, Exception exception)
+        private void LogStopOfExecuteDbDataReader(IApmContext apmContext, ShortGuid commandId, string commandText, int recordsEffected, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderFinishedMessage = new ExecuteDbDataReaderFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 RecordsEffected = recordsEffected,
                 Exception = exception
             }.AsMessage(apmContext);

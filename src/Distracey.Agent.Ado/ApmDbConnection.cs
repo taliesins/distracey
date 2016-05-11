@@ -19,15 +19,16 @@ namespace Distracey.Agent.Ado
         }
 
         public ApmDbConnection(DbConnection connection, DbProviderFactory providerFactory)
-            : this(connection, providerFactory, ShortGuid.NewGuid())
+            : this(connection, providerFactory, Common.ApmContext.GetContext(string.Format("DbConnection.{0}", connection.ConnectionString.GetHashCode())), ShortGuid.NewGuid())
         { 
         }
 
-        public ApmDbConnection(DbConnection connection, DbProviderFactory providerFactory, ShortGuid connectionId)
+        public ApmDbConnection(DbConnection connection, DbProviderFactory providerFactory, IApmContext apmContext, ShortGuid connectionId)
         {
             InnerConnection = connection;
             InnerProviderFactory = providerFactory;
             ConnectionId = connectionId;
+            ApmContext = apmContext;
 
             if (connection.State == ConnectionState.Open)
             {
@@ -35,11 +36,6 @@ namespace Distracey.Agent.Ado
             }
 
             connection.StateChange += StateChangeHaneler;
-        }
-
-        private IApmContext GetApmContext()
-        {
-            return ApmContextHelper.GetApmContext();
         }
 
         public override event StateChangeEventHandler StateChange
@@ -65,6 +61,7 @@ namespace Distracey.Agent.Ado
         public DbConnection InnerConnection { get; set; }
 
         public ShortGuid ConnectionId { get; set; }
+        public IApmContext ApmContext { get; set; }
 
         public override string ConnectionString
         {
@@ -128,7 +125,7 @@ namespace Distracey.Agent.Ado
             InnerConnection.EnlistTransaction(transaction);
             if (transaction != null)
             {
-                LogStartOfDtcTransaction(ConnectionId, transaction.TransactionInformation, transaction.IsolationLevel);
+                LogStartOfDtcTransaction(ApmContext, ConnectionId, transaction.TransactionInformation, transaction.IsolationLevel);
                 transaction.TransactionCompleted += OnDtcTransactionCompleted;
             }
         }
@@ -188,7 +185,7 @@ namespace Distracey.Agent.Ado
                 aborted = TransactionStatus.Aborted;
             }
 
-            LogStopOfDtcTransaction(ConnectionId, args.Transaction.TransactionInformation, args.Transaction.IsolationLevel, aborted);
+            LogStopOfDtcTransaction(ApmContext, ConnectionId, args.Transaction.TransactionInformation, args.Transaction.IsolationLevel, aborted);
         }
 
         private void StateChangeHaneler(object sender, StateChangeEventArgs args)
@@ -208,21 +205,21 @@ namespace Distracey.Agent.Ado
             if (_wasPreviouslyUsed)
             {
                 ConnectionId = ShortGuid.NewGuid();
+                ApmContext = Common.ApmContext.GetContext("DbConnection");
             }
 
-            LogStartOfDbConnection(ConnectionId);
+            LogStartOfDbConnection(ApmContext, ConnectionId);
         }
 
         private void ClosedConnection()
         {
             _wasPreviouslyUsed = true;
 
-            LogStopOfDbConnection(ConnectionId);
+            LogStopOfDbConnection(ApmContext, ConnectionId);
         }
 
-        private void LogStartOfDbConnection(ShortGuid connectionId)
+        private void LogStartOfDbConnection(IApmContext apmContext, ShortGuid connectionId)
         {
-            var apmContext = GetApmContext();
             var dbConnectionOpenedMessage = new DbConnectionOpenedMessage
             {
                 ConectionId = connectionId
@@ -231,9 +228,8 @@ namespace Distracey.Agent.Ado
             dbConnectionOpenedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfDbConnection(ShortGuid connectionId)
+        private void LogStopOfDbConnection(IApmContext apmContext, ShortGuid connectionId)
         {
-            var apmContext = GetApmContext();
             var dbConnectionClosedMessage = new DbConnectionClosedMessage
             {
                 ConectionId = connectionId
@@ -242,9 +238,8 @@ namespace Distracey.Agent.Ado
             dbConnectionClosedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStartOfDtcTransaction(ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel)
+        private void LogStartOfDtcTransaction(IApmContext apmContext, ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel)
         {
-            var apmContext = GetApmContext();
             var dbConnectionOpenedMessage = new DbConnectionOpenedMessage
             {
                 ConectionId = connectionId,
@@ -255,9 +250,8 @@ namespace Distracey.Agent.Ado
             dbConnectionOpenedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfDtcTransaction(ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel, TransactionStatus aborted)
+        private void LogStopOfDtcTransaction(IApmContext apmContext, ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel, TransactionStatus aborted)
         {
-            var apmContext = GetApmContext();
             var dbConnectionClosedMessage = new DbConnectionClosedMessage
             {
                 ConectionId = connectionId,

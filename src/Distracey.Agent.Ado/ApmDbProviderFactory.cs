@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Common;
 using System.Reflection;
-using Distracey.Common;
 
 namespace Distracey.Agent.Ado
 {
@@ -23,11 +22,6 @@ namespace Distracey.Agent.Ado
             }
 
             InnerFactory = (TProviderFactory)field.GetValue(null);           
-        }
-
-        private IApmContext GetApmContext()
-        {
-            return ApmContextHelper.GetApmContext();
         }
 
         public override bool CanCreateDataSourceEnumerator

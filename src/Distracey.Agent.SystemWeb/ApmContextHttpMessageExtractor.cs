@@ -77,8 +77,15 @@ namespace Distracey.Agent.SystemWeb
 
         public void GetContext(IApmContext apmContext, MethodBase method)
         {
-            if (HttpContext.Current == null) return;
+            if (HttpContext.Current == null)
+            {
+                return;
+            }
             var request = HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
+            if (request == null)
+            {
+                return;
+            }
             SetIncomingTracingForHttpRequestMessage(apmContext, request);
         }
     }

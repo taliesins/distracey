@@ -1,4 +1,6 @@
-﻿namespace Distracey.Common.Session.Storage
+﻿
+
+namespace Distracey.Common.Session.Storage
 {
     /// <summary>
     /// A <see cref="ISessionStorage"/> implementation which performs no operation.

@@ -26,64 +26,60 @@ namespace Distracey.Agent.Ado
             set { InnerDataAdapter.UpdateBatchSize = value; }
         }
 
-        private IApmContext GetApmContext()
-        {
-            return ApmContextHelper.GetApmContext();
-        }
-
         private DbDataAdapter InnerDataAdapter { get; set; }
 
         public override int Fill(DataSet dataSet)
         {
-            if (SelectCommand != null)
+            if (SelectCommand == null) return InnerDataAdapter.Fill(dataSet);
+            var typedCommand = SelectCommand as ApmDbCommand;
+            if (typedCommand != null)
             {
-                var typedCommand = SelectCommand as ApmDbCommand;
-                if (typedCommand != null)
+                InnerDataAdapter.SelectCommand = typedCommand.Inner;
+
+                var recordsEffected = 0;
+                var commandId = ShortGuid.NewGuid();
+                var commandText = InnerDataAdapter.SelectCommand.CommandText;
+                var commandHash = commandText.GetHashCode();
+                var apmContext = ApmContext.GetContext(string.Format("DbDataAdapter.{0}", commandHash));
+                    
+                LogStartOfExecuteDbDataAdapter(apmContext, commandId, commandText);
+
+                try
                 {
-                    InnerDataAdapter.SelectCommand = typedCommand.Inner;
-
-                    var recordsEffected = 0;
-                    var commandId = ShortGuid.NewGuid();
-
-                    LogStartOfExecuteDbDataAdapter(commandId);
-
-                    try
-                    {
-                        recordsEffected = InnerDataAdapter.Fill(dataSet);
-                        LogStopOfExecuteDbDataAdapter(commandId, recordsEffected, null);
-                    }
-                    catch (Exception exception)
-                    {
-                        LogStopOfExecuteDbDataAdapter(commandId, 0, exception);
-                        throw;
-                    }
-
-                    return recordsEffected;
+                    recordsEffected = InnerDataAdapter.Fill(dataSet);
+                    LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, recordsEffected, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, 0, exception);
+                    throw;
                 }
 
-                InnerDataAdapter.SelectCommand = SelectCommand;
+                return recordsEffected;
             }
+
+            InnerDataAdapter.SelectCommand = SelectCommand;
 
             return InnerDataAdapter.Fill(dataSet);
         }
 
-        private void LogStartOfExecuteDbDataAdapter(ShortGuid commandId)
+        private void LogStartOfExecuteDbDataAdapter(IApmContext apmContext, ShortGuid commandId, string commandText)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderStartedMessage = new DbDataAdapterStartedMessage
             {
-                CommandId = commandId
+                CommandId = commandId,
+                CommandText = commandText
             }.AsMessage(apmContext);
 
             executeDbDataReaderStartedMessage.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfExecuteDbDataAdapter(ShortGuid commandId, int recordsEffected, Exception exception)
+        private void LogStopOfExecuteDbDataAdapter(IApmContext apmContext, ShortGuid commandId, string commandText, int recordsEffected, Exception exception)
         {
-            var apmContext = GetApmContext();
             var executeDbDataReaderFinishedMessage = new DbDataAdapterFinishedMessage
             {
                 CommandId = commandId,
+                CommandText = commandText,
                 RecordsEffected = recordsEffected,
                 Exception = exception
             }.AsMessage(apmContext);

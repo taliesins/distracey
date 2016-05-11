@@ -7,6 +7,7 @@ namespace Distracey.Agent.Ado
     public class ExecuteScalarFinishedMessage : IMessage
     {
         public ShortGuid CommandId { get; set; }
+        public string CommandText { get; set; }
         public Exception Exception { get; set; }
     }
 }

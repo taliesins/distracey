@@ -11,16 +11,7 @@ namespace Distracey.Agent.Ado
         {
             // If we can pull it out quickly and easily
             var profiledConnection = connection as ApmDbConnection;
-            if (profiledConnection != null)
-            {
-                return profiledConnection.InnerProviderFactory;
-            }
-
-#if (NET45)
-            return DbProviderFactories.GetFactory(connection);
-#else
-            return connection.GetType().GetProperty("ProviderFactory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(connection, null) as DbProviderFactory;
-#endif
+            return profiledConnection != null ? profiledConnection.InnerProviderFactory : DbProviderFactories.GetFactory(connection);
         }
 
         public static DbProviderFactory TryGetProfiledProviderFactory(this DbConnection connection)
@@ -43,13 +34,9 @@ namespace Distracey.Agent.Ado
 
         public static DbProviderFactory WrapProviderFactory(this DbProviderFactory factory)
         {
-            if (!(factory is ApmDbProviderFactory))
-            { 
-                var factoryType = typeof(ApmDbProviderFactory<>).MakeGenericType(factory.GetType());
-                return (DbProviderFactory)factoryType.GetField("Instance").GetValue(null);    
-            }
-
-            return factory;
+            if (factory is ApmDbProviderFactory) return factory;
+            var factoryType = typeof(ApmDbProviderFactory<>).MakeGenericType(factory.GetType());
+            return (DbProviderFactory)factoryType.GetField("Instance").GetValue(null);
         }
 
         public static DataTable FindDbProviderFactoryTable()

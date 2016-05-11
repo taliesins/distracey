@@ -6,5 +6,6 @@ namespace Distracey.Agent.Ado
     public class DbDataAdapterStartedMessage : IMessage
     {
         public ShortGuid CommandId { get; set; }
+        public string CommandText { get; set; }
     }
 }
