@@ -1,9 +1,10 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
-    public class ApmWebApiStartedMessage : ITracingMessage, ISourceMessage
+    public class ApmWebApiStartedMessage : ITracingMessage, ISourceMessage, ITimedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
@@ -14,5 +15,9 @@ namespace Distracey.Agent.SystemWeb.WebApi
         public string ParentSpanId { get; set; }
         public string Sampled { get; set; }
         public string Flags { get; set; }
+
+        public TimeSpan Offset { get; set; }
+        public TimeSpan Duration { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

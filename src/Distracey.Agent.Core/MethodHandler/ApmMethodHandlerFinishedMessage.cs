@@ -3,7 +3,7 @@ using Distracey.Common.Message;
 
 namespace Distracey.Agent.Core.MethodHandler
 {
-    public class ApmMethodHandlerFinishedMessage : ITracingMessage, IClientSourceMessage, ISourceMessage
+    public class ApmMethodHandlerFinishedMessage : ITracingMessage, IClientSourceMessage, ISourceMessage, ITimedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
@@ -17,5 +17,8 @@ namespace Distracey.Agent.Core.MethodHandler
         public string ParentSpanId { get; set; }
         public string Sampled { get; set; }
         public string Flags { get; set; }
+        public TimeSpan Offset { get; set; }
+        public TimeSpan Duration { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

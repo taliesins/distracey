@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using Distracey.Common;
@@ -34,20 +33,6 @@ namespace Distracey.Agent.SystemWeb
             }
 
             return methodIdentifier;
-        }
-
-        public long GetResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            var responseTime = 0L;
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
-                out responseTimeObject))
-            {
-                responseTime = ((Stopwatch)responseTimeObject).ElapsedMilliseconds;
-            }
-
-            return responseTime;
         }
 
         public string GetClientName(HttpRequestMessage request)

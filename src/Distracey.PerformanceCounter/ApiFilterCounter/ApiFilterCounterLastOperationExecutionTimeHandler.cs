@@ -42,7 +42,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             if (apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.RawValue = apmWebApiFinishedMessage.ResponseTime;
+                counter.RawValue = apmWebApiFinishedMessage.Duration.Milliseconds;
             }
         }
 

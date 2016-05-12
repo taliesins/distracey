@@ -58,6 +58,7 @@
     <Compile Include="IApmContextExtensions.cs" />
     <Compile Include="IApmContextExtractor.cs" />
     <Compile Include="IEventLogger.cs" />
+    <Compile Include="Message\TimedMessageExtensions.cs" />
     <Compile Include="Message\TracingMessageExtensions.cs" />
     <Compile Include="Message\MessageExtensions.cs" />
     <Compile Include="Message\ISourceMessage.cs" />
@@ -76,6 +77,9 @@
     <Compile Include="Session\Storage\ISessionStorage.cs" />
     <Compile Include="Session\Storage\NullSessionStorage.cs" />
     <Compile Include="Session\Storage\SessionStorageBase.cs" />
+    <Compile Include="Timer\ExecutionTimer.cs" />
+    <Compile Include="Timer\IExecutionTimer.cs" />
+    <Compile Include="Timer\TimerResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

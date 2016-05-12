@@ -55,7 +55,7 @@ namespace Distracey.PerformanceCounter.ApiFilterCounter
             if (apmContext.TryGetValue(AverageTimeTakenMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.IncrementBy(apmWebApiFinishedMessage.ResponseTime);
+                counter.IncrementBy(apmWebApiFinishedMessage.Duration.Milliseconds);
             }
 
             object baseCounterProperty;

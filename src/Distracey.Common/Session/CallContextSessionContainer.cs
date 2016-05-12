@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using System.Threading;
 using Distracey.Common.Helpers;
 
 namespace Distracey.Common.Session
@@ -14,7 +13,7 @@ namespace Distracey.Common.Session
     {
         private static readonly ConcurrentDictionary<ShortGuid, WeakReference> SessionStore = new ConcurrentDictionary<ShortGuid, WeakReference>();
         private const string CurrentSessionIdCacheKey = "distracey::current_session_id";
-        private static readonly Timer CleanUpSessionStoreTimer = new Timer(CleanUpSessionStoreTimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+        private static readonly System.Threading.Timer CleanUpSessionStoreTimer = new System.Threading.Timer(CleanUpSessionStoreTimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
         /// <summary>
         /// Sets the periodically clean-up profiling SessionContext store period in milliseconds.

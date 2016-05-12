@@ -4,13 +4,12 @@ using Distracey.Common.Message;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
-    public class ApmWebApiFinishedMessage : ITracingMessage, ISourceMessage
+    public class ApmWebApiFinishedMessage : ITracingMessage, ISourceMessage, ITimedMessage
     {
         public string EventName { get; set; }
         public string MethodIdentifier { get; set; }
         public HttpRequestMessage Request { get; set; }
         public HttpResponseMessage Response { get; set; }
-        public long ResponseTime { get; set; }
 
         public string TraceId { get; set; }
         public string SpanId { get; set; }
@@ -19,5 +18,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
         public string Flags { get; set; }
 
         public Exception Exception { get; set; }
+        public TimeSpan Offset { get; set; }
+        public TimeSpan Duration { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

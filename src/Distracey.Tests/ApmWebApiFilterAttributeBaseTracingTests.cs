@@ -118,7 +118,6 @@ namespace Distracey.Tests
         {
             var finishActionLogged = false;
             var eventName = string.Empty;
-            var responseTime = 0L;
             var exception = default(object);
             var flags = string.Empty;
             var methodsIdentifier = string.Empty;
@@ -148,7 +147,6 @@ namespace Distracey.Tests
                 traceId = information.TraceId;
                 httpRequest = information.Request;
                 httpResponse = information.Response;
-                responseTime = information.ResponseTime;
             };
 
             _apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(_addResponseHeaders);
@@ -162,7 +160,6 @@ namespace Distracey.Tests
             //Assert.IsNotNull(httpResponse);
             Assert.IsNotNull(exception);
             Assert.IsTrue(finishActionLogged);
-            Assert.Greater(responseTime, 0);
             Assert.IsNotEmpty(eventName);
             Assert.AreEqual("TestClient=1234", traceId);
             Assert.AreEqual("SpecialProcess=4321", spanId);

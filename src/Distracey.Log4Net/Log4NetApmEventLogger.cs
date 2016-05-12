@@ -95,7 +95,7 @@ namespace Distracey.Log4Net
             var apmContext = apmEvent.ApmContext;
             var apmHttpClientFinishInformation = apmEvent.Event;
 
-            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmHttpClientFinishInformation.EventName, apmHttpClientFinishInformation.TraceId, apmHttpClientFinishInformation.ResponseTime);
+            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmHttpClientFinishInformation.EventName, apmHttpClientFinishInformation.TraceId, apmHttpClientFinishInformation.Duration.Milliseconds);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -137,7 +137,7 @@ namespace Distracey.Log4Net
 
             if (apmWebApiFinishInformation.Exception == null)
             {
-                var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+                var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
                 var logger = Log.Logger;
                 var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
                 foreach (var property in apmContext)
@@ -148,7 +148,7 @@ namespace Distracey.Log4Net
             }
             else
             {
-                var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+                var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
 
                 var logger = Log.Logger;
                 var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Error, message, apmWebApiFinishInformation.Exception);

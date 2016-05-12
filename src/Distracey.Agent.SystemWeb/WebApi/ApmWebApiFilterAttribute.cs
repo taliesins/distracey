@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Distracey.Common;
-using Distracey.Common.EventAggregator;
 using Distracey.Common.Message;
+using Distracey.Common.Timer;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
@@ -18,6 +18,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
     {
         private readonly bool _addResponseHeaders;
         private readonly PluralizationService _pluralizationService;
+        private readonly IExecutionTimer _executionTimer;
+        private TimeSpan _offset;
 
         private static readonly ApmWebApiRequestDecorator ApmWebApiRequestDecorator = new ApmWebApiRequestDecorator();
         private static readonly ApmOutgoingResponseDecorator ApmOutgoingResponseDecorator = new ApmOutgoingResponseDecorator();
@@ -32,6 +34,7 @@ namespace Distracey.Agent.SystemWeb.WebApi
         {
             _addResponseHeaders = addResponseHeaders;
             _pluralizationService = pluralizationService;
+            _executionTimer = new ExecutionTimer(new Stopwatch());
         }
 
         public override void OnActionExecuting(HttpActionContext actionContext)
@@ -42,9 +45,10 @@ namespace Distracey.Agent.SystemWeb.WebApi
             ApmWebApiRequestDecorator.AddEventName(actionContext, _pluralizationService);
             ApmWebApiRequestDecorator.AddMethodIdentifier(actionContext);
             ApmWebApiRequestDecorator.AddTracing(actionContext.Request);
-            StartResponseTime(actionContext.Request);
 
-            LogStartOfRequest(actionContext.Request);
+            _offset = _executionTimer.Start();
+
+            LogStartOfRequest(actionContext.Request, _offset);
             base.OnActionExecuting(actionContext);
         }
 
@@ -55,48 +59,13 @@ namespace Distracey.Agent.SystemWeb.WebApi
                 SetTracingResponseHeaders(actionExecutedContext);
             }
             base.OnActionExecuted(actionExecutedContext);
-            StopResponseTime(actionExecutedContext);
-            LogStopOfRequest(actionExecutedContext);
+            LogStopOfRequest(actionExecutedContext, _offset);
 
             //Dispose ApmContext if it does not exist
             //HttpContext.Current.SessionContext
         }
 
-        private void StartResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
-                out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch)responseTimeObject;
-                if (!stopWatch.IsRunning)
-                {
-                    stopWatch.Start();
-                }
-            }
-            else
-            {
-                request.Properties[Constants.ResponseTimePropertyKey] = Stopwatch.StartNew();
-            }
-        }
-
-        private void StopResponseTime(HttpActionExecutedContext actionExecutedContext)
-        {
-            object responseTimeObject;
-
-            if (actionExecutedContext.Request.Properties.TryGetValue(Constants.ResponseTimePropertyKey,
-                out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch)responseTimeObject;
-                if (stopWatch.IsRunning)
-                {
-                    stopWatch.Stop();
-                }
-            }
-        }
-
-        private void LogStartOfRequest(HttpRequestMessage request)
+        private void LogStartOfRequest(HttpRequestMessage request, TimeSpan offset)
         {
             var eventName = ApmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
@@ -106,18 +75,6 @@ namespace Distracey.Agent.SystemWeb.WebApi
             var sampled = ApmHttpRequestMessageParser.GetSampled(request);
             var flags = ApmHttpRequestMessageParser.GetFlags(request);
             
-            var apmWebApiStartInformation = new ApmWebApiStartedMessage
-            {
-                EventName = eventName,
-                MethodIdentifier = methodIdentifier,
-                Flags = flags,
-                ParentSpanId = parentSpanId,
-                Sampled = sampled,
-                SpanId = spanId,
-                TraceId = traceId,
-                Request = request
-            };
-
             object apmContextObject;
             if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
             {
@@ -129,28 +86,41 @@ namespace Distracey.Agent.SystemWeb.WebApi
 
             if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
             {
-                apmContext[Constants.EventNamePropertyKey] = apmWebApiStartInformation.EventName;
+                apmContext[Constants.EventNamePropertyKey] = eventName;
             }
 
             if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
             {
-                apmContext[Constants.MethodIdentifierPropertyKey] = apmWebApiStartInformation.EventName;
+                apmContext[Constants.MethodIdentifierPropertyKey] = eventName;
             }
 
             if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
             {
-                apmContext[Constants.RequestUriPropertyKey] = apmWebApiStartInformation.Request.RequestUri.ToString();
+                apmContext[Constants.RequestUriPropertyKey] = request.RequestUri.ToString();
             }
 
             if (!apmContext.ContainsKey(Constants.RequestMethodPropertyKey))
             {
-                apmContext[Constants.RequestMethodPropertyKey] = apmWebApiStartInformation.Request.Method.ToString();
+                apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
             }
+
+            var apmWebApiStartInformation = new ApmWebApiStartedMessage
+            {
+                EventName = eventName,
+                MethodIdentifier = methodIdentifier,
+                Flags = flags,
+                ParentSpanId = parentSpanId,
+                Sampled = sampled,
+                SpanId = spanId,
+                TraceId = traceId,
+                Request = request
+            }.AsMessage(apmContext)
+            .AsTimedMessage(offset);
 
             apmWebApiStartInformation.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext)
+        private void LogStopOfRequest(HttpActionExecutedContext actionExecutedContext, TimeSpan offset)
         {
             var eventName = ApmHttpRequestMessageParser.GetEventName(actionExecutedContext.Request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(actionExecutedContext.Request);
@@ -159,7 +129,14 @@ namespace Distracey.Agent.SystemWeb.WebApi
             var parentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(actionExecutedContext.Request);
             var sampled = ApmHttpRequestMessageParser.GetSampled(actionExecutedContext.Request);
             var flags = ApmHttpRequestMessageParser.GetFlags(actionExecutedContext.Request);
-            var responseTime = ApmHttpRequestMessageParser.GetResponseTime(actionExecutedContext.Request);
+
+            object apmContextObject;
+            if (!actionExecutedContext.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            {
+                throw new Exception("Add global filter for ApmWebApiFilterAttribute");
+            }
+
+            var apmContext = (IApmContext)apmContextObject;
 
             var apmWebApiFinishInformation = new ApmWebApiFinishedMessage
             {
@@ -172,21 +149,9 @@ namespace Distracey.Agent.SystemWeb.WebApi
                 TraceId = traceId,
                 Request = actionExecutedContext.Request,
                 Response = actionExecutedContext.Response,
-                ResponseTime = responseTime,
                 Exception = actionExecutedContext.Exception
-            };
-
-            object apmContextObject;
-            if (!apmWebApiFinishInformation.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                throw new Exception("Add global filter for ApmWebApiFilterAttribute");
-            }
-
-            var apmContext = (IApmContext)apmContextObject;
-            if (!apmContext.ContainsKey(Constants.TimeTakeMsPropertyKey))
-            {
-                apmContext[Constants.TimeTakeMsPropertyKey] = apmWebApiFinishInformation.ResponseTime.ToString();
-            }
+            }.AsMessage(apmContext)
+            .AsTimedMessage(offset);
 
             apmWebApiFinishInformation.PublishMessage(apmContext, this);
         }

@@ -41,7 +41,7 @@ namespace Distracey.PerformanceCounter.HttpClientCounter
             if (apmContext.TryGetValue(LastOperationExecutionTimeMsCounter, out counterProperty))
             {
                 var counter = (System.Diagnostics.PerformanceCounter)counterProperty;
-                counter.RawValue = apmHttpClientFinishedMessage.ResponseTime;
+                counter.RawValue = apmHttpClientFinishedMessage.Duration.Milliseconds;
             }
         }
 

@@ -69,7 +69,7 @@ namespace Distracey.Logary
             var apmContext = apmEvent.ApmContext;
             var apmWebApiFinishInformation = apmEvent.Event;
 
-            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmWebApiFinishInformation.EventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+            var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmWebApiFinishInformation.EventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
 
             Log.Log(message, LogLevel.Info, apmContext);
 
@@ -97,12 +97,12 @@ namespace Distracey.Logary
 
             if (apmWebApiFinishInformation.Exception == null)
             {
-                var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+                var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
                 Log.Log(message, LogLevel.Info, apmContext);
             }
             else
             {
-                var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.ResponseTime);
+                var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
                 Log.Log(message, LogLevel.Error, apmContext, null, null, apmWebApiFinishInformation.Exception, null);
             }
 
