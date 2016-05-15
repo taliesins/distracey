@@ -4,12 +4,10 @@
     {
         public const string ResponseTimePropertyKey = "ResponseTime";
         
-        public const string ApplicationNamePropertyKey = "ApplicationName";
         public const string ClientNamePropertyKey = "ClientName";
         public const string ApmContextPropertyKey = "ApmContext";
         public const string EventNamePropertyKey = "eventName";
         public const string MethodIdentifierPropertyKey = "methodIdentifier";
-        public const string TimeTakeMsPropertyKey = "timeTakenMs";
         public const string RequestMethodPropertyKey = "requestMethod";
         public const string RequestUriPropertyKey = "requestUri";
         public const string ResponseStatusCodePropertyKey = "responseStatusCode";

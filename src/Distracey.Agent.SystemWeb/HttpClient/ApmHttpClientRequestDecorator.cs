@@ -1,43 +1,10 @@
-﻿using System.Diagnostics;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Distracey.Common;
 
 namespace Distracey.Agent.SystemWeb.HttpClient
 {
     public class ApmHttpClientRequestDecorator
     {
-        public void StartResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch)responseTimeObject;
-                if (!stopWatch.IsRunning)
-                {
-                    stopWatch.Start();
-                }
-            }
-            else
-            {
-                request.Properties.Add(Constants.ResponseTimePropertyKey, Stopwatch.StartNew());
-            }
-        }
-
-        public void StopResponseTime(HttpRequestMessage request)
-        {
-            object responseTimeObject;
-
-            if (request.Properties.TryGetValue(Constants.ResponseTimePropertyKey, out responseTimeObject))
-            {
-                var stopWatch = (Stopwatch)responseTimeObject;
-                if (stopWatch.IsRunning)
-                {
-                    stopWatch.Stop();
-                }
-            }
-        }
-
         public void AddEventName(HttpRequestMessage request, IApmContext apmContext)
         {
             object eventNameProperty;

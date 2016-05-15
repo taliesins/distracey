@@ -191,7 +191,7 @@ namespace Distracey.Common
             var sampled = string.Empty;
             object sampledObject;
 
-            if (apmContext.TryGetValue(Constants.FlagsHeaderKey,
+            if (apmContext.TryGetValue(Constants.SampledHeaderKey,
                 out sampledObject))
             {
                 sampled = (string)sampledObject;

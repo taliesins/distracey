@@ -16,8 +16,7 @@ namespace Distracey.Agent.SystemWeb.HttpClient
     {
         private readonly IApmContext _apmContext;
         private readonly IExecutionTimer _executionTimer;
-        private readonly ApmHttpClientRequestDecorator _apmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
-        private readonly ApmHttpRequestMessageParser _apmHttpRequestMessageParser = new ApmHttpRequestMessageParser();
+        private static readonly ApmHttpClientRequestDecorator ApmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
 
         public ApmHttpClientDelegatingHandler(IApmContext apmContext, HttpMessageHandler httpMessageHandler)
         {
@@ -30,58 +29,41 @@ namespace Distracey.Agent.SystemWeb.HttpClient
         {
             //Initialize ApmContext if it does not exist
 
-            request.Properties[Constants.ApmContextPropertyKey] = _apmContext;
-
-            _apmHttpClientRequestDecorator.AddEventName(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddMethodIdentifier(request, _apmContext);
-
-            _apmHttpClientRequestDecorator.AddClientName(request, _apmContext);
-
-            _apmHttpClientRequestDecorator.AddIncomingTraceId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddIncomingSpanId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddIncomingParentSpanId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddIncomingSampled(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddIncomingFlags(request, _apmContext);
-
-            _apmHttpClientRequestDecorator.AddTraceId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddSpanId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddParentSpanId(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddSampled(request, _apmContext);
-            _apmHttpClientRequestDecorator.AddFlags(request, _apmContext);
+            SetTracingRequestHeaders(_apmContext, request);
 
             var offset = _executionTimer.Start();
 
-            LogStartOfRequest(request, offset);
+            LogStartOfRequest(_apmContext, request, offset);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            LogStopOfRequest(request, response, offset);
+            LogStopOfRequest(_apmContext, request, response, offset);
 
             //Dispose ApmContext if it does not exist previously
 
             return response;
         }
 
-        private void LogStartOfRequest(HttpRequestMessage request, TimeSpan offset)
+        private void SetTracingRequestHeaders(IApmContext apmContext, HttpRequestMessage request)
         {
-            var eventName = _apmHttpRequestMessageParser.GetEventName(request);
-            var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
+            ApmHttpClientRequestDecorator.AddEventName(request, apmContext);
+            ApmHttpClientRequestDecorator.AddMethodIdentifier(request, apmContext);
 
-            var clientName = _apmHttpRequestMessageParser.GetClientName(request);
+            ApmHttpClientRequestDecorator.AddClientName(request, apmContext);
 
-            var traceId = _apmHttpRequestMessageParser.GetTraceId(request);
-            var spanId = _apmHttpRequestMessageParser.GetSpanId(request);
-            var parentSpanId = _apmHttpRequestMessageParser.GetParentSpanId(request);
-            var flags = _apmHttpRequestMessageParser.GetFlags(request);
-            var sampled = _apmHttpRequestMessageParser.GetSampled(request);
+            ApmHttpClientRequestDecorator.AddIncomingTraceId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddIncomingSpanId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddIncomingParentSpanId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddIncomingSampled(request, apmContext);
+            ApmHttpClientRequestDecorator.AddIncomingFlags(request, apmContext);
 
-            object apmContextObject;
-            if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                apmContextObject = new ApmContext();
-                request.Properties.Add(Constants.ApmContextPropertyKey, apmContextObject);
-            }
+            ApmHttpClientRequestDecorator.AddTraceId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddSpanId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddParentSpanId(request, apmContext);
+            ApmHttpClientRequestDecorator.AddSampled(request, apmContext);
+            ApmHttpClientRequestDecorator.AddFlags(request, apmContext);
+        }
 
-            var apmContext = (IApmContext)apmContextObject;
-
+        private void LogStartOfRequest(IApmContext apmContext, HttpRequestMessage request, TimeSpan offset)
+        {
             if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
             {
                 apmContext[Constants.RequestUriPropertyKey] = request.RequestUri.ToString();
@@ -94,41 +76,15 @@ namespace Distracey.Agent.SystemWeb.HttpClient
 
             var apmHttpClientStartInformation = new ApmHttpClientStartedMessage
             {
-                EventName = eventName,
-                MethodIdentifier = methodIdentifier,
                 Request = request,
-                ClientName = clientName,
-                TraceId = traceId,
-                SpanId = spanId,
-                ParentSpanId = parentSpanId,
-                Sampled = sampled,
-                Flags = flags
             }.AsMessage(apmContext)
             .AsTimedMessage(offset);
 
-            apmHttpClientStartInformation.PublishMessage(_apmContext, this);
+            apmHttpClientStartInformation.PublishMessage(apmContext, this);
         }
 
-        private void LogStopOfRequest(HttpRequestMessage request, HttpResponseMessage response, TimeSpan offset)
+        private void LogStopOfRequest(IApmContext apmContext, HttpRequestMessage request, HttpResponseMessage response, TimeSpan offset)
         {
-            var eventName = _apmHttpRequestMessageParser.GetEventName(request);
-            var methodIdentifier = _apmHttpRequestMessageParser.GetMethodIdentifier(request);
-            var clientName = _apmHttpRequestMessageParser.GetClientName(request);
-
-            var traceId = _apmHttpRequestMessageParser.GetTraceId(request);
-            var spanId = _apmHttpRequestMessageParser.GetSpanId(request);
-            var parentSpanId = _apmHttpRequestMessageParser.GetParentSpanId(request);
-            var flags = _apmHttpRequestMessageParser.GetFlags(request);
-            var sampled = _apmHttpRequestMessageParser.GetSampled(request);
-
-            object apmContextObject;
-            if (!request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
-            {
-                throw new Exception("Add delegating handler filter");
-            }
-
-            var apmContext = (IApmContext)apmContextObject;
-
             if (!apmContext.ContainsKey(Constants.ResponseStatusCodePropertyKey))
             {
                 apmContext[Constants.ResponseStatusCodePropertyKey] = response.StatusCode.ToString();
@@ -136,20 +92,12 @@ namespace Distracey.Agent.SystemWeb.HttpClient
 
             var apmHttpClientFinishInformation = new ApmHttpClientFinishedMessage
             {
-                EventName = eventName,
-                MethodIdentifier = methodIdentifier,
                 Request = request,
                 Response = response,
-                ClientName = clientName,
-                TraceId = traceId,
-                SpanId = spanId,
-                ParentSpanId = parentSpanId,
-                Sampled = sampled,
-                Flags = flags
             }.AsMessage(apmContext)
             .AsTimedMessage(offset);
 
-            apmHttpClientFinishInformation.PublishMessage(_apmContext, this);
+            apmHttpClientFinishInformation.PublishMessage(apmContext, this);
         }
     }
 }
