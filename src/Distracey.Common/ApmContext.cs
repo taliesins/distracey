@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Distracey.Common.Helpers;
+using Distracey.Common.Session;
 
 namespace Distracey.Common
 {
@@ -11,6 +12,16 @@ namespace Distracey.Common
     public class ApmContext : Dictionary<string, object>, IApmContext
     {
         public const string NoParent = "0";
+
+        public static Guid StartActivity()
+        {
+            return SessionContext.StartActivity();
+        }
+
+        public static void StopActivity()
+        {
+            SessionContext.StopActivity();
+        }
 
         /// <summary>
         /// Create a new APM context, extracting information from containing contexts.

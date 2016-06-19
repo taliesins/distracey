@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using Distracey.Common.Helpers;
 
 namespace Distracey.Common.Session
 {
@@ -11,7 +10,7 @@ namespace Distracey.Common.Session
     /// </summary>
     public class CallContextSessionContainer : ISessionContainer
     {
-        private static readonly ConcurrentDictionary<ShortGuid, WeakReference> SessionStore = new ConcurrentDictionary<ShortGuid, WeakReference>();
+        private static readonly ConcurrentDictionary<Guid, WeakReference> SessionStore = new ConcurrentDictionary<Guid, WeakReference>();
         private const string CurrentSessionIdCacheKey = "distracey::current_session_id";
         private static readonly System.Threading.Timer CleanUpSessionStoreTimer = new System.Threading.Timer(CleanUpSessionStoreTimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
@@ -42,7 +41,7 @@ namespace Distracey.Common.Session
                     return null;
                 }
 
-                var sessionId = (ShortGuid?)obj;
+                var sessionId = (Guid?)obj;
                 WeakReference wrapper;
                 if (!SessionStore.TryGetValue(sessionId.Value, out wrapper) || wrapper == null || !wrapper.IsAlive)
                 {
@@ -58,7 +57,7 @@ namespace Distracey.Common.Session
                     var obj = CallContext.GetData(CurrentSessionIdCacheKey);
                     if (obj != null)
                     {
-                        var sessionId = (ShortGuid?)obj;
+                        var sessionId = (Guid?)obj;
                         WeakReference temp;
                         SessionStore.TryRemove(sessionId.Value, out temp);
                     }
@@ -68,14 +67,8 @@ namespace Distracey.Common.Session
                 }
 
                 SessionStore.TryAdd(value.SessionId, new WeakReference(value));
-                CallContext.LogicalSetData(CurrentSessionIdCacheKey, (ShortGuid?)value.SessionId);
+                CallContext.LogicalSetData(CurrentSessionIdCacheKey, (Guid?)value.SessionId);
             }
-        }
-
-        ISession ISessionContainer.Current
-        {
-            get { return Current; }
-            set { Current = value; }
         }
 
         private static void CleanUpSessionStoreTimerCallback(object state)

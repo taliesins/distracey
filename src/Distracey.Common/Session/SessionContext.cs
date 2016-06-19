@@ -1,27 +1,39 @@
 ﻿using System;
-using Distracey.Common.Session.Storage;
+using Distracey.Common.Session.OperationCorrelation;
 
 namespace Distracey.Common.Session
 {
     /// <summary>
-    /// Represents a SessionContext.
+    /// Represents a session context.
     /// </summary>
     public sealed class SessionContext : MarshalByRefObject, IDisposable
     {
         private static ISessionContainer _sessionContainer;
-        private static ISessionStorage _sessionStorage;
 
-        public SessionContext()
+        private SessionContext()
         {
-            Start();
         }
 
         /// <summary>
-        /// Gets the current SessionContext.
+        /// Gets the current session.
         /// </summary>
         public static ISession Current
         {
-            get { return _sessionContainer.Current; }
+            get
+            {
+                return _sessionContainer.Current;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current activity identifier
+        /// </summary>
+        public static Guid CurrentActivityId
+        {
+            get
+            {
+                return OperationCorrelationManager.ActivityId;
+            }
         }
 
         /// <summary>
@@ -41,57 +53,48 @@ namespace Distracey.Common.Session
             }
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="ISessionStorage"/>.
-        /// </summary>
-        public static ISessionStorage SessionStorage
-        {
-            get { return _sessionStorage; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                _sessionStorage = value;
-            }
-        }
-
         static SessionContext()
         {
-            // by default, use CallContextSessionContainer
             _sessionContainer = new CallContextSessionContainer();
-
-            // by default, use JsonProfilingStorage
-            _sessionStorage = new NullSessionStorage();
         }
 
         /// <summary>
-        /// Starts the SessionContext.
+        /// Starts the session context.
         /// </summary>
-        public static void Start()
+        public static void StartSession()
         {
-            if (_sessionContainer.Current == null)
+            if (_sessionContainer.Current != null)
             {
-                _sessionContainer.Current = new Session();
+                StopSession();
             }
+
+            _sessionContainer.Current = new Session();
         }
 
         /// <summary>
-        /// Stops the current SessionContext.
+        /// Stops the current session context.
         /// </summary>
-        /// When true, discards the entire SessionContext.
-        /// </param>
-        public static void Stop()
+        public static void StopSession()
         {
-            // Clear the current SessionContext
-            _sessionContainer.Current = null;
+            OperationCorrelationManager.Clear();
+
+            // Clear the current session context
+            _sessionContainer.Current = null; 
+        }
+
+        public static Guid StartActivity()
+        {
+            return OperationCorrelationManager.StartLogicalOperation();
+        }
+
+        public static void StopActivity()
+        {
+            OperationCorrelationManager.StopLogicalOperation();
         }
 
         public void Dispose()
         {
-            Stop();
+            StopSession();
         }
     }
 }

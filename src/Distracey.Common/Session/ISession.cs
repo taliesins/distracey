@@ -1,10 +1,10 @@
-﻿using Distracey.Common.Helpers;
+﻿using System;
 
 namespace Distracey.Common.Session
 { 
     public interface ISession 
     {
-        ShortGuid SessionId { get; }
+        Guid SessionId { get; }
         IApmContext ApmContext { get; set; }
     }
 }

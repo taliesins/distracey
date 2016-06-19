@@ -32,7 +32,7 @@ namespace Distracey.Logary
             var apmContext = apmEvent.ApmContext;
             var apmMethodHandlerStartInformation = apmEvent.Event;
 
-            var message = string.Format("CS - Start - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
+            var message = string.Format("CS - StartSession - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
             Log.Log(message, LogLevel.Info, apmContext);
 
             return Task.FromResult(false);
@@ -57,7 +57,7 @@ namespace Distracey.Logary
             var apmContext = apmEvent.ApmContext;
             var apmWebApiStartInformation = apmEvent.Event;
 
-            var message = string.Format("CS - Start - {0} - {1}", apmWebApiStartInformation.EventName, apmWebApiStartInformation.TraceId);
+            var message = string.Format("CS - StartSession - {0} - {1}", apmWebApiStartInformation.EventName, apmWebApiStartInformation.TraceId);
             Log.Log(message, LogLevel.Info, apmContext);
 
             return Task.FromResult(false);
@@ -82,7 +82,7 @@ namespace Distracey.Logary
             var apmContext = apmEvent.ApmContext;
             var apmWebApiStartInformation = apmEvent.Event;
 
-            var message = string.Format("SR - Start - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
+            var message = string.Format("SR - StartSession - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
 
             Log.Log(message, LogLevel.Info, apmContext);
 

@@ -35,7 +35,7 @@ namespace Distracey.Log4Net
             var apmContext = apmEvent.ApmContext;
             var apmMethodHandlerStartInformation = apmEvent.Event;
 
-            var message = string.Format("CS - Start - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
+            var message = string.Format("CS - StartSession - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -75,7 +75,7 @@ namespace Distracey.Log4Net
             var apmContext = apmEvent.ApmContext;
             var apmHttpClientStartInformation = apmEvent.Event;
 
-            var message = string.Format("CS - Start - {0} - {1}", apmHttpClientStartInformation.EventName, apmHttpClientStartInformation.TraceId);
+            var message = string.Format("CS - StartSession - {0} - {1}", apmHttpClientStartInformation.EventName, apmHttpClientStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 
@@ -115,7 +115,7 @@ namespace Distracey.Log4Net
             var apmContext = apmEvent.ApmContext;
             var apmWebApiStartInformation = apmEvent.Event;
 
-            var message = string.Format("SR - Start - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
+            var message = string.Format("SR - StartSession - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
             var logger = Log.Logger;
             var logEvent = new LoggingEvent(DeclaringType, logger.Repository, logger.Name, Level.Info, message, null);
 

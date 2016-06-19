@@ -162,7 +162,7 @@ namespace Distracey.Common.Session.Storage
                 Thread.CurrentThread.IsBackground = false;
 
                 // set null the current session bound to the running thread to release the memory
-                SessionContext.Stop();
+                SessionContext.StopSession();
 
                 // Save all the queued sessions
                 ISession session;
