@@ -148,13 +148,14 @@ namespace Distracey.Agent.SystemWeb.WebApi
             }
             else
             {
-                request.Properties[Constants.TraceIdHeaderKey] = traceIdHeaders.First();
+                var traceId = traceIdHeaders.First();
+                request.Properties[Constants.TraceIdHeaderKey] = traceId;
 
                 IEnumerable<string> spanIdHeaders = null;
                 if (!request.Headers.TryGetValues(Constants.SpanIdHeaderKey, out spanIdHeaders))
                 {
-                    var traceId = ShortGuid.NewGuid().Value;
-                    request.Properties[Constants.SpanIdHeaderKey] = traceId;
+                    var spanId = ShortGuid.NewGuid().Value;
+                    request.Properties[Constants.SpanIdHeaderKey] = spanId;
                 }
                 else
                 {

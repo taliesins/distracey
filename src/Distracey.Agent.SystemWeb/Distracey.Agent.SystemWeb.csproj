@@ -50,7 +50,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApmContextHttpMessageExtractor.cs" />
     <Compile Include="ApmExtensions.cs" />
     <Compile Include="ApmHttpRequestMessageParser.cs" />
     <Compile Include="HttpClient\ApmHttpClientApmContextExtensions.cs" />

@@ -18,8 +18,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
     {
         private readonly bool _addResponseHeaders;
         private readonly PluralizationService _pluralizationService;
-        private readonly IApmContext _apmContext;
-        private readonly IExecutionTimer _executionTimer;
+        private IApmContext _apmContext;
+        private IExecutionTimer _executionTimer;
         private TimeSpan _offset;
 
         private static readonly ApmWebApiRequestDecorator ApmWebApiRequestDecorator = new ApmWebApiRequestDecorator();
@@ -35,20 +35,16 @@ namespace Distracey.Agent.SystemWeb.WebApi
         {
             _addResponseHeaders = addResponseHeaders;
             _pluralizationService = pluralizationService;
-            _apmContext = new ApmContext();
-            _executionTimer = new ExecutionTimer(new Stopwatch());
         }
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            //Initialize ApmContext if it does not exist
-            //HttpContext.Current.SessionContext
-
+            _executionTimer = new ExecutionTimer(new Stopwatch());
             _offset = _executionTimer.Start();
 
             SetTracingRequestHeaders(actionContext, _pluralizationService);
-            ExtractContextFromHttpRequest(_apmContext, actionContext.Request);
 
+             _apmContext = ExtractContextFromHttpRequest(actionContext.Request);
             LogStartOfRequest(_apmContext, actionContext.Request, _offset);
             base.OnActionExecuting(actionContext);
         }
@@ -61,9 +57,6 @@ namespace Distracey.Agent.SystemWeb.WebApi
             }
             base.OnActionExecuted(actionExecutedContext);
             LogStopOfRequest(_apmContext, actionExecutedContext, _offset);
-
-            //Dispose ApmContext if it does not exist
-            //HttpContext.Current.SessionContext
         }
 
         private void LogStartOfRequest(IApmContext apmContext, HttpRequestMessage request, TimeSpan offset)
@@ -97,8 +90,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
             ApmWebApiRequestDecorator.AddTracing(actionContext.Request);
         }
 
-        private static void ExtractContextFromHttpRequest(IApmContext apmContext, HttpRequestMessage request)
-        {
+        private static IApmContext ExtractContextFromHttpRequest(HttpRequestMessage request)
+        { 
             var eventName = ApmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
             var traceId = ApmHttpRequestMessageParser.GetTraceId(request);
@@ -107,40 +100,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
             var sampled = ApmHttpRequestMessageParser.GetSampled(request);
             var flags = ApmHttpRequestMessageParser.GetFlags(request);
 
-            if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
-            {
-                apmContext[Constants.EventNamePropertyKey] = eventName;
-            }
-
-            if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
-            {
-                apmContext[Constants.MethodIdentifierPropertyKey] = methodIdentifier;
-            }
-
-            if (!apmContext.ContainsKey(Constants.TraceIdHeaderKey))
-            {
-                apmContext[Constants.TraceIdHeaderKey] = traceId;
-            }
-
-            if (!apmContext.ContainsKey(Constants.SpanIdHeaderKey))
-            {
-                apmContext[Constants.SpanIdHeaderKey] = spanId;
-            }
-
-            if (!apmContext.ContainsKey(Constants.ParentSpanIdHeaderKey))
-            {
-                apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
-            }
-
-            if (!apmContext.ContainsKey(Constants.SampledHeaderKey))
-            {
-                apmContext[Constants.SampledHeaderKey] = sampled;
-            }
-
-            if (!apmContext.ContainsKey(Constants.FlagsHeaderKey))
-            {
-                apmContext[Constants.FlagsHeaderKey] = flags;
-            }
+            var apmContext = ApmContext.GetContext(eventName:eventName, methodIdentifier:methodIdentifier, 
+                traceId:traceId, spanId:spanId, parentSpanId:parentSpanId, sampled:sampled, flags:flags);
 
             if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
             {
@@ -151,6 +112,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
             {
                 apmContext[Constants.RequestMethodPropertyKey] = request.Method.ToString();
             }
+
+            return apmContext;
         }
 
         private static void SetTracingResponseHeaders(HttpActionExecutedContext actionContext)

@@ -110,7 +110,6 @@ namespace Distracey.Tests
             var expectedMethodIdentifier = string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
 
             Assert.AreEqual(expectedMethodIdentifier, methodsIdentifier);
-
         }
 
         [Test]

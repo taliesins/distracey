@@ -12,12 +12,6 @@
         public const string RequestUriPropertyKey = "requestUri";
         public const string ResponseStatusCodePropertyKey = "responseStatusCode";
 
-        public const string IncomingTraceIdPropertyKey = "incomingTraceId";
-        public const string IncomingSpanIdPropertyKey = "incomingSpanId";
-        public const string IncomingParentSpanIdPropertyKey = "incomingParentSpanId";
-        public const string IncomingSampledPropertyKey = "incomingSampled";
-        public const string IncomingFlagsPropertyKey = "incomingFlags";
-
         public const string TraceIdHeaderKey = "X-B3-TraceId";
         public const string SpanIdHeaderKey = "X-B3-SpanId";
         public const string ParentSpanIdHeaderKey = "X-B3-ParentSpanId";

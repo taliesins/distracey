@@ -56,7 +56,6 @@
     <Compile Include="Helpers\TaskHelpersExtensions.cs" />
     <Compile Include="IApmContext.cs" />
     <Compile Include="IApmContextExtensions.cs" />
-    <Compile Include="IApmContextExtractor.cs" />
     <Compile Include="IEventLogger.cs" />
     <Compile Include="Message\TimedMessageExtensions.cs" />
     <Compile Include="Message\TracingMessageExtensions.cs" />

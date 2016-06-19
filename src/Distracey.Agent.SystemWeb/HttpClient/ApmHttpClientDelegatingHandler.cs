@@ -49,12 +49,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
 
             ApmHttpClientRequestDecorator.AddClientName(request, apmContext);
 
-            ApmHttpClientRequestDecorator.AddIncomingTraceId(request, apmContext);
-            ApmHttpClientRequestDecorator.AddIncomingSpanId(request, apmContext);
-            ApmHttpClientRequestDecorator.AddIncomingParentSpanId(request, apmContext);
-            ApmHttpClientRequestDecorator.AddIncomingSampled(request, apmContext);
-            ApmHttpClientRequestDecorator.AddIncomingFlags(request, apmContext);
-
             ApmHttpClientRequestDecorator.AddTraceId(request, apmContext);
             ApmHttpClientRequestDecorator.AddSpanId(request, apmContext);
             ApmHttpClientRequestDecorator.AddParentSpanId(request, apmContext);

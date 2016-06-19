@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Distracey.Common;
+﻿using Distracey.Common;
 using NUnit.Framework;
 
 namespace Distracey.Tests
@@ -7,57 +6,72 @@ namespace Distracey.Tests
     [TestFixture]
     public class ApmContextTests
     {
-        private IApmContext _apmContext;
-
-        [SetUp]
-        public void Setup()
-        {
-            _apmContext = new ApmContext();
-        }
+        private const string NoParent = "0";
+        private const int ShortGuidLength = 22;
 
         [Test]
         public void WhenAddingTrackingInformationWithNoPreviousTracing()
         {
-            _apmContext.Add(Constants.ClientNamePropertyKey, "TestClient");
+            var apmContext = ApmContext.GetContext(clientName: "TestClient");
+            var traceId = (string)apmContext[Constants.TraceIdHeaderKey];
+            var parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
+            var spanId = (string)apmContext[Constants.SpanIdHeaderKey];
 
-            ApmContext.SetTracing(_apmContext);
-
-            var traceId = (string)_apmContext[Constants.TraceIdHeaderKey];
-
-            var regex = new Regex("TestClient=[^;]+");
-
-            Assert.True(regex.IsMatch(traceId));
+            Assert.True(traceId.Length == ShortGuidLength);
+            Assert.True(parentSpanId == NoParent);
+            Assert.True(spanId.Length == ShortGuidLength);
         }
 
         [Test]
-        public void WhenAddingTrackingInformationWithNoSpecifiedSpanIdTracing()
+        public void WhenAddingTrackingInformationWithNoSpecifiedSpanIdAndNoParentSpanIdTracing()
         {
-            _apmContext.Add(Constants.IncomingTraceIdPropertyKey, "PreviousTestClient=12345");
-            _apmContext.Add(Constants.ClientNamePropertyKey, "TestClient");
+            var apmContext = ApmContext.GetContext(clientName: "TestClient", traceId: "PreviousTestClient=12345");
+            var traceId = (string)apmContext[Constants.TraceIdHeaderKey];
+            var parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
+            var spanId = (string)apmContext[Constants.SpanIdHeaderKey];
 
-            ApmContext.SetTracing(_apmContext);
-
-            var spanId = (string)_apmContext[Constants.SpanIdHeaderKey];
-
-            var regex = new Regex("PreviousTestClient=12345;TestClient=[^;]+");
-
-            Assert.True(regex.IsMatch(spanId));
+            Assert.True(traceId == "PreviousTestClient=12345");
+            Assert.True(parentSpanId == NoParent);
+            Assert.True(spanId.Length == ShortGuidLength);
         }
 
         [Test]
-        public void WhenAddingTrackingInformationWithSpecifiedSpanIdTracing()
+        public void WhenAddingTrackingInformationWithSpecifiedSpanIdAndNoParentSpanIdTracing()
         {
-            _apmContext.Add(Constants.IncomingTraceIdPropertyKey, "PreviousTestClient=12345");
-            _apmContext.Add(Constants.IncomingSpanIdPropertyKey, "PreviousTestClient=12345;PreviousTestClientB=12345");
-            _apmContext.Add(Constants.ClientNamePropertyKey, "TestClient");
+            var apmContext = ApmContext.GetContext(traceId: "PreviousTestClient=12345", spanId: "PreviousTestClient=12345;PreviousTestClientB=12345", clientName: "TestClient");
+            var traceId = (string)apmContext[Constants.TraceIdHeaderKey];
+            var parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
+            var spanId = (string)apmContext[Constants.SpanIdHeaderKey];
 
-            ApmContext.SetTracing(_apmContext);
+            Assert.True(traceId == "PreviousTestClient=12345");
+            Assert.True(parentSpanId == NoParent);
+            Assert.True(spanId == "PreviousTestClient=12345;PreviousTestClientB=12345");
+        }
 
-            var spanId = (string)_apmContext[Constants.SpanIdHeaderKey];
+        [Test]
+        public void WhenAddingTrackingInformationWithNoSpecifiedSpanIdAndParentSpanIdTracing()
+        {
+            var apmContext = ApmContext.GetContext(clientName: "TestClient", traceId: "PreviousTestClient=12345", parentSpanId: "Parent=12345");
+            var traceId = (string)apmContext[Constants.TraceIdHeaderKey];
+            var parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
+            var spanId = (string)apmContext[Constants.SpanIdHeaderKey];
 
-            var regex = new Regex("PreviousTestClient=12345;PreviousTestClientB=12345;TestClient=[^;]+");
+            Assert.True(traceId == "PreviousTestClient=12345");
+            Assert.True(parentSpanId == "Parent=12345");
+            Assert.True(spanId.Length == ShortGuidLength);
+        }
 
-            Assert.True(regex.IsMatch(spanId));
+        [Test]
+        public void WhenAddingTrackingInformationWithSpecifiedSpanIdAndParentSpanIdTracing()
+        {
+            var apmContext = ApmContext.GetContext(traceId: "PreviousTestClient=12345", parentSpanId: "Parent=12345", spanId: "PreviousTestClient=12345;PreviousTestClientB=12345", clientName: "TestClient");
+            var traceId = (string)apmContext[Constants.TraceIdHeaderKey];
+            var parentSpanId = (string)apmContext[Constants.ParentSpanIdHeaderKey];
+            var spanId = (string)apmContext[Constants.SpanIdHeaderKey];
+
+            Assert.True(traceId == "PreviousTestClient=12345");
+            Assert.True(parentSpanId == "Parent=12345");
+            Assert.True(spanId == "PreviousTestClient=12345;PreviousTestClientB=12345");
         }
     }
 }
