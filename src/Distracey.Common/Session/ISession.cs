@@ -5,6 +5,8 @@ namespace Distracey.Common.Session
     public interface ISession 
     {
         Guid SessionId { get; }
-        IApmContext ApmContext { get; set; }
+        string TraceId { get; set; }
+        string Sampled { get; set; }
+        string Flags { get; set; }
     }
 }

@@ -2,11 +2,9 @@
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Distracey.Agent.SystemWeb.Session;
 using Distracey.Common.Session;
 using Distracey.Log4Net;
 using Distracey.NoOperation;
-using Distracey.PerformanceCounter;
 using log4net;
 
 namespace Distracey.Examples.Website

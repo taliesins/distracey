@@ -5,60 +5,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
 {
     public class ApmHttpClientRequestDecorator
     {
-        public void AddEventName(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object eventNameProperty;
-
-            if (request.Properties.TryGetValue(Constants.EventNamePropertyKey, out eventNameProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.EventNamePropertyKey))
-                {
-                    apmContext[Constants.EventNamePropertyKey] = (string)eventNameProperty;
-                }
-            }
-            else
-            {
-                request.Properties[Constants.EventNamePropertyKey] = apmContext[Constants.EventNamePropertyKey];
-            }
-        }
-
-        public void AddMethodIdentifier(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object methodIdentifierProperty;
-
-            if (request.Properties.TryGetValue(Constants.MethodIdentifierPropertyKey, out methodIdentifierProperty))
-            {
-                if (!apmContext.ContainsKey(Constants.MethodIdentifierPropertyKey))
-                {
-                    apmContext[Constants.MethodIdentifierPropertyKey] = (string)methodIdentifierProperty;
-                }
-            }
-            else
-            {
-                request.Properties[Constants.MethodIdentifierPropertyKey] = apmContext[Constants.MethodIdentifierPropertyKey];
-            }
-        }
-
-        public void AddClientName(HttpRequestMessage request, IApmContext apmContext)
-        {
-            object clientNameProperty;
-            var clientName = string.Empty;
-
-            if (request.Properties.TryGetValue(Constants.ClientNamePropertyKey, out clientNameProperty))
-            {
-                clientName = (string)clientNameProperty;
-                if (!apmContext.ContainsKey(Constants.ClientNamePropertyKey))
-                {
-                    apmContext[Constants.ClientNamePropertyKey] = clientName;
-                }
-            }
-            else
-            {
-                clientName = (string)apmContext[Constants.ClientNamePropertyKey];
-                request.Properties[Constants.ClientNamePropertyKey] = clientName;
-            }
-        }
-
         public void AddFlags(HttpRequestMessage request, IApmContext apmContext)
         {
             object flagsProperty;

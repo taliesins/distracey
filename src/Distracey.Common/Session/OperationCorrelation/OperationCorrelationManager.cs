@@ -2,8 +2,15 @@
 
 namespace Distracey.Common.Session.OperationCorrelation
 {
-    internal static class OperationCorrelationManager
+    public class OperationCorrelationManager
     {
+        private readonly OperationStack _operationStack;
+
+        public OperationCorrelationManager(OperationStack operationStack)
+        {
+            _operationStack = operationStack;
+        }
+
         /// <summary>
         /// Gets or sets the identity for a global activity.
         /// </summary>
@@ -12,11 +19,11 @@ namespace Distracey.Common.Session.OperationCorrelation
         /// A <see cref="T:System.Guid"/> structure that identifies the global activity.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public static Guid ActivityId
+        public Guid ActivityId
         {
             get
             {
-                var data = OperationStack.Peek();
+                var data = _operationStack.Peek();
                 return data != null ? (Guid) data : Guid.Empty;
             }
         }
@@ -24,25 +31,33 @@ namespace Distracey.Common.Session.OperationCorrelation
         /// <summary>
         /// Starts a logical operation on a thread.
         /// </summary>
-        public static Guid StartLogicalOperation()
+        public Guid StartLogicalOperation()
         {
             var activityId = Guid.NewGuid();
-            OperationStack.Push(activityId.ToString());
+            _operationStack.Push(activityId.ToString());
 
             return activityId;
         }
 
         /// <summary>
-        /// Stops the current logical operation.
+        /// Starts a logical operation on a thread.
         /// </summary>
-        public static void StopLogicalOperation()
+        public void StartLogicalOperation(string activityId)
         {
-            OperationStack.Pop();
+            _operationStack.Push(activityId);
         }
 
-        public static void Clear()
+        /// <summary>
+        /// Stops the current logical operation.
+        /// </summary>
+        public void StopLogicalOperation()
         {
-            OperationStack.Clear();
+            _operationStack.Pop();
+        }
+
+        public void Clear()
+        {
+            _operationStack.Clear();
         }
     }
 }

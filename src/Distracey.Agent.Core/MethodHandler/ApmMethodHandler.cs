@@ -22,6 +22,8 @@ namespace Distracey.Agent.Core.MethodHandler
 
         public void OnActionExecuting()
         {
+            ApmContext.StartActivityClientSend(_apmContext);
+
             //Initialize ApmContext if it does not exist
             _offset = _executionTimer.Start();
 
@@ -63,6 +65,8 @@ namespace Distracey.Agent.Core.MethodHandler
             .AsTimedMessage(offset);
 
             apmMethodFinishInformation.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
     }
 }

@@ -14,41 +14,38 @@ namespace Distracey.Agent.SystemWeb.HttpClient
     /// </summary>
     public class ApmHttpClientDelegatingHandler : DelegatingHandler
     {
-        private readonly IApmContext _apmContext;
         private readonly IExecutionTimer _executionTimer;
         private static readonly ApmHttpClientRequestDecorator ApmHttpClientRequestDecorator = new ApmHttpClientRequestDecorator();
 
-        public ApmHttpClientDelegatingHandler(IApmContext apmContext, HttpMessageHandler httpMessageHandler)
+        public ApmHttpClientDelegatingHandler() : this(new HttpClientHandler())
         {
-            _apmContext = apmContext;
+        }
+
+        public ApmHttpClientDelegatingHandler(HttpMessageHandler httpMessageHandler)
+        {
             _executionTimer = new ExecutionTimer(new Stopwatch());
             InnerHandler = httpMessageHandler ?? new HttpClientHandler();
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            //Initialize ApmContext if it does not exist
+            var apmContext = ApmContext.GetContext(string.Format("HttpClient.SendAsync.{0}", request.RequestUri));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
 
-            SetTracingRequestHeaders(_apmContext, request);
+            //Initialize ApmContext if it does not exist
+            SetTracingRequestHeaders(apmContext, request);
 
             var offset = _executionTimer.Start();
 
-            LogStartOfRequest(_apmContext, request, offset);
+            LogStartOfRequest(apmContext, request, offset);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            LogStopOfRequest(_apmContext, request, response, offset);
-
-            //Dispose ApmContext if it does not exist previously
+            LogStopOfRequest(apmContext, request, response, offset);
 
             return response;
         }
 
         private void SetTracingRequestHeaders(IApmContext apmContext, HttpRequestMessage request)
         {
-            ApmHttpClientRequestDecorator.AddEventName(request, apmContext);
-            ApmHttpClientRequestDecorator.AddMethodIdentifier(request, apmContext);
-
-            ApmHttpClientRequestDecorator.AddClientName(request, apmContext);
-
             ApmHttpClientRequestDecorator.AddTraceId(request, apmContext);
             ApmHttpClientRequestDecorator.AddSpanId(request, apmContext);
             ApmHttpClientRequestDecorator.AddParentSpanId(request, apmContext);
@@ -92,6 +89,8 @@ namespace Distracey.Agent.SystemWeb.HttpClient
             .AsTimedMessage(offset);
 
             apmHttpClientFinishInformation.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
     }
 }

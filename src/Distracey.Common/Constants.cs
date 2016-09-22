@@ -7,6 +7,7 @@
         public const string ClientNamePropertyKey = "ClientName";
         public const string ApmContextPropertyKey = "ApmContext";
         public const string EventNamePropertyKey = "eventName";
+        public const string MethodArgsPropertyKey = "args";
         public const string MethodIdentifierPropertyKey = "methodIdentifier";
         public const string RequestMethodPropertyKey = "requestMethod";
         public const string RequestUriPropertyKey = "requestUri";

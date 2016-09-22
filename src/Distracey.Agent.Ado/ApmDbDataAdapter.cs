@@ -37,11 +37,12 @@ namespace Distracey.Agent.Ado
                 InnerDataAdapter.SelectCommand = typedCommand.Inner;
 
                 var recordsEffected = 0;
-                var commandId = ShortGuid.NewGuid();
                 var commandText = InnerDataAdapter.SelectCommand.CommandText;
                 var commandHash = commandText.GetHashCode();
                 var apmContext = ApmContext.GetContext(string.Format("DbDataAdapter.{0}", commandHash));
-                    
+                var activityId = ApmContext.StartActivityClientSend(apmContext);
+                var commandId = activityId;    
+
                 LogStartOfExecuteDbDataAdapter(apmContext, commandId, commandText);
 
                 try
@@ -85,6 +86,8 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         public override DataTable[] FillSchema(DataSet dataSet, SchemaType schemaType)

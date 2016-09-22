@@ -135,6 +135,12 @@ namespace Distracey.Agent.SystemWeb.WebApi
             return string.Format("{0}.{1}({2}) - {3}", controllerName, actionName, arguments, methodType);
         }
 
+        public void AddMethodArgs(HttpActionContext actionContext)
+        {
+            var args = actionContext.ActionArguments;
+            actionContext.Request.Properties[Constants.MethodArgsPropertyKey] = args;
+        }
+
         public void AddTracing(HttpRequestMessage request)
         {
             IEnumerable<string> traceIdHeaders = null;

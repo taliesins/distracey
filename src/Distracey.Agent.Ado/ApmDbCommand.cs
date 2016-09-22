@@ -145,9 +145,11 @@ namespace Distracey.Agent.Ado
         public override int ExecuteNonQuery()
         {
             int recordsAffected;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteNonQuery.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteNonQuery(apmContext, commandId, CommandText);
 
@@ -187,14 +189,18 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         public override object ExecuteScalar()
         {
             object result;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalar.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteScalar(apmContext, commandId, CommandText);
  
@@ -233,14 +239,18 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeScalarFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         public override async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
         {
             object result;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalarAsync.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteScalarAsync(apmContext, commandId, CommandText);
 
@@ -279,14 +289,18 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeScalarAsyncFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         public override async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
         {
             int recordsEffected;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteNonQueryAsync.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteNonQueryAsync(apmContext, commandId, CommandText);
 
@@ -326,14 +340,18 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryAsyncFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
         {
             DbDataReader reader;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteDbDataReaderAsync.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteDbDataReaderAsync(apmContext, commandId, CommandText);
 
@@ -378,9 +396,11 @@ namespace Distracey.Agent.Ado
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
             DbDataReader reader;
-            var commandId = ShortGuid.NewGuid();
+
             var commandHash = CommandText.GetHashCode();
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteDbDataReader.{0}", commandHash));
+            var activityId = ApmContext.StartActivityClientSend(apmContext);
+            var commandId = activityId;
 
             LogStartOfExecuteDbDataReader(apmContext, commandId, CommandText);
             try
@@ -419,6 +439,8 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityClientReceived();
         }
 
         protected override DbParameter CreateDbParameter()

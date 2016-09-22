@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="ApmExtensions.cs" />
     <Compile Include="ApmHttpRequestMessageParser.cs" />
-    <Compile Include="HttpClient\ApmHttpClientApmContextExtensions.cs" />
     <Compile Include="HttpClient\ApmHttpClientDelegatingHandler.cs" />
     <Compile Include="HttpClient\ApmHttpClientFinishedMessage.cs" />
     <Compile Include="HttpClient\ApmHttpClientRequestDecorator.cs" />
@@ -61,7 +60,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\HttpContextSessionContainer.cs" />
     <Compile Include="Session\HttpContextSessionContainerHttpModule.cs" />
-    <Compile Include="Session\ISessionContainerExtensions.cs" />
+    <Compile Include="Session\IHttpContextSessionContextExtensions.cs" />
+    <Compile Include="Session\OperationCorrelation\HttpContextOperationStackStorage.cs" />
+    <Compile Include="Session\SessionIdentifier\HttpContextSessionIdentifierStorage.cs" />
     <Compile Include="WebApi\ApmAttribute.cs" />
     <Compile Include="WebApi\ApmOutgoingResponseDecorator.cs" />
     <Compile Include="WebApi\ApmWebApiFilterAttribute.cs" />
@@ -81,6 +82,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

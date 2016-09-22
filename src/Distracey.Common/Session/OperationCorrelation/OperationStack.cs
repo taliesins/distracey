@@ -1,50 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 
 namespace Distracey.Common.Session.OperationCorrelation
 {
-    public static class OperationStack
+    public class OperationStack
     {
-        private const string OperationStackSlot = "Distracey.OperationStack";
+        private readonly IOperationStackStorage _operationStackStorage;
 
-        public static IDisposable Push(string operation)
+        public OperationStack(IOperationStackStorage operationStackStorage)
         {
-            var parent = CallContext.LogicalGetData(OperationStackSlot) as OperationStackItem;
-            var op = new OperationStackItem(parent, operation);
-            CallContext.LogicalSetData(OperationStackSlot, op);
+            _operationStackStorage = operationStackStorage;
+        }
+
+        public IDisposable Push(string operation)
+        {
+            var parent = _operationStackStorage.Current;
+            var op = new OperationStackItem(parent, operation, () => { Pop(); });
+            _operationStackStorage.Current = op;
             return op;
         }
 
-        public static object Pop()
+        public object Pop()
         {
-            var current = CallContext.LogicalGetData(OperationStackSlot) as OperationStackItem;
+            var current = _operationStackStorage.Current;
 
             if (current != null)
             {
-                CallContext.LogicalSetData(OperationStackSlot, current.Parent);
+                _operationStackStorage.Current = current.Parent;
                 return current.Operation;
             }
             else
             {
-                CallContext.FreeNamedDataSlot(OperationStackSlot);
+                Clear();
             }
             return null;
         }
 
-        public static object Peek()
+        public object Peek()
         {
             var top = Top();
             return top != null ? top.Operation : null;
         }
 
-        internal static OperationStackItem Top()
+        public OperationStackItem Top()
         {
-            var top = CallContext.LogicalGetData(OperationStackSlot) as OperationStackItem;
+            var top = _operationStackStorage.Current;
             return top;
         }
 
-        public static IEnumerable<object> Operations()
+        public IEnumerable<object> Operations()
         {
             var current = Top();
             while (current != null)
@@ -54,7 +58,7 @@ namespace Distracey.Common.Session.OperationCorrelation
             }
         }
 
-        public static int Count
+        public int Count
         {
             get
             {
@@ -63,7 +67,7 @@ namespace Distracey.Common.Session.OperationCorrelation
             }
         }
 
-        public static IEnumerable<string> OperationStrings()
+        public IEnumerable<string> OperationStrings()
         {
             foreach (object o in Operations())
             {
@@ -71,9 +75,9 @@ namespace Distracey.Common.Session.OperationCorrelation
             }
         }
 
-        public static void Clear()
+        public void Clear()
         {
-            CallContext.FreeNamedDataSlot(OperationStackSlot);
+            _operationStackStorage.Clear();
         }
     }
 }

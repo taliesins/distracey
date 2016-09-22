@@ -11,10 +11,13 @@ namespace Distracey.Agent.Ado
     {
         public ApmDbTransaction(DbTransaction transaction, ApmDbConnection connection)
         {
+            var apmContext = Common.ApmContext.GetContext(string.Format("DbTransaction.{0}", connection.ConnectionString.GetHashCode()));
+            var activityId = Common.ApmContext.StartActivityClientSend(apmContext);
+            
+            TransactionId = activityId;
+            ApmContext = apmContext;
             InnerTransaction = transaction; 
             InnerConnection = connection;
-            TransactionId = ShortGuid.NewGuid();
-            ApmContext = Common.ApmContext.GetContext(string.Format("DbTransaction.{0}", connection.ConnectionString.GetHashCode()));
 
             LogStartOfDbTransaction(ApmContext, TransactionId);
         }
@@ -39,6 +42,8 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
+
+            Common.ApmContext.StopActivityClientReceived();
         }
 
         public ApmDbConnection InnerConnection { get; set; } 

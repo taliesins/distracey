@@ -98,15 +98,15 @@ namespace Distracey.Agent.Ado
             // when GetDbProviderManifestToken is called, it passes in a ApmDbConnection rather than the inner connection. This is a problem because the GetDbProviderManifestToken trys to cast the connection to its concreat type
             if (serviceType.FullName == "System.Data.Common.DbProviderServices")
             {
-                var type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Glimpse.EF43", false);
+                var type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Distracey.Agent.EF43", false);
                 if (type == null)
                 {
-                    type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Glimpse.EF5", false);
+                    type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Distracey.Agent.EF5", false);
                 }
 
                 if (type == null)
                 {
-                    type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Glimpse.EF6", false);
+                    type = Type.GetType("Distracey.Agent.Ef.ApmDbProviderServices, Distracey.Agent.EF6", false);
                 }
 
                 if (type != null)

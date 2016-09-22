@@ -1,5 +1,7 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
 using Distracey.Common.Session;
+using Distracey.Common.Session.SessionIdentifier;
 
 namespace Distracey.Agent.SystemWeb.Session
 {
@@ -10,11 +12,12 @@ namespace Distracey.Agent.SystemWeb.Session
     /// </summary>
     public class HttpContextSessionContainer : ISessionContainer
     {
-        private const string CurrentSessionIdCacheKey = "distracey::current_session";
+        private readonly ISessionIdentifierStorage _sessionIdentifierStorage;
         private readonly ISessionContainer _innerSessionContainer;
 
-        public HttpContextSessionContainer(ISessionContainer innerSessionContainer)
+        public HttpContextSessionContainer(ISessionIdentifierStorage sessionIdentifierStorage, ISessionContainer innerSessionContainer)
         {
+            _sessionIdentifierStorage = sessionIdentifierStorage;
             _innerSessionContainer = innerSessionContainer;
         }
 
@@ -25,39 +28,64 @@ namespace Distracey.Agent.SystemWeb.Session
         {
             get
             {
-                // Try to get current profiling SessionContext from HttpContext.Items first
-                var sessionContext = HttpContext.Current == null ? null : HttpContext.Current.Items[CurrentSessionIdCacheKey] as ISession;
-
-                // when SessionContext.StartSession() executes in begin request event handler in a different thread
+                // ASP.Net has thread agilitiy so when SessionContext.StartSession() executes in 
+                // begin request event handler, it may be in a different thread so
                 // the callcontext might not contain the current profiling SessionContext correctly
                 // so on reading of the current SessionContext from HttpContextSessionContainer
                 // double check to ensure current SessionContext stored in callcontext
-                if (sessionContext != null && _innerSessionContainer != null && _innerSessionContainer.Current == null)
+
+                var obj = _sessionIdentifierStorage.Current;
+                if (obj == null)
                 {
-                    _innerSessionContainer.Current = sessionContext;
+                    if (_innerSessionContainer != null)
+                    {
+                        _innerSessionContainer.Current = null;
+                    }
+                    return null;
                 }
 
-                //We dont have a session so try to get it out of other session containers
-                if (sessionContext == null && _innerSessionContainer != null && _innerSessionContainer.Current != null)
+                var sessionId = (Guid?)obj;
+
+                var sessionContext = HttpContext.Current.Items[sessionId.Value] as ISession;
+
+                if (_innerSessionContainer != null)
                 {
-                    return _innerSessionContainer.Current;
+                    if (sessionContext == null)
+                    {
+                        _innerSessionContainer.Current = null;
+                    }
+                    else if (_innerSessionContainer.Current == null || _innerSessionContainer.Current != sessionContext)
+                    {
+                        _innerSessionContainer.Current = sessionContext;
+                    }
                 }
 
                 return sessionContext;
             }
             set
             {
-                if (_innerSessionContainer != null)
+                if (_innerSessionContainer != null && _innerSessionContainer.Current != value)
                 {
                     _innerSessionContainer.Current = value;
                 }
 
                 // Cache current profiler SessionContext in HttpContext.Items if HttpContext accessible
 
-                if (HttpContext.Current != null)
+                if (value == null)
                 {
-                    HttpContext.Current.Items[CurrentSessionIdCacheKey] = value;
+                    var obj = _sessionIdentifierStorage.Current;
+                    if (obj != null)
+                    {
+                        var sessionId = (Guid?)obj;
+                        HttpContext.Current.Items.Remove(sessionId.Value);
+                    }
+
+                    _sessionIdentifierStorage.Clear();
+                    return;
                 }
+
+                HttpContext.Current.Items[value.SessionId] = value;
+                _sessionIdentifierStorage.Current = value.SessionId;
             } 
         }
     }

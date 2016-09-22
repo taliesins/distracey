@@ -1,5 +1,6 @@
 ﻿using System;
 using Distracey.Common.Session.OperationCorrelation;
+using Distracey.Common.Session.SessionIdentifier;
 
 namespace Distracey.Common.Session
 {
@@ -8,7 +9,24 @@ namespace Distracey.Common.Session
     /// </summary>
     public sealed class SessionContext : MarshalByRefObject, IDisposable
     {
-        private static ISessionContainer _sessionContainer;
+        private static Lazy<ISessionContainer> _sessionContainer;
+        private static Lazy<OperationCorrelationManager> _operationCorrelationManager;
+
+        static SessionContext()
+        {
+            _sessionContainer = new Lazy<ISessionContainer>(SessionContainerFactory); 
+            _operationCorrelationManager = new Lazy<OperationCorrelationManager>(OperationCorrelationManagerFactory);
+        }
+
+        private static ISessionContainer SessionContainerFactory()
+        {
+            return new InMemorySessionContainer(new CallContextSessionIdentifierStorage(), TimeSpan.FromSeconds(10));
+        }
+
+        private static OperationCorrelationManager OperationCorrelationManagerFactory()
+        {
+            return new OperationCorrelationManager(new OperationStack(new CallContextOperationStackStorage()));
+        }
 
         private SessionContext()
         {
@@ -21,7 +39,7 @@ namespace Distracey.Common.Session
         {
             get
             {
-                return _sessionContainer.Current;
+                return _sessionContainer.Value.Current;
             }
         }
 
@@ -32,14 +50,14 @@ namespace Distracey.Common.Session
         {
             get
             {
-                return OperationCorrelationManager.ActivityId;
+                return _operationCorrelationManager.Value.ActivityId;
             }
         }
 
         /// <summary>
         /// Gets or sets the <see cref="ISessionContainer"/>.
         /// </summary>
-        public static ISessionContainer SessionContainer
+        public static Lazy<ISessionContainer> SessionContainer
         {
             get { return _sessionContainer; }
             set
@@ -53,9 +71,21 @@ namespace Distracey.Common.Session
             }
         }
 
-        static SessionContext()
+        /// <summary>
+        /// Gets or sets the <see cref="ISessionContainer"/>.
+        /// </summary>
+        public static Lazy<OperationCorrelationManager> OperationCorrelationManager
         {
-            _sessionContainer = new CallContextSessionContainer();
+            get { return _operationCorrelationManager; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _operationCorrelationManager = value;
+            }
         }
 
         /// <summary>
@@ -63,12 +93,12 @@ namespace Distracey.Common.Session
         /// </summary>
         public static void StartSession()
         {
-            if (_sessionContainer.Current != null)
+            if (_sessionContainer.Value.Current != null)
             {
                 StopSession();
             }
 
-            _sessionContainer.Current = new Session();
+            _sessionContainer.Value.Current = new Session();
         }
 
         /// <summary>
@@ -76,20 +106,43 @@ namespace Distracey.Common.Session
         /// </summary>
         public static void StopSession()
         {
-            OperationCorrelationManager.Clear();
+            _operationCorrelationManager.Value.Clear();
 
             // Clear the current session context
-            _sessionContainer.Current = null; 
+            _sessionContainer.Value.Current = null; 
         }
 
-        public static Guid StartActivity()
+        /// <summary>
+        /// CS
+        /// </summary>
+        /// <returns></returns>
+        public static Guid StartActivityClientSend()
         {
-            return OperationCorrelationManager.StartLogicalOperation();
+            return _operationCorrelationManager.Value.StartLogicalOperation();
         }
 
+        /// <summary>
+        /// SR
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="traceId"></param>
+        /// <param name="sampled"></param>
+        /// <param name="flags"></param>
+        public static void StartActivityServerReceived(string activityId, string traceId, string sampled, string flags)
+        {
+            _operationCorrelationManager.Value.StartLogicalOperation(activityId);
+            var session = Current;
+            session.TraceId = traceId;
+            session.Sampled = sampled;
+            session.Flags = flags;
+        }
+
+        /// <summary>
+        /// SS or CR
+        /// </summary>
         public static void StopActivity()
         {
-            OperationCorrelationManager.StopLogicalOperation();
+            _operationCorrelationManager.Value.StopLogicalOperation();
         }
 
         public void Dispose()

@@ -21,7 +21,7 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthTwo/GetDepthTwo/{0}", id);
@@ -43,7 +43,7 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthTwo/GetDepthThree/{0}", id);
@@ -65,7 +65,7 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthTwo/GetDepthTwoException/{0}", id);
@@ -87,7 +87,7 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthTwo/GetDepthThreeException/{0}", id);
@@ -107,7 +107,7 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
         public PingResponse Ping()
         {
             var context = ApmContext.GetContext();
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/SmokeTest/Ping");

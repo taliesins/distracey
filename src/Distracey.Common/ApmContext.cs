@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Distracey.Common.Helpers;
 using Distracey.Common.Session;
 
 namespace Distracey.Common
@@ -13,21 +12,57 @@ namespace Distracey.Common
     {
         public const string NoParent = "0";
 
-        public static Guid StartActivity()
+        public static void StartActivityServerReceived(string spanId, string traceId, string sampled, string flags)
         {
-            return SessionContext.StartActivity();
+            SessionContext.StartActivityServerReceived(spanId, traceId, sampled, flags);
         }
 
-        public static void StopActivity()
+        public static Guid StartActivityClientSend()
+        {
+            return SessionContext.StartActivityClientSend();
+        }
+
+        public static Guid StartActivityClientSend(IApmContext apmContext)
+        {
+            var parentSpanId = CurrentActivityId;
+            var session = SessionContext.Current;
+            var traceId = session.TraceId;
+            var sampled = session.Sampled;
+            var flags = session.Flags;
+
+            var activityId = StartActivityClientSend();
+            apmContext[Constants.SpanIdHeaderKey] = activityId;
+            apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
+            apmContext[Constants.TraceIdHeaderKey] = traceId;
+            apmContext[Constants.SampledHeaderKey] = sampled;
+            apmContext[Constants.FlagsHeaderKey] = flags;
+
+            return activityId;
+        }
+
+        public static void StopActivityClientReceived()
         {
             SessionContext.StopActivity();
+        }
+
+        public static void StopActivityServerSend()
+        {
+            SessionContext.StopActivity();
+        }
+
+        public static Guid CurrentActivityId
+        {
+            get
+            {
+                return SessionContext.CurrentActivityId;
+            }
         }
 
         /// <summary>
         /// Create a new APM context, extracting information from containing contexts.
         /// </summary>
         /// <returns></returns>
-        public static IApmContext GetContext(string eventName = "", string clientName = "", string methodIdentifier = "",
+        public static IApmContext GetContext(string eventName = "", string clientName = "", string methodIdentifier = "", string methodArgs = "",
             string traceId = "", string spanId = "", string parentSpanId = "", string sampled = "", string flags = "")
         {
             if (string.IsNullOrEmpty(eventName) || string.IsNullOrEmpty(methodIdentifier))
@@ -49,16 +84,17 @@ namespace Distracey.Common
 
             var apmContext = new ApmContext();
 
-            SetContext(apmContext, methodIdentifier, eventName, clientName);
+            SetContext(apmContext, methodIdentifier, methodArgs, eventName, clientName);
             SetTracing(apmContext, traceId, spanId, parentSpanId, sampled, flags);
 
             return apmContext;
         }
 
-        private static void SetContext(IApmContext apmContext, string methodIdentifier, string eventName, string clientName)
+        private static void SetContext(IApmContext apmContext, string methodIdentifier, string methodArgs, string eventName, string clientName)
         {
             apmContext[Constants.EventNamePropertyKey] = eventName;
-            apmContext[Constants.MethodIdentifierPropertyKey] = methodIdentifier;
+            apmContext[Constants.MethodIdentifierPropertyKey] = methodArgs;
+            apmContext[Constants.MethodArgsPropertyKey] = methodIdentifier;
             apmContext[Constants.ClientNamePropertyKey] = clientName;
         }
 
@@ -66,7 +102,7 @@ namespace Distracey.Common
         {
             if (string.IsNullOrEmpty(traceId))
             {
-                traceId = ShortGuid.NewGuid().Value;
+                traceId = Guid.NewGuid().ToString();
                 spanId = traceId;
                 parentSpanId = NoParent;
             }
@@ -74,7 +110,7 @@ namespace Distracey.Common
             {
                 if (string.IsNullOrEmpty(spanId))
                 {
-                    spanId = ShortGuid.NewGuid().Value;
+                    spanId = Guid.NewGuid().ToString();
                 }
 
                 if (string.IsNullOrEmpty(parentSpanId))

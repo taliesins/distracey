@@ -6,13 +6,15 @@ namespace Distracey.Common.Session.OperationCorrelation
     {
         private readonly OperationStackItem _parent;
         private readonly object _operation;
+        private readonly Action _dispose;
         private readonly int _depth;
         private bool _disposed;
 
-        internal OperationStackItem(OperationStackItem parentOperation, object operation)
+        internal OperationStackItem(OperationStackItem parentOperation, object operation, Action dispose)
         {
             _parent = parentOperation;
             _operation = operation;
+            _dispose = dispose;
             _depth = _parent == null ? 1 : _parent.Depth + 1;
         }
 
@@ -32,7 +34,7 @@ namespace Distracey.Common.Session.OperationCorrelation
         {
             if (_disposed) return;
 
-            OperationStack.Pop();
+            _dispose();
 
             _disposed = true;
         }

@@ -21,7 +21,7 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthThree/GetDepthThree/{0}", id);
@@ -46,7 +46,7 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
             var context = ApmContext.GetContext();
             context["id"] = id.ToString();
 
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/DepthThree/GetDepthThreeException/{0}", id);
@@ -69,7 +69,7 @@ namespace Distracey.Examples.ServiceDepthTwo.Clients
         public PingResponse Ping()
         {
             var context = ApmContext.GetContext();
-            using (var client = new HttpClient(context.GetDelegatingHandler(new HttpClientHandler())))
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
             {
                 client.BaseAddress = _baseUrl;
                 var url = string.Format("api/SmokeTest/Ping");

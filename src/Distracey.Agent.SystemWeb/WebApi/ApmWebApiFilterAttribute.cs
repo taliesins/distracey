@@ -45,6 +45,7 @@ namespace Distracey.Agent.SystemWeb.WebApi
             SetTracingRequestHeaders(actionContext, _pluralizationService);
 
              _apmContext = ExtractContextFromHttpRequest(actionContext.Request);
+
             LogStartOfRequest(_apmContext, actionContext.Request, _offset);
             base.OnActionExecuting(actionContext);
         }
@@ -81,27 +82,44 @@ namespace Distracey.Agent.SystemWeb.WebApi
             .AsTimedMessage(offset);
 
             apmWebApiFinishInformation.PublishMessage(apmContext, this);
+
+            ApmContext.StopActivityServerSend();
         }
 
         private static void SetTracingRequestHeaders(HttpActionContext actionContext, PluralizationService pluralizationService)
         {
             ApmWebApiRequestDecorator.AddEventName(actionContext, pluralizationService);
             ApmWebApiRequestDecorator.AddMethodIdentifier(actionContext);
+            ApmWebApiRequestDecorator.AddMethodArgs(actionContext);
             ApmWebApiRequestDecorator.AddTracing(actionContext.Request);
         }
 
         private static IApmContext ExtractContextFromHttpRequest(HttpRequestMessage request)
-        { 
+        {
             var eventName = ApmHttpRequestMessageParser.GetEventName(request);
             var methodIdentifier = ApmHttpRequestMessageParser.GetMethodIdentifier(request);
             var traceId = ApmHttpRequestMessageParser.GetTraceId(request);
-            var spanId = ApmHttpRequestMessageParser.GetSpanId(request);
             var parentSpanId = ApmHttpRequestMessageParser.GetParentSpanId(request);
+            var spanId = ApmHttpRequestMessageParser.GetSpanId(request);
             var sampled = ApmHttpRequestMessageParser.GetSampled(request);
             var flags = ApmHttpRequestMessageParser.GetFlags(request);
 
-            var apmContext = ApmContext.GetContext(eventName:eventName, methodIdentifier:methodIdentifier, 
-                traceId:traceId, spanId:spanId, parentSpanId:parentSpanId, sampled:sampled, flags:flags);
+            var apmContext = ApmContext.GetContext(
+                eventName:eventName, 
+                methodIdentifier:methodIdentifier, 
+                traceId:traceId, 
+                spanId:spanId, 
+                parentSpanId:parentSpanId, 
+                sampled:sampled, 
+                flags:flags);
+            
+            //configure
+            spanId = apmContext.GetSpanId();
+            traceId = apmContext.GetTraceId();
+            sampled = apmContext.GetSampled();
+            flags = apmContext.GetFlags();
+
+            ApmContext.StartActivityServerReceived(spanId, traceId, sampled, flags);
 
             if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
             {
