@@ -40,19 +40,11 @@ namespace Distracey.Common.Session.OperationCorrelation
         }
 
         /// <summary>
-        /// Starts a logical operation on a thread.
-        /// </summary>
-        public void StartLogicalOperation(string activityId)
-        {
-            _operationStack.Push(activityId);
-        }
-
-        /// <summary>
         /// Stops the current logical operation.
         /// </summary>
-        public void StopLogicalOperation()
+        public Guid StopLogicalOperation()
         {
-            _operationStack.Pop();
+            return (Guid)_operationStack.Pop();
         }
 
         public void Clear()

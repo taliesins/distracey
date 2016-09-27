@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Distracey.Agent.SystemWeb.Session;
 using Distracey.Common.Session;
 using Distracey.Log4Net;
 using Distracey.NoOperation;
@@ -33,7 +34,8 @@ namespace Distracey.Examples.Website
             var logger = log4net.LogManager.GetLogger("WebApiApmLogger");
             const bool addResponseHeaders = true;
 
-            SessionContext.SessionContainer.UseHttpContextSessionContainer();
+            IHttpContextSessionContextExtensions.UseHttpContextSessionContext();
+
             httpConfiguration.AddNoOperationApm(applicationName, addResponseHeaders);
             httpConfiguration.AddLog4NetApm(applicationName, addResponseHeaders, logger);
             //httpConfiguration.AddPerformanceCountersApm(applicationName, addResponseHeaders);

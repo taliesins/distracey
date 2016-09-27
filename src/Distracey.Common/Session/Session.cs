@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Distracey.Common.Session
 {
@@ -6,13 +8,14 @@ namespace Distracey.Common.Session
     public class Session : ISession
     {
         public Guid SessionId { get; private set; }
-        public string TraceId { get; set; }
-        public string Sampled { get; set; }
-        public string Flags { get; set; }
+        public IDictionary Items { get; private set; }
+        public Dictionary<Guid, IActivity> Activities { get; set; }
 
         public Session()
         {
             SessionId = Guid.NewGuid();
+            Items = new Hashtable();
+            Activities = new Dictionary<Guid, IActivity>();
         }
     }
 }

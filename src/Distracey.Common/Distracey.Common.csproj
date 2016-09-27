@@ -72,6 +72,8 @@
     <Compile Include="Message\ClientSourceMessageExtensions.cs" />
     <Compile Include="Message\SourceMessageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session\IActivity.cs" />
+    <Compile Include="Session\Activity.cs" />
     <Compile Include="Session\SessionIdentifier\ISessionIdentifierStorage.cs" />
     <Compile Include="Session\InMemorySessionContainer.cs" />
     <Compile Include="Session\ISession.cs" />

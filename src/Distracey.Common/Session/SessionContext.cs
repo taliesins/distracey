@@ -35,10 +35,14 @@ namespace Distracey.Common.Session
         /// <summary>
         /// Gets the current session.
         /// </summary>
-        public static ISession Current
+        public static ISession CurrentSession
         {
             get
             {
+                if (!_sessionContainer.IsValueCreated)
+                {
+                    return null;
+                }
                 return _sessionContainer.Value.Current;
             }
         }
@@ -46,11 +50,21 @@ namespace Distracey.Common.Session
         /// <summary>
         /// Gets the current activity identifier
         /// </summary>
-        public static Guid CurrentActivityId
+        public static IActivity CurrentActivity
         {
             get
             {
-                return _operationCorrelationManager.Value.ActivityId;
+                if (!_operationCorrelationManager.IsValueCreated)
+                {
+                    return null;
+                }
+                var activityId = _operationCorrelationManager.Value.ActivityId;
+                if (activityId == Guid.Empty)
+                {
+                    return null;
+                }
+
+                return CurrentSession.Activities[activityId];
             }
         }
 
@@ -93,7 +107,7 @@ namespace Distracey.Common.Session
         /// </summary>
         public static void StartSession()
         {
-            if (_sessionContainer.Value.Current != null)
+            if (_sessionContainer.IsValueCreated && _sessionContainer.Value.Current != null)
             {
                 StopSession();
             }
@@ -106,43 +120,36 @@ namespace Distracey.Common.Session
         /// </summary>
         public static void StopSession()
         {
-            _operationCorrelationManager.Value.Clear();
+            if (_operationCorrelationManager.IsValueCreated)
+            {
+                _operationCorrelationManager.Value.Clear();
+            }
 
-            // Clear the current session context
-            _sessionContainer.Value.Current = null; 
+            if (_sessionContainer.IsValueCreated)
+            {
+                // Clear the current session context
+                _sessionContainer.Value.Current = null;
+            }
         }
 
-        /// <summary>
-        /// CS
-        /// </summary>
-        /// <returns></returns>
-        public static Guid StartActivityClientSend()
+        public static IActivity StartActivity()
         {
-            return _operationCorrelationManager.Value.StartLogicalOperation();
+            var activityId = _operationCorrelationManager.Value.StartLogicalOperation();
+            var activity = new Activity(activityId);
+
+            CurrentSession.Activities[activityId] = activity;
+
+            return activity;
         }
 
-        /// <summary>
-        /// SR
-        /// </summary>
-        /// <param name="activityId"></param>
-        /// <param name="traceId"></param>
-        /// <param name="sampled"></param>
-        /// <param name="flags"></param>
-        public static void StartActivityServerReceived(string activityId, string traceId, string sampled, string flags)
+        public static IActivity StopActivity()
         {
-            _operationCorrelationManager.Value.StartLogicalOperation(activityId);
-            var session = Current;
-            session.TraceId = traceId;
-            session.Sampled = sampled;
-            session.Flags = flags;
-        }
-
-        /// <summary>
-        /// SS or CR
-        /// </summary>
-        public static void StopActivity()
-        {
-            _operationCorrelationManager.Value.StopLogicalOperation();
+            if (!_operationCorrelationManager.IsValueCreated)
+            {
+                return null;
+            }
+            var activityId = _operationCorrelationManager.Value.StopLogicalOperation();
+            return CurrentSession.Activities[activityId];
         }
 
         public void Dispose()

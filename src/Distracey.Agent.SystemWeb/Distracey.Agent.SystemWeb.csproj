@@ -58,7 +58,6 @@
     <Compile Include="HttpClient\ApmHttpClientStartedMessage.cs" />
     <Compile Include="HttpClient\IApmHttpClientLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session\HttpContextSessionContainer.cs" />
     <Compile Include="Session\HttpContextSessionContainerHttpModule.cs" />
     <Compile Include="Session\IHttpContextSessionContextExtensions.cs" />
     <Compile Include="Session\OperationCorrelation\HttpContextOperationStackStorage.cs" />

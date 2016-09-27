@@ -28,11 +28,15 @@ namespace Distracey.Agent.SystemWeb.Session.SessionIdentifier
                 if (HttpContext.Current != null)
                 {
                     sessionId = HttpContext.Current.Items[CurrentSessionIdCacheKey] as Guid?;
-                }
 
-                if (_innerSessionIdentifierStorage != null)
+                    if (_innerSessionIdentifierStorage != null)
+                    {
+                        _innerSessionIdentifierStorage.Current = sessionId;
+                    }
+                }
+                else
                 {
-                    _innerSessionIdentifierStorage.Current = sessionId;
+                    sessionId = _innerSessionIdentifierStorage.Current;
                 }
 
                 return sessionId;

@@ -34,7 +34,8 @@ namespace Distracey.Examples.ServiceDepthOne
             var logger = log4net.LogManager.GetLogger("WebApiApmLogger");
             const bool addResponseHeaders = true;
 
-            SessionContext.SessionContainer.UseHttpContextSessionContainer();
+            IHttpContextSessionContextExtensions.UseHttpContextSessionContext();
+
             httpConfiguration.AddNoOperationApm(applicationName, addResponseHeaders);
             httpConfiguration.AddLog4NetApm(applicationName, addResponseHeaders, logger);
             //httpConfiguration.AddPerformanceCountersApm(applicationName, addResponseHeaders);

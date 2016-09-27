@@ -12,23 +12,47 @@ namespace Distracey.Common
     {
         public const string NoParent = "0";
 
+        /// <summary>
+        /// SR
+        /// </summary>
+        /// <param name="spanId"></param>
+        /// <param name="traceId"></param>
+        /// <param name="sampled"></param>
+        /// <param name="flags"></param>
         public static void StartActivityServerReceived(string spanId, string traceId, string sampled, string flags)
         {
-            SessionContext.StartActivityServerReceived(spanId, traceId, sampled, flags);
+            var activity = SessionContext.StartActivity();
+            activity.Items[Constants.SpanIdHeaderKey] = spanId;
+            activity.Items[Constants.TraceIdHeaderKey] = traceId;
+            activity.Items[Constants.SampledHeaderKey] = sampled;
+            activity.Items[Constants.FlagsHeaderKey] = flags;
         }
 
+        /// <summary>
+        /// CS
+        /// </summary>
+        /// <returns></returns>
         public static Guid StartActivityClientSend()
         {
-            return SessionContext.StartActivityClientSend();
+            var activity = SessionContext.StartActivity();
+            return activity.ActivityId;
         }
+
 
         public static Guid StartActivityClientSend(IApmContext apmContext)
         {
-            var parentSpanId = CurrentActivityId;
-            var session = SessionContext.Current;
-            var traceId = session.TraceId;
-            var sampled = session.Sampled;
-            var flags = session.Flags;
+            var parentSpanId = string.Empty;
+            var traceId = string.Empty;
+            var sampled = string.Empty;
+            var flags = string.Empty;
+
+            if (SessionContext.CurrentActivity != null)
+            {
+                parentSpanId = (string)SessionContext.CurrentActivity.Items[Constants.SpanIdHeaderKey];
+                traceId = (string)SessionContext.CurrentActivity.Items[Constants.TraceIdHeaderKey];
+                sampled = (string)SessionContext.CurrentActivity.Items[Constants.SampledHeaderKey];
+                flags = (string)SessionContext.CurrentActivity.Items[Constants.FlagsHeaderKey];
+            }
 
             var activityId = StartActivityClientSend();
             apmContext[Constants.SpanIdHeaderKey] = activityId;
@@ -40,22 +64,22 @@ namespace Distracey.Common
             return activityId;
         }
 
+
+        /// <summary>
+        /// CR
+        /// </summary>
         public static void StopActivityClientReceived()
         {
             SessionContext.StopActivity();
         }
 
+
+        /// <summary>
+        /// SS
+        /// </summary>
         public static void StopActivityServerSend()
         {
             SessionContext.StopActivity();
-        }
-
-        public static Guid CurrentActivityId
-        {
-            get
-            {
-                return SessionContext.CurrentActivityId;
-            }
         }
 
         /// <summary>
