@@ -109,10 +109,6 @@
       <Project>{176f4711-56bf-4b47-be37-07e3bc5a7d30}</Project>
       <Name>Distracey.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Distracey\Distracey.csproj">
-      <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
-      <Name>Distracey</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

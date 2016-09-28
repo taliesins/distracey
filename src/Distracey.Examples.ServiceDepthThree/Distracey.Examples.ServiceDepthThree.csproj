@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -180,10 +181,6 @@
     <ProjectReference Include="..\Distracey.PerformanceCounter\Distracey.PerformanceCounter.csproj">
       <Project>{e0c5c855-4b11-4132-a9ad-b0e183a454dc}</Project>
       <Name>Distracey.PerformanceCounter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Distracey\Distracey.csproj">
-      <Project>{4c3a50a8-f0e2-4849-b0b7-78afe3894963}</Project>
-      <Name>Distracey</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
