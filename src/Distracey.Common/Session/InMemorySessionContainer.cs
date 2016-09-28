@@ -50,15 +50,16 @@ namespace Distracey.Common.Session
             {
                 if (value == null)
                 {
-                    var obj = _sessionIdentifierStorage.Current;
-                    if (obj != null)
+                    var sessionId = _sessionIdentifierStorage.Current;
+                    if (sessionId != null)
                     {
-                        var sessionId = (Guid?)obj;
-                        WeakReference temp;
-                        _sessionStore.TryRemove(sessionId.Value, out temp);
+                        WeakReference wrapper;
+                        _sessionStore.TryRemove(sessionId.Value, out wrapper);
+
+                        SaveSession(wrapper);
+                        _sessionIdentifierStorage.Clear();
                     }
 
-                    _sessionIdentifierStorage.Clear();
                     return;
                 }
 
@@ -82,9 +83,19 @@ namespace Distracey.Common.Session
             foreach (var key in keysToRemove)
             {
                 _sessionStore.TryRemove(key, out wrapper);
+                SaveSession(wrapper);
+            }
+        }
 
+        private void SaveSession(WeakReference wrapper)
+        {
+            if (wrapper != null)
+            {
                 var session = wrapper.Target as ISession;
-                _sessionAuditStorage.SaveSession(session);
+                if (session != null)
+                {
+                    _sessionAuditStorage.SaveSession(session);
+                }
             }
         }
     }

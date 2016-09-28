@@ -1,5 +1,6 @@
 ﻿using System;
 using Distracey.Common.Session.OperationCorrelation;
+using Distracey.Common.Session.SessionAudit;
 using Distracey.Common.Session.SessionIdentifier;
 
 namespace Distracey.Common.Session
@@ -20,7 +21,7 @@ namespace Distracey.Common.Session
 
         private static ISessionContainer SessionContainerFactory()
         {
-            return new InMemorySessionContainer(new CallContextSessionIdentifierStorage(), TimeSpan.FromSeconds(10));
+            return new InMemorySessionContainer(new CallContextSessionIdentifierStorage(), new SessionAuditStorageLogger(), TimeSpan.FromSeconds(10));
         }
 
         private static OperationCorrelationManager OperationCorrelationManagerFactory()
@@ -120,15 +121,15 @@ namespace Distracey.Common.Session
         /// </summary>
         public static void StopSession()
         {
-            if (_operationCorrelationManager.IsValueCreated)
-            {
-                _operationCorrelationManager.Value.Clear();
-            }
-
             if (_sessionContainer.IsValueCreated)
             {
                 // Clear the current session context
                 _sessionContainer.Value.Current = null;
+            }
+
+            if (_operationCorrelationManager.IsValueCreated)
+            {
+                _operationCorrelationManager.Value.Clear();
             }
         }
 
