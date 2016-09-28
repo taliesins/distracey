@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Distracey.Common.Session.SessionAudit;
 using Distracey.Common.Session.SessionIdentifier;
 
 namespace Distracey.Common.Session
@@ -11,12 +12,14 @@ namespace Distracey.Common.Session
     public class InMemorySessionContainer : ISessionContainer
     {
         private readonly ISessionIdentifierStorage _sessionIdentifierStorage;
+        private readonly ISessionAuditStorage _sessionAuditStorage;
         private readonly ConcurrentDictionary<Guid, WeakReference> _sessionStore;
         private readonly System.Threading.Timer _cleanUpSessionStoreTimer;
 
-        public InMemorySessionContainer(ISessionIdentifierStorage sessionIdentifierStorage, TimeSpan cleanupPeriod)
+        public InMemorySessionContainer(ISessionIdentifierStorage sessionIdentifierStorage, ISessionAuditStorage sessionAuditStorage, TimeSpan cleanupPeriod)
         {
             _sessionIdentifierStorage = sessionIdentifierStorage;
+            _sessionAuditStorage = sessionAuditStorage;
             _sessionStore = new ConcurrentDictionary<Guid, WeakReference>();
             _cleanUpSessionStoreTimer = new System.Threading.Timer(CleanUpSessionStoreTimerCallback, null, TimeSpan.Zero, cleanupPeriod);
         }
@@ -79,6 +82,9 @@ namespace Distracey.Common.Session
             foreach (var key in keysToRemove)
             {
                 _sessionStore.TryRemove(key, out wrapper);
+
+                var session = wrapper.Target as ISession;
+                _sessionAuditStorage.SaveSession(session);
             }
         }
     }

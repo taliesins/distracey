@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Distracey.Common.Session.Storage
+namespace Distracey.Common.Session.SessionAudit
 {
     /// <summary>
     /// Asynchronous saving profiling timing sessions with a single-thread-queue worker. 
@@ -12,16 +12,16 @@ namespace Distracey.Common.Session.Storage
     /// </summary>
     /// <remarks></remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public abstract class SessionStorageBase : ISessionStorage
+    public abstract class SessionAuditStorageBase : ISessionAuditStorage
     {
         //TODO: what do we do for a logger?
-        //private static readonly slf4net.ILogger Logger = slf4net.LoggerFactory.GetLogger(typeof(SessionStorageBase));
+        //private static readonly slf4net.ILogger Logger = slf4net.LoggerFactory.GetLogger(typeof(SessionAuditStorageBase));
 
         private readonly ConcurrentQueue<ISession> _sessionQueue = new ConcurrentQueue<ISession>();
         private Thread _workerThread;
         private readonly AutoResetEvent _processWait = new AutoResetEvent(false);
         private readonly ManualResetEvent _entryWait = new ManualResetEvent(true);
-        private const string OnQueueOverflowEventMessage = "SessionStorageBase worker queue overflowed";
+        private const string OnQueueOverflowEventMessage = "SessionAuditStorageBase worker queue overflowed";
 
         /// <summary>
         /// The infinite queue length.
@@ -46,15 +46,15 @@ namespace Distracey.Common.Session.Storage
         public int ThreadSleepMilliseconds { get; set; }
 
         /// <summary>
-        /// Constructs a new <see cref="SessionStorageBase"/>.
+        /// Constructs a new <see cref="SessionAuditStorageBase"/>.
         /// </summary>
-        protected SessionStorageBase()
+        protected SessionAuditStorageBase()
         {
             MaxQueueLength = 10000;
             ThreadSleepMilliseconds = 100;
         }
 
-        void ISessionStorage.SaveSession(ISession session)
+        void ISessionAuditStorage.SaveSession(ISession session)
         {
             SaveSession(session);
         }

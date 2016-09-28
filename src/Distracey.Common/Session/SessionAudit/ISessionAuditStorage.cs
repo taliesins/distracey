@@ -1,9 +1,9 @@
-﻿namespace Distracey.Common.Session.Storage
+﻿namespace Distracey.Common.Session.SessionAudit
 {
     /// <summary>
     /// Represents a generic profiling storage.
     /// </summary>
-    public interface ISessionStorage
+    public interface ISessionAuditStorage
     {
         /// <summary>
         /// Saves a profiling timing session.
