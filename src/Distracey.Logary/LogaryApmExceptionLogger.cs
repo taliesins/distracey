@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http.ExceptionHandling;
-using Distracey.Common;
 using Logary;
+using Logary.CSharp;
 
 namespace Distracey.Logary
 {
@@ -14,27 +14,33 @@ namespace Distracey.Logary
             _log = log;
         }
 
-        public async override Task LogAsync(ExceptionLoggerContext context, System.Threading.CancellationToken cancellationToken)
+        public override async Task LogAsync(ExceptionLoggerContext context, System.Threading.CancellationToken cancellationToken)
         {
             object apmContextObject;
-            if (context.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            if (context.Request.Properties.TryGetValue(Common.Constants.ApmContextPropertyKey, out apmContextObject))
             {
                 return;
             }
 
-            _log.Log("An unhandled exception occurred.", LogLevel.Error, (IApmContext)null, null, null, context.Exception, null);
+            await _log.LogEvent(LogLevel.Error, "An unhandled exception occurred.", new
+            {
+            }, exn: context.Exception);
+
             await base.LogAsync(context, cancellationToken);
         }
 
         public override void Log(ExceptionLoggerContext context)
         {
             object apmContextObject;
-            if (context.Request.Properties.TryGetValue(Constants.ApmContextPropertyKey, out apmContextObject))
+            if (context.Request.Properties.TryGetValue(Common.Constants.ApmContextPropertyKey, out apmContextObject))
             {
                 return;
             }
 
-            _log.Log("An unhandled exception occurred.", LogLevel.Error, (IApmContext)null, null, null, context.Exception, null);
+            _log.LogEvent(LogLevel.Error, "An unhandled exception occurred.", new
+            {
+            }, exn: context.Exception).ConfigureAwait(false).GetAwaiter().GetResult();
+
             base.Log(context);
         }
     }

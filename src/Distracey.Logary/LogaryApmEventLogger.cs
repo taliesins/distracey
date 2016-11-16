@@ -6,6 +6,7 @@ using Distracey.Agent.SystemWeb.WebApi;
 using Distracey.Common;
 using Distracey.Common.EventAggregator;
 using Logary;
+using Logary.CSharp;
 
 namespace Distracey.Logary
 {
@@ -33,9 +34,22 @@ namespace Distracey.Logary
             var apmMethodHandlerStartInformation = apmEvent.Event;
 
             var message = string.Format("CS - StartSession - {0} - {1}", apmMethodHandlerStartInformation.EventName, apmMethodHandlerStartInformation.TraceId);
-            Log.Log(message, LogLevel.Info, apmContext);
 
-            return Task.FromResult(false);
+            return Log.LogEvent(LogLevel.Info, message, new
+            {
+                apmMethodHandlerStartInformation.EventName,
+                apmMethodHandlerStartInformation.ClientName,
+                apmMethodHandlerStartInformation.Duration,
+                apmMethodHandlerStartInformation.Flags,
+                apmMethodHandlerStartInformation.MethodIdentifier,
+                apmMethodHandlerStartInformation.Offset,
+                apmMethodHandlerStartInformation.ParentSpanId,
+                apmMethodHandlerStartInformation.Sampled,
+                apmMethodHandlerStartInformation.SpanId,
+                apmMethodHandlerStartInformation.StartTime,
+                apmMethodHandlerStartInformation.TraceId,
+                apmContext
+            });
         }
 
         public Task OnApmMethodHandlerFinishedMessage(Task<ApmEvent<ApmMethodHandlerFinishedMessage>> task)
@@ -46,9 +60,23 @@ namespace Distracey.Logary
 
             var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmMethodHandlerFinishInformation.EventName, apmMethodHandlerFinishInformation.TraceId, apmMethodHandlerFinishInformation.ResponseTime);
 
-            Log.Log(message, LogLevel.Info, apmContext);
-
-            return Task.FromResult(false);
+            return Log.LogEvent(LogLevel.Info, message, new
+            {
+                apmMethodHandlerFinishInformation.EventName,
+                apmMethodHandlerFinishInformation.ClientName,
+                apmMethodHandlerFinishInformation.Duration,
+                apmMethodHandlerFinishInformation.Flags,
+                apmMethodHandlerFinishInformation.MethodIdentifier,
+                apmMethodHandlerFinishInformation.Offset,
+                apmMethodHandlerFinishInformation.ParentSpanId,
+                apmMethodHandlerFinishInformation.Sampled,
+                apmMethodHandlerFinishInformation.SpanId,
+                apmMethodHandlerFinishInformation.StartTime,
+                apmMethodHandlerFinishInformation.TraceId,
+                apmMethodHandlerFinishInformation.Exception,
+                apmMethodHandlerFinishInformation.ResponseTime,
+                apmContext
+            });
         }
 
         public Task OnApmHttpClientStartedMessage(Task<ApmEvent<ApmHttpClientStartedMessage>> task)
@@ -58,9 +86,22 @@ namespace Distracey.Logary
             var apmWebApiStartInformation = apmEvent.Event;
 
             var message = string.Format("CS - StartSession - {0} - {1}", apmWebApiStartInformation.EventName, apmWebApiStartInformation.TraceId);
-            Log.Log(message, LogLevel.Info, apmContext);
-
-            return Task.FromResult(false);
+            return Log.LogEvent(LogLevel.Info, message, new
+            {
+                apmWebApiStartInformation.EventName,
+                apmWebApiStartInformation.ClientName,
+                apmWebApiStartInformation.Duration,
+                apmWebApiStartInformation.Flags,
+                apmWebApiStartInformation.MethodIdentifier,
+                apmWebApiStartInformation.Offset,
+                apmWebApiStartInformation.ParentSpanId,
+                apmWebApiStartInformation.Request,
+                apmWebApiStartInformation.Sampled,
+                apmWebApiStartInformation.SpanId,
+                apmWebApiStartInformation.StartTime,
+                apmWebApiStartInformation.TraceId,     
+                apmContext
+            });
         }
 
         public Task OnApmHttpClientFinishedMessage(Task<ApmEvent<ApmHttpClientFinishedMessage>> task)
@@ -71,9 +112,23 @@ namespace Distracey.Logary
 
             var message = string.Format("CR - Finish - {0} - {1} in {2} ms", apmWebApiFinishInformation.EventName, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
 
-            Log.Log(message, LogLevel.Info, apmContext);
-
-            return Task.FromResult(false);
+            return Log.LogEvent(LogLevel.Info, message, new
+            {
+                apmWebApiFinishInformation.EventName,
+                apmWebApiFinishInformation.ClientName,
+                apmWebApiFinishInformation.Duration,
+                apmWebApiFinishInformation.Flags,
+                apmWebApiFinishInformation.MethodIdentifier,
+                apmWebApiFinishInformation.Offset,
+                apmWebApiFinishInformation.ParentSpanId,
+                apmWebApiFinishInformation.Request,
+                apmWebApiFinishInformation.Response,
+                apmWebApiFinishInformation.Sampled,
+                apmWebApiFinishInformation.SpanId,
+                apmWebApiFinishInformation.StartTime,
+                apmWebApiFinishInformation.TraceId,
+                apmContext
+            });
         }
 
         public Task OnApmWebApiStartedMessage(Task<ApmEvent<ApmWebApiStartedMessage>> task)
@@ -84,9 +139,21 @@ namespace Distracey.Logary
 
             var message = string.Format("SR - StartSession - {0} - {1}", apmWebApiStartInformation.MethodIdentifier, apmWebApiStartInformation.TraceId);
 
-            Log.Log(message, LogLevel.Info, apmContext);
-
-            return Task.FromResult(false);
+            return Log.LogEvent(LogLevel.Info, message, new
+            {
+                apmWebApiStartInformation.EventName,
+                apmWebApiStartInformation.Duration,
+                apmWebApiStartInformation.Flags,
+                apmWebApiStartInformation.MethodIdentifier,
+                apmWebApiStartInformation.Offset,
+                apmWebApiStartInformation.ParentSpanId,
+                apmWebApiStartInformation.Request,
+                apmWebApiStartInformation.Sampled,
+                apmWebApiStartInformation.SpanId,
+                apmWebApiStartInformation.StartTime,
+                apmWebApiStartInformation.TraceId,
+                apmContext
+            });
         }
 
         public Task OnApmWebApiFinishedMessage(Task<ApmEvent<ApmWebApiFinishedMessage>> task)
@@ -98,15 +165,45 @@ namespace Distracey.Logary
             if (apmWebApiFinishInformation.Exception == null)
             {
                 var message = string.Format("SS - Finish success - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
-                Log.Log(message, LogLevel.Info, apmContext);
+                return Log.LogEvent(LogLevel.Info, message, new
+                {
+                    apmWebApiFinishInformation.EventName,
+                    apmWebApiFinishInformation.Duration,
+                    apmWebApiFinishInformation.Flags,
+                    apmWebApiFinishInformation.MethodIdentifier,
+                    apmWebApiFinishInformation.Offset,
+                    apmWebApiFinishInformation.ParentSpanId,
+                    apmWebApiFinishInformation.Request,
+                    apmWebApiFinishInformation.Response,
+                    apmWebApiFinishInformation.Sampled,
+                    apmWebApiFinishInformation.SpanId,
+                    apmWebApiFinishInformation.StartTime,
+                    apmWebApiFinishInformation.TraceId,
+                    apmContext
+                });
             }
             else
             {
                 var message = string.Format("SS - Finish failure - {0} - {1} in {2} ms", apmWebApiFinishInformation.MethodIdentifier, apmWebApiFinishInformation.TraceId, apmWebApiFinishInformation.Duration.Milliseconds);
-                Log.Log(message, LogLevel.Error, apmContext, null, null, apmWebApiFinishInformation.Exception, null);
-            }
 
-            return Task.FromResult(false);
+                return Log.LogEvent(LogLevel.Error, message, new
+                {
+                    apmWebApiFinishInformation.EventName,
+                    apmWebApiFinishInformation.Exception,
+                    apmWebApiFinishInformation.Duration,
+                    apmWebApiFinishInformation.Flags,
+                    apmWebApiFinishInformation.MethodIdentifier,
+                    apmWebApiFinishInformation.Offset,
+                    apmWebApiFinishInformation.ParentSpanId,
+                    apmWebApiFinishInformation.Request,
+                    apmWebApiFinishInformation.Response,
+                    apmWebApiFinishInformation.Sampled,
+                    apmWebApiFinishInformation.SpanId,
+                    apmWebApiFinishInformation.StartTime,
+                    apmWebApiFinishInformation.TraceId,
+                    apmContext
+                });
+            }
         }
 
         public void Dispose()
