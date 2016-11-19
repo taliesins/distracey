@@ -150,18 +150,24 @@ namespace Distracey.Agent.Ado
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteNonQuery.{0}", commandHash));
             var activityId = ApmContext.StartActivityClientSend(apmContext);
             var commandId = activityId;
-
-            LogStartOfExecuteNonQuery(apmContext, commandId, CommandText);
-
             try
             {
-                recordsAffected = InnerCommand.ExecuteNonQuery();
-                LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, recordsAffected, null);
+                LogStartOfExecuteNonQuery(apmContext, commandId, CommandText);
+
+                try
+                {
+                    recordsAffected = InnerCommand.ExecuteNonQuery();
+                    LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, recordsAffected, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, 0, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfExecuteNonQuery(apmContext, commandId, CommandText, 0, exception);
-                throw;
+                ApmContext.StopActivityClientReceived();
             }
 
             return recordsAffected;
@@ -189,8 +195,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         public override object ExecuteScalar()
@@ -201,18 +205,24 @@ namespace Distracey.Agent.Ado
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalar.{0}", commandHash));
             var activityId = ApmContext.StartActivityClientSend(apmContext);
             var commandId = activityId;
-
-            LogStartOfExecuteScalar(apmContext, commandId, CommandText);
- 
             try
             {
-                result = InnerCommand.ExecuteScalar();
-                LogStopOfExecuteScalar(apmContext, commandId, CommandText, null);
+                LogStartOfExecuteScalar(apmContext, commandId, CommandText);
+
+                try
+                {
+                    result = InnerCommand.ExecuteScalar();
+                    LogStopOfExecuteScalar(apmContext, commandId, CommandText, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteScalar(apmContext, commandId, CommandText, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfExecuteScalar(apmContext, commandId, CommandText, exception);
-                throw;
+                ApmContext.StopActivityClientReceived();
             }
 
             return result;
@@ -239,8 +249,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeScalarFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         public override async Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
@@ -251,18 +259,24 @@ namespace Distracey.Agent.Ado
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteScalarAsync.{0}", commandHash));
             var activityId = ApmContext.StartActivityClientSend(apmContext);
             var commandId = activityId;
-
-            LogStartOfExecuteScalarAsync(apmContext, commandId, CommandText);
-
             try
             {
-                result = await InnerCommand.ExecuteScalarAsync(cancellationToken);
-                LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, null);
+                LogStartOfExecuteScalarAsync(apmContext, commandId, CommandText);
+
+                try
+                {
+                    result = await InnerCommand.ExecuteScalarAsync(cancellationToken);
+                    LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, exception);
-                throw;
+                ApmContext.StopActivityClientReceived();
             }
 
             return result;
@@ -289,8 +303,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeScalarAsyncFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         public override async Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
@@ -302,17 +314,24 @@ namespace Distracey.Agent.Ado
             var activityId = ApmContext.StartActivityClientSend(apmContext);
             var commandId = activityId;
 
-            LogStartOfExecuteNonQueryAsync(apmContext, commandId, CommandText);
-
             try
             {
-                recordsEffected = await InnerCommand.ExecuteNonQueryAsync(cancellationToken);
-                LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, recordsEffected, null);
+                LogStartOfExecuteNonQueryAsync(apmContext, commandId, CommandText);
+
+                try
+                {
+                    recordsEffected = await InnerCommand.ExecuteNonQueryAsync(cancellationToken);
+                    LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, recordsEffected, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, 0, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, 0, exception);
-                throw;
+                ApmContext.StopActivityClientReceived();
             }
 
             return recordsEffected;
@@ -340,8 +359,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryAsyncFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
@@ -401,19 +418,25 @@ namespace Distracey.Agent.Ado
             var apmContext = ApmContext.GetContext(string.Format("DbCommand.ExecuteDbDataReader.{0}", commandHash));
             var activityId = ApmContext.StartActivityClientSend(apmContext);
             var commandId = activityId;
-
-            LogStartOfExecuteDbDataReader(apmContext, commandId, CommandText);
             try
             {
-                reader = InnerCommand.ExecuteReader(behavior);
-                LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, reader.RecordsAffected, null);
+                LogStartOfExecuteDbDataReader(apmContext, commandId, CommandText);
+                try
+                {
+                    reader = InnerCommand.ExecuteReader(behavior);
+                    LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, reader.RecordsAffected, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, 0, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfExecuteDbDataReader(apmContext, commandId, CommandText, 0, exception);
-                throw;
+                ApmContext.StopActivityClientReceived();
             }
-
+            
             return new ApmDbDataReader(reader, InnerCommand, InnerConnection.ConnectionId, commandId);
         }
 
@@ -439,8 +462,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         protected override DbParameter CreateDbParameter()

@@ -37,12 +37,19 @@ namespace Distracey.Agent.Core.MethodHandler
 
         public void OnActionExecuted(Exception exception)
         {
-            if (InnerHandler != null)
+            try
             {
-                InnerHandler.OnActionExecuted(exception);
-            }
+                if (InnerHandler != null)
+                {
+                    InnerHandler.OnActionExecuted(exception);
+                }
 
-            LogStopOfRequest(_apmContext, _offset, exception);
+                LogStopOfRequest(_apmContext, _offset, exception);
+            }
+            finally
+            {
+                ApmContext.StopActivityClientReceived();
+            }
 
             //Dispose ApmContext if it does not exist previously
         }
@@ -64,9 +71,7 @@ namespace Distracey.Agent.Core.MethodHandler
             }.AsMessage(apmContext)
             .AsTimedMessage(offset);
 
-            apmMethodFinishInformation.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
+            apmMethodFinishInformation.PublishMessage(apmContext, this);         
         }
     }
 }

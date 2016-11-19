@@ -174,17 +174,24 @@ namespace Distracey.Agent.Ado
         
         private void OnDtcTransactionCompleted(object sender, TransactionEventArgs args)
         {
-            TransactionStatus aborted;
             try
             {
-                aborted = args.Transaction.TransactionInformation.Status;
-            }
-            catch (ObjectDisposedException)
-            {
-                aborted = TransactionStatus.Aborted;
-            }
+                TransactionStatus aborted;
+                try
+                {
+                    aborted = args.Transaction.TransactionInformation.Status;
+                }
+                catch (ObjectDisposedException)
+                {
+                    aborted = TransactionStatus.Aborted;
+                }
 
-            LogStopOfDtcTransaction(ApmContext, ConnectionId, args.Transaction.TransactionInformation, args.Transaction.IsolationLevel, aborted);
+                LogStopOfDtcTransaction(ApmContext, ConnectionId, args.Transaction.TransactionInformation, args.Transaction.IsolationLevel, aborted);
+            }
+            finally
+            {
+                Common.ApmContext.StopActivityClientReceived();
+            }
         }
 
         private void StateChangeHaneler(object sender, StateChangeEventArgs args)
@@ -216,7 +223,14 @@ namespace Distracey.Agent.Ado
         {
             _wasPreviouslyUsed = true;
 
-            LogStopOfDbConnection(ApmContext, ConnectionId);
+            try
+            {
+                LogStopOfDbConnection(ApmContext, ConnectionId);
+            }
+            finally
+            {
+                Common.ApmContext.StopActivityClientReceived();
+            }
         }
 
         private void LogStartOfDbConnection(IApmContext apmContext, ShortGuid connectionId)
@@ -238,7 +252,7 @@ namespace Distracey.Agent.Ado
 
             dbConnectionClosedMessage.PublishMessage(apmContext, this);
 
-            Common.ApmContext.StopActivityClientReceived();
+            
         }
 
         private void LogStartOfDtcTransaction(IApmContext apmContext, ShortGuid connectionId, TransactionInformation transactionInformation, System.Transactions.IsolationLevel isolationLevel)
@@ -265,7 +279,7 @@ namespace Distracey.Agent.Ado
 
             dbConnectionClosedMessage.PublishMessage(apmContext, this);
 
-            Common.ApmContext.StopActivityClientReceived();
+            
         }
     }
 }

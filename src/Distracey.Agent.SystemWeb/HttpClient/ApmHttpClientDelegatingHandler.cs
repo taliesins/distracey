@@ -31,17 +31,22 @@ namespace Distracey.Agent.SystemWeb.HttpClient
         {
             var apmContext = ApmContext.GetContext(string.Format("HttpClient.SendAsync.{0}", request.RequestUri));
             var activityId = ApmContext.StartActivityClientSend(apmContext);
+            try
+            {
+                //Initialize ApmContext if it does not exist
+                SetTracingRequestHeaders(apmContext, request);
 
-            //Initialize ApmContext if it does not exist
-            SetTracingRequestHeaders(apmContext, request);
+                var offset = _executionTimer.Start();
 
-            var offset = _executionTimer.Start();
-
-            LogStartOfRequest(apmContext, request, offset);
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            LogStopOfRequest(apmContext, request, response, offset);
-
-            return response;
+                LogStartOfRequest(apmContext, request, offset);
+                var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                LogStopOfRequest(apmContext, request, response, offset);
+                return response;
+            }
+            finally
+            {
+                ApmContext.StopActivityClientReceived();
+            }
         }
 
         private void SetTracingRequestHeaders(IApmContext apmContext, HttpRequestMessage request)
@@ -89,8 +94,6 @@ namespace Distracey.Agent.SystemWeb.HttpClient
             .AsTimedMessage(offset);
 
             apmHttpClientFinishInformation.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
     }
 }

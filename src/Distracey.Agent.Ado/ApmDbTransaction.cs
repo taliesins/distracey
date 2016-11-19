@@ -42,8 +42,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeNonQueryFinishedMessage.PublishMessage(apmContext, this);
-
-            Common.ApmContext.StopActivityClientReceived();
         }
 
         public ApmDbConnection InnerConnection { get; set; } 
@@ -68,27 +66,41 @@ namespace Distracey.Agent.Ado
         {
             try
             {
-                InnerTransaction.Commit();
-                LogStopOfDbTransaction(ApmContext, TransactionId, false, null);
+                try
+                {
+                    InnerTransaction.Commit();
+                    LogStopOfDbTransaction(ApmContext, TransactionId, false, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfDbTransaction(ApmContext, TransactionId, false, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfDbTransaction(ApmContext, TransactionId, false, exception);
-                throw;
-            } 
+                Common.ApmContext.StopActivityClientReceived();
+            }
         }
 
         public override void Rollback()
         {
             try
             {
-                InnerTransaction.Rollback();
-                LogStopOfDbTransaction(ApmContext, TransactionId, true, null);
+                try
+                {
+                    InnerTransaction.Rollback();
+                    LogStopOfDbTransaction(ApmContext, TransactionId, true, null);
+                }
+                catch (Exception exception)
+                {
+                    LogStopOfDbTransaction(ApmContext, TransactionId, true, exception);
+                    throw;
+                }
             }
-            catch (Exception exception)
+            finally
             {
-                LogStopOfDbTransaction(ApmContext, TransactionId, true, exception);
-                throw;
+                Common.ApmContext.StopActivityClientReceived();
             }
         }
 

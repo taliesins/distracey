@@ -41,19 +41,26 @@ namespace Distracey.Agent.Ado
                 var commandHash = commandText.GetHashCode();
                 var apmContext = ApmContext.GetContext(string.Format("DbDataAdapter.{0}", commandHash));
                 var activityId = ApmContext.StartActivityClientSend(apmContext);
-                var commandId = activityId;    
-
-                LogStartOfExecuteDbDataAdapter(apmContext, commandId, commandText);
+                var commandId = activityId;
 
                 try
                 {
-                    recordsEffected = InnerDataAdapter.Fill(dataSet);
-                    LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, recordsEffected, null);
+                    LogStartOfExecuteDbDataAdapter(apmContext, commandId, commandText);
+
+                    try
+                    {
+                        recordsEffected = InnerDataAdapter.Fill(dataSet);
+                        LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, recordsEffected, null);
+                    }
+                    catch (Exception exception)
+                    {
+                        LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, 0, exception);
+                        throw;
+                    }
                 }
-                catch (Exception exception)
+                finally
                 {
-                    LogStopOfExecuteDbDataAdapter(apmContext, commandId, commandText, 0, exception);
-                    throw;
+                    ApmContext.StopActivityClientReceived();
                 }
 
                 return recordsEffected;
@@ -86,8 +93,6 @@ namespace Distracey.Agent.Ado
             }.AsMessage(apmContext);
 
             executeDbDataReaderFinishedMessage.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityClientReceived();
         }
 
         public override DataTable[] FillSchema(DataSet dataSet, SchemaType schemaType)
