@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using Distracey.Agent.Core.MethodHandler;
-using Distracey.Agent.SystemWeb;
 using Distracey.Common;
+using Distracey.Common.Session;
 
 namespace Distracey.Examples.ServiceDepthThree.Controllers
 {
@@ -11,7 +11,7 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
     {
         public IEnumerable<string> GetDepthThree(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             return ReadFromFakeDatabaseForDepthThree();
         }
@@ -25,7 +25,7 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
 
         public IEnumerable<string> GetDepthThreeException(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             throw new Exception("three exception");
         }

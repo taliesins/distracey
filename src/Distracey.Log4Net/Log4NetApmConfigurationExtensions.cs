@@ -8,11 +8,11 @@ namespace Distracey.Log4Net
 {
     public static class Log4NetApmConfigurationExtensions
     {
-        public static void AddLog4NetApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders, ILog log)
+        public static void AddLog4NetApm(this HttpConfiguration configuration, string applicationName, ILog log)
         {
             EventLoggerExtensions.ApmEventLoggers.Add(new Log4NetApmEventLogger(applicationName, log));
 
-            configuration.AddApmWebApiFilter(addResponseHeaders);
+            configuration.AddApmWebApiFilter();
             configuration.Services.Add(typeof(IExceptionLogger), new Log4NetApmExceptionLogger(log));
         }
     }

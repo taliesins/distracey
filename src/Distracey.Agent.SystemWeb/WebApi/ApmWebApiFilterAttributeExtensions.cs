@@ -1,16 +1,24 @@
-﻿using System.Linq;
+﻿using System;
 using System.Web.Http;
 
 namespace Distracey.Agent.SystemWeb.WebApi
 {
     public static class ApmWebApiFilterAttributeExtensions
     {
-        public static void AddApmWebApiFilter(this HttpConfiguration configuration, bool addResponseHeaders)
-        {
-            if (configuration.Filters.Any(x => x.GetType() == typeof(ApmWebApiFilterAttribute))) return;
+        private static readonly Lazy<ApmWebApiFilterAttribute> ApmWebApiFilterAttribute = new Lazy<ApmWebApiFilterAttribute>(
+            () => new ApmWebApiFilterAttribute(true));
 
-            var apmWebApiFilterAttribute = new ApmWebApiFilterAttribute(addResponseHeaders);
-            configuration.Filters.Add(apmWebApiFilterAttribute);
+        private static readonly object FilterLock = new object();
+
+        public static void AddApmWebApiFilter(this HttpConfiguration configuration)
+        {
+            lock (FilterLock)
+            {
+                if (!ApmWebApiFilterAttribute.IsValueCreated)
+                {
+                    configuration.Filters.Add(ApmWebApiFilterAttribute.Value);
+                }                
+            }
         }
     }
 }

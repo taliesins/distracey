@@ -62,6 +62,7 @@
     <Compile Include="IApmContext.cs" />
     <Compile Include="IApmContextExtensions.cs" />
     <Compile Include="IEventLogger.cs" />
+    <Compile Include="Message\ISessionMessage.cs" />
     <Compile Include="Message\TimedMessageExtensions.cs" />
     <Compile Include="Message\TracingMessageExtensions.cs" />
     <Compile Include="Message\MessageExtensions.cs" />

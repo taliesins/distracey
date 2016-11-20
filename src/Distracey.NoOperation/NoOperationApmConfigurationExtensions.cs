@@ -7,11 +7,11 @@ namespace Distracey.NoOperation
 {
     public static class NoOperationApmConfigurationExtensions
     {
-        public static void AddNoOperationApm(this HttpConfiguration configuration, string applicationName, bool addResponseHeaders)
+        public static void AddNoOperationApm(this HttpConfiguration configuration, string applicationName)
         {
             EventLoggerExtensions.ApmEventLoggers.Add(new NoOperationApmEventLogger());
 
-            configuration.AddApmWebApiFilter(addResponseHeaders);
+            configuration.AddApmWebApiFilter();
             configuration.Services.Add(typeof(IExceptionLogger), new NoOperationApmExceptionLogger());
         }
     }

@@ -55,7 +55,7 @@ namespace Distracey.Common
             }
 
             var activityId = StartActivityClientSend();
-            apmContext[Constants.SpanIdHeaderKey] = activityId;
+            apmContext[Constants.SpanIdHeaderKey] = activityId.ToString();
             apmContext[Constants.ParentSpanIdHeaderKey] = parentSpanId;
             apmContext[Constants.TraceIdHeaderKey] = traceId;
             apmContext[Constants.SampledHeaderKey] = sampled;
@@ -64,7 +64,6 @@ namespace Distracey.Common
             return activityId;
         }
 
-
         /// <summary>
         /// CR
         /// </summary>
@@ -72,7 +71,6 @@ namespace Distracey.Common
         {
             SessionContext.StopActivity();
         }
-
 
         /// <summary>
         /// SS

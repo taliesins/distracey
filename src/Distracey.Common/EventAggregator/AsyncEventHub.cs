@@ -22,11 +22,16 @@ namespace Distracey.Common.EventAggregator
         /// </summary>
         private readonly ConcurrentDictionary<Type, ConcurrentDictionary<object, ConcurrentBag<object>>> _hub;
 
-        public AsyncEventHub()
+        private readonly bool _subscriberCanCreateTopic;
+        private readonly bool _publisherCanCreateTopic;
+
+        public AsyncEventHub(bool subscriberCanCreateTopic  = true, bool publisherCanCreateTopic = true)
         {
             _factory = Task.Factory;
 
             _hub = new ConcurrentDictionary<Type, ConcurrentDictionary<object, ConcurrentBag<object>>>();
+            _subscriberCanCreateTopic = subscriberCanCreateTopic;
+            _publisherCanCreateTopic = publisherCanCreateTopic;
         }
 
         public Task<Task[]> Publish<TEvent>(object sender, Task<TEvent> eventDataTask)
@@ -36,7 +41,7 @@ namespace Distracey.Common.EventAggregator
             _factory.StartNew(
                 () =>
                 {
-                    Type eventType = typeof(TEvent);
+                    var eventType = typeof(TEvent);
 
                     if (_hub.ContainsKey(eventType))
                     {
@@ -101,7 +106,19 @@ namespace Distracey.Common.EventAggregator
                     }
                     else
                     {
-                        taskCompletionSource.SetException(new Exception(EventTypeNotFoundExceptionMessage));
+                        if (_publisherCanCreateTopic)
+                        {
+                            var subscribers = new ConcurrentDictionary<object, ConcurrentBag<object>>();
+
+                            if (!_hub.TryAdd(eventType, subscribers))
+                            {
+                                taskCompletionSource.SetException(new Exception(FailedToAddSubscribersExceptionMessage));
+                            }
+                        }
+                        else
+                        {
+                            taskCompletionSource.SetException(new Exception(EventTypeNotFoundExceptionMessage));
+                        }
                     }
                 });
 
@@ -118,7 +135,7 @@ namespace Distracey.Common.EventAggregator
                     ConcurrentDictionary<object, ConcurrentBag<object>> subscribers;
                     ConcurrentBag<object> eventHandlerTaskFactories;
 
-                    Type eventType = typeof(TEvent);
+                    var eventType = typeof(TEvent);
 
                     if (_hub.ContainsKey(eventType))
                     {
@@ -158,25 +175,32 @@ namespace Distracey.Common.EventAggregator
                     }
                     else
                     {
-                        subscribers = new ConcurrentDictionary<object, ConcurrentBag<object>>();
-
-                        if (_hub.TryAdd(eventType, subscribers))
+                        if (_subscriberCanCreateTopic)
                         {
-                            eventHandlerTaskFactories = new ConcurrentBag<object>();
+                            subscribers = new ConcurrentDictionary<object, ConcurrentBag<object>>();
 
-                            if (subscribers.TryAdd(sender, eventHandlerTaskFactories))
+                            if (_hub.TryAdd(eventType, subscribers))
                             {
-                                eventHandlerTaskFactories.Add(eventHandlerTaskFactory);
-                                taskCompletionSource.SetResult(null);
+                                eventHandlerTaskFactories = new ConcurrentBag<object>();
+
+                                if (subscribers.TryAdd(sender, eventHandlerTaskFactories))
+                                {
+                                    eventHandlerTaskFactories.Add(eventHandlerTaskFactory);
+                                    taskCompletionSource.SetResult(null);
+                                }
+                                else
+                                {
+                                    taskCompletionSource.SetException(new Exception(FailedToAddEventHandlerTaskFactoriesExceptionMessage));
+                                }
                             }
                             else
                             {
-                                taskCompletionSource.SetException(new Exception(FailedToAddEventHandlerTaskFactoriesExceptionMessage));
+                                taskCompletionSource.SetException(new Exception(FailedToAddSubscribersExceptionMessage));
                             }
                         }
                         else
                         {
-                            taskCompletionSource.SetException(new Exception(FailedToAddSubscribersExceptionMessage));
+                            taskCompletionSource.SetException(new Exception(EventTypeNotFoundExceptionMessage));
                         }
                     }
                 });
@@ -191,7 +215,7 @@ namespace Distracey.Common.EventAggregator
             _factory.StartNew(
                 () =>
                 {
-                    Type eventType = typeof(TEvent);
+                    var eventType = typeof(TEvent);
 
                     if (_hub.ContainsKey(eventType))
                     {

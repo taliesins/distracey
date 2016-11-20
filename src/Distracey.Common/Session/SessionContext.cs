@@ -150,7 +150,8 @@ namespace Distracey.Common.Session
                 return null;
             }
             var activityId = _operationCorrelationManager.Value.StopLogicalOperation();
-            return CurrentSession.Activities[activityId];
+            var activity = CurrentSession.Activities[activityId];
+            return activity;
         }
 
         public void Dispose()

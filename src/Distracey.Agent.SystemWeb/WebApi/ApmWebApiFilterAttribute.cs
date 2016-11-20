@@ -7,6 +7,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Distracey.Common;
 using Distracey.Common.Message;
+using Distracey.Common.Session;
 using Distracey.Common.Timer;
 
 namespace Distracey.Agent.SystemWeb.WebApi
@@ -39,6 +40,8 @@ namespace Distracey.Agent.SystemWeb.WebApi
 
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            SessionContext.StartSession();
+
             _executionTimer = new ExecutionTimer(new Stopwatch());
             _offset = _executionTimer.Start();
 
@@ -46,18 +49,34 @@ namespace Distracey.Agent.SystemWeb.WebApi
 
              _apmContext = ExtractContextFromHttpRequest(actionContext.Request);
 
+            //configure
+            var spanId = _apmContext.GetSpanId();
+            var traceId = _apmContext.GetTraceId();
+            var sampled = _apmContext.GetSampled();
+            var flags = _apmContext.GetFlags();
+
+            ApmContext.StartActivityServerReceived(spanId, traceId, sampled, flags);
+
             LogStartOfRequest(_apmContext, actionContext.Request, _offset);
             base.OnActionExecuting(actionContext);
         }
 
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            if (_addResponseHeaders)
+            try
             {
-                SetTracingResponseHeaders(actionExecutedContext);
+                if (_addResponseHeaders)
+                {
+                    SetTracingResponseHeaders(actionExecutedContext);
+                }
+                base.OnActionExecuted(actionExecutedContext);
+                LogStopOfRequest(_apmContext, actionExecutedContext, _offset);
             }
-            base.OnActionExecuted(actionExecutedContext);
-            LogStopOfRequest(_apmContext, actionExecutedContext, _offset);
+            finally
+            {
+                ApmContext.StopActivityServerSend();
+                SessionContext.StopSession();
+            }
         }
 
         private void LogStartOfRequest(IApmContext apmContext, HttpRequestMessage request, TimeSpan offset)
@@ -82,8 +101,6 @@ namespace Distracey.Agent.SystemWeb.WebApi
             .AsTimedMessage(offset);
 
             apmWebApiFinishInformation.PublishMessage(apmContext, this);
-
-            ApmContext.StopActivityServerSend();
         }
 
         private static void SetTracingRequestHeaders(HttpActionContext actionContext, PluralizationService pluralizationService)
@@ -113,14 +130,6 @@ namespace Distracey.Agent.SystemWeb.WebApi
                 sampled:sampled, 
                 flags:flags);
             
-            //configure
-            spanId = apmContext.GetSpanId();
-            traceId = apmContext.GetTraceId();
-            sampled = apmContext.GetSampled();
-            flags = apmContext.GetFlags();
-
-            ApmContext.StartActivityServerReceived(spanId, traceId, sampled, flags);
-
             if (!apmContext.ContainsKey(Constants.RequestUriPropertyKey))
             {
                 apmContext[Constants.RequestUriPropertyKey] = request.RequestUri.ToString();

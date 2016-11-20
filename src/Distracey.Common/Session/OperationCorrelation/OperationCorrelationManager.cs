@@ -24,7 +24,7 @@ namespace Distracey.Common.Session.OperationCorrelation
             get
             {
                 var data = _operationStack.Peek();
-                return data != null ? (Guid) data : Guid.Empty;
+                return data != null ? Guid.Parse((string)data) : Guid.Empty;
             }
         }
 
@@ -44,7 +44,8 @@ namespace Distracey.Common.Session.OperationCorrelation
         /// </summary>
         public Guid StopLogicalOperation()
         {
-            return (Guid)_operationStack.Pop();
+            var activityId = (string)_operationStack.Pop();
+            return Guid.Parse(activityId);
         }
 
         public void Clear()

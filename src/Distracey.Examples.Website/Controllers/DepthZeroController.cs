@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
 using Distracey.Agent.Core.MethodHandler;
-using Distracey.Agent.SystemWeb;
 using Distracey.Common;
+using Distracey.Common.Session;
 using Distracey.Examples.Website.Clients;
 
 namespace Distracey.Examples.Website.Controllers
@@ -26,7 +26,7 @@ namespace Distracey.Examples.Website.Controllers
         // GET api/values/5
         public IEnumerable<string> GetDepthZero(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
             return ReadFromFakeDatabaseForDepthZero();
         }
 
@@ -34,12 +34,13 @@ namespace Distracey.Examples.Website.Controllers
         {
             var apmContext = ApmContext.GetContext();
             var methodHandler = apmContext.GetMethodHander();
-            return methodHandler.Execute<IEnumerable<string>>(() => new[] {"zero"});
+
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "zero" });
         }
 
         public IEnumerable<string> GetDepthOne(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthOne(id);
             depth.Add("zero");
@@ -48,7 +49,7 @@ namespace Distracey.Examples.Website.Controllers
 
         public IEnumerable<string> GetDepthTwo(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthTwo(id);
             depth.Add("zero");
@@ -57,7 +58,7 @@ namespace Distracey.Examples.Website.Controllers
 
         public IEnumerable<string> GetDepthThree(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthThree(id);
             depth.Add("zero");
@@ -66,14 +67,14 @@ namespace Distracey.Examples.Website.Controllers
 
         public IEnumerable<string> GetDepthZeroException(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             throw new Exception("zero exception");
         }
 
         public IEnumerable<string> GetDepthOneException(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthOneException(id);
             depth.Add("zero");
@@ -82,7 +83,7 @@ namespace Distracey.Examples.Website.Controllers
 
         public IEnumerable<string> GetDepthTwoException(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthTwoException(id);
             depth.Add("zero");
@@ -91,7 +92,7 @@ namespace Distracey.Examples.Website.Controllers
 
         public IEnumerable<string> GetDepthThreeException(int id)
         {
-            Request.ApmContext()["id"] = id.ToString();
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
 
             var depth = _serviceDepthOneClient.GetDepthThreeException(id);
             depth.Add("zero");
