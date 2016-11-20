@@ -30,9 +30,6 @@ namespace Distracey.Examples.Website
          
             var applicationName = typeof(WebApiApplication).Assembly.GetName().Name;
             var logger = log4net.LogManager.GetLogger("WebApiApmLogger");
-            const bool addResponseHeaders = true;
-
-            
 
             httpConfiguration.AddNoOperationApm(applicationName);
             httpConfiguration.AddLog4NetApm(applicationName, logger);
