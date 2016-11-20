@@ -24,9 +24,9 @@ namespace Distracey.Logary
 
             await _log.LogEvent(LogLevel.Error, "An unhandled exception occurred.", new
             {
-            }, exn: context.Exception);
+            }, exn: context.Exception).ConfigureAwait(false);
 
-            await base.LogAsync(context, cancellationToken);
+            await base.LogAsync(context, cancellationToken).ConfigureAwait(false);
         }
 
         public override void Log(ExceptionLoggerContext context)

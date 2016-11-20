@@ -14,7 +14,7 @@ namespace Distracey.NoOperation
                 return;
             }
 
-            await base.LogAsync(context, cancellationToken);
+            await base.LogAsync(context, cancellationToken).ConfigureAwait(false);
         }
 
         public override void Log(ExceptionLoggerContext context)

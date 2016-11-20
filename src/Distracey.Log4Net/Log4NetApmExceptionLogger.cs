@@ -23,7 +23,7 @@ namespace Distracey.Log4Net
             }
 
             _log.Error("An unhandled exception occurred.", context.Exception);
-            await base.LogAsync(context, cancellationToken);
+            await base.LogAsync(context, cancellationToken).ConfigureAwait(false);
         }
 
         public override void Log(ExceptionLoggerContext context)

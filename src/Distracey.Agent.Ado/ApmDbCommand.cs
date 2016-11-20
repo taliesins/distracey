@@ -265,7 +265,7 @@ namespace Distracey.Agent.Ado
 
                 try
                 {
-                    result = await InnerCommand.ExecuteScalarAsync(cancellationToken);
+                    result = await InnerCommand.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
                     LogStopOfExecuteScalarAsync(apmContext, commandId, CommandText, null);
                 }
                 catch (Exception exception)
@@ -320,7 +320,7 @@ namespace Distracey.Agent.Ado
 
                 try
                 {
-                    recordsEffected = await InnerCommand.ExecuteNonQueryAsync(cancellationToken);
+                    recordsEffected = await InnerCommand.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
                     LogStopOfExecuteNonQueryAsync(apmContext, commandId, CommandText, recordsEffected, null);
                 }
                 catch (Exception exception)
@@ -374,7 +374,7 @@ namespace Distracey.Agent.Ado
 
             try
             {
-                reader = await InnerCommand.ExecuteReaderAsync(behavior, cancellationToken);
+                reader = await InnerCommand.ExecuteReaderAsync(behavior, cancellationToken).ConfigureAwait(false);
                 LogStopOfExecuteDbDataReaderAsync(apmContext, commandId, CommandText, reader.RecordsAffected, null);
             }
             catch (Exception exception)

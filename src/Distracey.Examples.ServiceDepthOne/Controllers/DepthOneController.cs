@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Agent.Core.MethodHandler;
 using Distracey.Common;
@@ -37,6 +38,19 @@ namespace Distracey.Examples.ServiceDepthOne.Controllers
             return methodHandler.Execute<IEnumerable<string>>(() => new[] { "one" });
         }
 
+        public async Task<IEnumerable<string>> GetDepthOneParallel(int id)
+        {
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
+            return await ReadFromFakeDatabaseForDepthOneParallel();
+        }
+
+        private async  Task<IEnumerable<string>> ReadFromFakeDatabaseForDepthOneParallel()
+        {
+            var apmContext = ApmContext.GetContext();
+            var methodHandler = apmContext.GetMethodHander();
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "oneA", "oneB", "oneC" });
+        }
+
         public IEnumerable<string> GetDepthTwo(int id)
         {
             SessionContext.CurrentActivity.Items["id"] = id.ToString();
@@ -46,6 +60,30 @@ namespace Distracey.Examples.ServiceDepthOne.Controllers
             return depth;
         }
 
+        public async Task<IEnumerable<string>> GetDepthTwoParallel(int id)
+        {
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
+
+            var instance1Task = _serviceDepthTwoClient.GetDepthTwoParallelAsync(id);
+            var instance2Task = _serviceDepthTwoClient.GetDepthTwoParallelAsync(id);
+            var instance3Task = _serviceDepthTwoClient.GetDepthTwoParallelAsync(id);
+
+            Task.WaitAll(
+                instance1Task,
+                instance2Task,
+                instance3Task
+            );
+
+            var result = new List<string>();
+            result.AddRange(await instance1Task.ConfigureAwait(false));
+            result.Add("oneA");
+            result.AddRange(await instance2Task.ConfigureAwait(false));
+            result.Add("oneB");
+            result.AddRange(await instance3Task.ConfigureAwait(false));
+            result.Add("oneC");
+            return result;
+        }
+
         public IEnumerable<string> GetDepthThree(int id)
         {
             SessionContext.CurrentActivity.Items["id"] = id.ToString();
@@ -53,6 +91,30 @@ namespace Distracey.Examples.ServiceDepthOne.Controllers
             var depth = _serviceDepthTwoClient.GetDepthThree(id);
             depth.Add("one");
             return depth;
+        }
+
+        public async Task<IEnumerable<string>> GetDepthThreeParallel(int id)
+        {
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
+
+            var instance1Task = _serviceDepthTwoClient.GetDepthThreeParallelAsync(id);
+            var instance2Task = _serviceDepthTwoClient.GetDepthThreeParallelAsync(id);
+            var instance3Task = _serviceDepthTwoClient.GetDepthThreeParallelAsync(id);
+
+            Task.WaitAll(
+                instance1Task,
+                instance2Task,
+                instance3Task
+            );
+
+            var result = new List<string>();
+            result.AddRange(await instance1Task.ConfigureAwait(false));
+            result.Add("oneA");
+            result.AddRange(await instance2Task.ConfigureAwait(false));
+            result.Add("oneB");
+            result.AddRange(await instance3Task.ConfigureAwait(false));
+            result.Add("oneC");
+            return result;
         }
 
         public IEnumerable<string> GetDepthOneException(int id)

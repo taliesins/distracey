@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Distracey.Agent.SystemWeb.HttpClient;
 using Distracey.Common;
 using Distracey.Monitoring;
@@ -38,6 +39,28 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
             }
         }
 
+        public async Task<List<string>> GetDepthTwoParallelAsync(int id)
+        {
+            var context = ApmContext.GetContext();
+            context["id"] = id.ToString();
+
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
+            {
+                client.BaseAddress = _baseUrl;
+                var url = string.Format("api/DepthTwo/GetDepthTwoParallel/{0}", id);
+                var response = await client.GetAsync(url).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(string.Format("GetDepthTwoParallel - {0} {1} {2}", url, response.StatusCode, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+                }
+
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+                return results;
+            }
+        }
+
         public List<string> GetDepthThree(int id)
         {
             var context = ApmContext.GetContext();
@@ -55,6 +78,28 @@ namespace Distracey.Examples.ServiceDepthOne.Clients
                 }
 
                 var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult());
+
+                return results;
+            }
+        }
+
+        public async Task<List<string>> GetDepthThreeParallelAsync(int id)
+        {
+            var context = ApmContext.GetContext();
+            context["id"] = id.ToString();
+
+            using (var client = new HttpClient(new ApmHttpClientDelegatingHandler(new HttpClientHandler())))
+            {
+                client.BaseAddress = _baseUrl;
+                var url = string.Format("api/DepthTwo/GetDepthThreeParallel/{0}", id);
+                var response = await client.GetAsync(url).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(string.Format("GetDepthThreeParallel - {0} {1} {2}", url, response.StatusCode, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+                }
+
+                var results = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
                 return results;
             }

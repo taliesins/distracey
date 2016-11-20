@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Distracey.Agent.Core.MethodHandler;
 using Distracey.Common;
@@ -21,6 +22,20 @@ namespace Distracey.Examples.ServiceDepthThree.Controllers
             var apmContext = ApmContext.GetContext();
             var methodHandler = apmContext.GetMethodHander();
             return methodHandler.Execute<IEnumerable<string>>(() => new[] { "three" });
+        }
+
+        public async Task<IEnumerable<string>> GetDepthThreeParallel(int id)
+        {
+            SessionContext.CurrentActivity.Items["id"] = id.ToString();
+
+            return await ReadFromFakeDatabaseForDepthThreeParallel().ConfigureAwait(false);
+        }
+
+        private async Task<IEnumerable<string>> ReadFromFakeDatabaseForDepthThreeParallel()
+        {
+            var apmContext = ApmContext.GetContext();
+            var methodHandler = apmContext.GetMethodHander();
+            return methodHandler.Execute<IEnumerable<string>>(() => new[] { "threeA", "threeB", "threeC" });
         }
 
         public IEnumerable<string> GetDepthThreeException(int id)
